@@ -1,0 +1,354 @@
+"""
+Nepali Citizenship Certificate — Layout Definition.
+Uses html_engine components to programmatically build a pixel-perfect HTML replica of the standard Nepali citizenship certificate.
+The build_citizenship(data) function accepts a flat dictionary of field values and returns a fully composed Document ready to render.
+Build a Nepali Citizenship Certificate document.
+
+Parameters:
+data: Dictionary with the following keys:
+
+- ``citizenship_no``: Registration number (e.g. "58-02-79-00253")
+- ``full_name``: Full name
+- ``gender``: Gender
+- ``birth_district``: Birth district
+- ``birth_municipality``: Birth municipality/VDC
+- ``birth_ward``: Ward number
+- ``perm_district``: Permanent address district
+- ``perm_municipality``: Permanent address municipality
+- ``perm_ward``: Permanent address ward
+- ``dob_year``, ``dob_month``, ``dob_day``: Date of birth parts
+- ``father_name``, ``father_citizenship_no``
+- ``father_address``
+- ``mother_name``, ``mother_citizenship_no``
+- ``mother_address``
+- ``spouse_name``, ``spouse_citizenship_no``
+- ``photo_src``: Path or URL to citizen photo
+- ``emblem_src``: Path or URL to the government emblem
+- ``district_name``: District name for title
+- ``signatory_name``: Name of the signing officer
+- ``signatory_title``: Title of the signing officer
+- ``father_na_ki``: Father's ना. कि. (issuing district)
+- ``mother_na_ki``: Mother's ना. कि.
+- ``spouse_na_ki``: Spouse's ना. कि.
+
+A :class:`Document` ready to ``.render()`` to HTML.
+"""
+
+from __future__ import annotations
+from typing import Any
+from html_engine import (
+    Document,
+    Style,
+    Heading,
+    Text,
+    Image,
+    LabelValue,
+    FieldGroup,
+    MultiFieldRow,
+    AbsoluteBox,
+    FlexRow,
+    FlexCol,
+    Div,
+    Spacer,
+    RawHTML,
+)
+
+LABEL_STYLE = Style(font_weight="bold", font_size="20px", width="240px", flex_shrink="0")
+VALUE_STYLE = Style(font_size="20px", flex="1")
+SMALL_LABEL = Style(font_weight="bold", font_size="20px", width="180px", flex_shrink="0")
+RIGHT_LABEL = Style(font_weight="bold", font_size="20px", width="150px", flex_shrink="0", text_align="right", padding_right="10px")
+ROW_STYLE = Style(margin_bottom="18px")
+
+
+#Shorthand for a single label-value row
+def field_row(
+    label: str,
+    value: str,
+    label_style: Style = LABEL_STYLE,
+    value_style: Style = VALUE_STYLE,
+) -> LabelValue:
+    return LabelValue(
+        label,
+        value,
+        label_style=label_style,
+        value_style=value_style,
+    )
+
+
+#Shorthand for a horizontal row of multiple label-value pairs.
+def multi_row(*parts: LabelValue, style: Style | None = None) -> MultiFieldRow:
+    return MultiFieldRow(*parts, style=style)
+
+
+def build_citizenship(data: dict[str, Any]) -> Document:
+
+    # Defaults for missing fields
+    d = {
+        "citizenship_no": "",
+        "full_name": "",
+        "gender": "",
+        "birth_district": "",
+        "birth_municipality": "",
+        "birth_ward": "",
+        "perm_district": "",
+        "perm_municipality": "",
+        "perm_ward": "",
+        "dob_year": "",
+        "dob_month": "",
+        "dob_day": "",
+        "father_name": "",
+        "father_citizenship_no": "",
+        "father_address": "",
+        "father_na_ki": "",
+        "mother_name": "",
+        "mother_citizenship_no": "",
+        "mother_address": "",
+        "mother_na_ki": "",
+        "spouse_name": "",
+        "spouse_citizenship_no": "",
+        "spouse_na_ki": "",
+        "photo_src": "",
+        "emblem_src": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Emblem_of_Nepal.svg/1200px-Emblem_of_Nepal.svg.png",
+        "district_name": "",
+        "signatory_name": "",
+        "signatory_title": "",
+    }
+    d.update(data)
+
+    doc = Document(
+        "Nepali Citizenship Certificate",
+        page_width="1200px",
+        page_height="820px",
+        background="#f5f5f5",
+        font_family='"Times New Roman", serif',
+        border="2px solid #444",
+        extra_css="""
+            .texture {
+                position: absolute;
+                inset: 0;
+                background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+                opacity: 0.15;
+                pointer-events: none;
+            }
+        """,
+    )
+
+    # ── 1. Paper texture overlay ────────────────────────────────
+    doc.add(RawHTML('<div class="texture"></div>'))
+
+    # ── 2. Government emblem (top-left) ─────────────────────────
+    doc.add(
+        AbsoluteBox(
+            Image(
+                d["emblem_src"],
+                alt="Government Emblem",
+                style=Style(width="120px"),
+            ),
+            left="40px",
+            top="35px",
+        )
+    )
+
+    # ── 3. Official stamp (top-right) ───────────────────────────
+    doc.add(
+        AbsoluteBox(
+            Div(
+                Text("Government of Nepal"),
+                RawHTML("<br>"),
+                Text("Ministry of Home Affairs"),
+                RawHTML("<br>"),
+                Text("District Administration Office"),
+                style=Style(
+                    width="120px",
+                    height="120px",
+                    border="2px solid #333",
+                    display="flex",
+                    align_items="center",
+                    justify_content="center",
+                    font_size="14px",
+                    text_align="center",
+                    transform="rotate(-8deg)",
+                ),
+            ),
+            right="55px",
+            top="25px",
+        )
+    )
+
+    # ── 4. Title block (centered) ───────────────────────────────
+    doc.add(
+        AbsoluteBox(
+            FlexCol(
+                Heading(
+                    "Government of Nepal",
+                    level=1,
+                    style=Style(margin="0", font_size="28px"),
+                ),
+                Heading(
+                    "Ministry of Home Affairs",
+                    level=2,
+                    style=Style(margin="0", font_size="24px"),
+                ),
+                Heading(
+                    f"District Administration Office ............... {d['district_name']}",
+                    level=3,
+                    style=Style(margin="0", font_size="22px"),
+                ),
+                Heading(
+                    "Certificate of Nepali Citizenship",
+                    level=4,
+                    style=Style(margin_top="10px", margin_bottom="0", font_size="30px"),
+                ),
+                style=Style(text_align="center", line_height="1.5"),
+            ),
+            top="25px",
+            left="0",
+            style=Style(width="100%"),
+        )
+    )
+
+    # ── 5. Citizenship number ───────────────────────────────────
+    doc.add(
+        AbsoluteBox(
+            Text(
+                f"Citizenship No.: {d['citizenship_no']}",
+                style=Style(font_size="22px", font_weight="bold"),
+            ),
+            top="185px",
+            left="45px",
+        )
+    )
+
+    # ── 6. Citizen photo ────────────────────────────────────────
+    if d["photo_src"]:
+        doc.add(
+            AbsoluteBox(
+                Image(
+                    d["photo_src"],
+                    alt="Citizen Photo",
+                    style=Style(
+                        width="100%",
+                        height="100%",
+                        object_fit="cover",
+                        filter="grayscale(100%)",
+                    ),
+                ),
+                left="55px",
+                top="255px",
+                style=Style(
+                    width="260px",
+                    height="340px",
+                    border="2px solid #111",
+                    overflow="hidden",
+                    background="#ccc",
+                ),
+            )
+        )
+
+    # ── 7. Data fields section ──────────────────────────────────
+
+    # Helper for 2-line address sub-values
+    def _address_block(district: str, municipality: str) -> FlexCol:
+        return FlexCol(
+            Text(f"District: {district}", style=Style(font_size="20px")),
+            Text(f"Municipality/VDC: {municipality}", style=Style(font_size="20px")),
+        )
+
+    data_section = FieldGroup(
+        # Row 1: Full Name ... Gender
+        multi_row(
+            field_row("Full Name:", d["full_name"]),
+            field_row("Gender:", d["gender"], label_style=RIGHT_LABEL),
+        ),
+        # Row 2: Birth Place (2-line) ... Ward No.
+        multi_row(
+            LabelValue(
+                "Birth Place:",
+                _address_block(d["birth_district"], d["birth_municipality"]),
+                label_style=LABEL_STYLE,
+                value_style=VALUE_STYLE,
+            ),
+            field_row("Ward No.:", d["birth_ward"], label_style=RIGHT_LABEL),
+        ),
+        # Row 3: Permanent Address (2-line) ... Ward No.
+        multi_row(
+            LabelValue(
+                "Permanent Address:",
+                _address_block(d["perm_district"], d["perm_municipality"]),
+                label_style=LABEL_STYLE,
+                value_style=VALUE_STYLE,
+            ),
+            field_row("Ward No.:", d["perm_ward"], label_style=RIGHT_LABEL),
+        ),
+        # Row 4: Date of Birth
+        multi_row(
+            LabelValue(
+                "Date of Birth:",
+                FlexRow(
+                    Text(f"Year: {d['dob_year']}", style=Style(font_size="20px")),
+                    Text(f"Month: {d['dob_month']}", style=Style(font_size="20px")),
+                    Text(f"Day: {d['dob_day']}", style=Style(font_size="20px")),
+                    gap="20px",
+                ),
+                label_style=LABEL_STYLE,
+                value_style=VALUE_STYLE,
+            ),
+        ),
+        # Row 5: Father's Name ... Citizenship No.
+        multi_row(
+            field_row("Father's Name:", d["father_name"]),
+            field_row("Citizenship No.:", d["father_citizenship_no"], label_style=RIGHT_LABEL),
+        ),
+        # Row 6: Father's Address ... Na. Ki.
+        multi_row(
+            field_row("Address:", d["father_address"]),
+            field_row("Na. Ki.:", d["father_na_ki"], label_style=RIGHT_LABEL),
+        ),
+        # Row 7: Mother's Name ... Citizenship No.
+        multi_row(
+            field_row("Mother's Name:", d["mother_name"]),
+            field_row("Citizenship No.:", d["mother_citizenship_no"], label_style=RIGHT_LABEL),
+        ),
+        # Row 8: Mother's Address ... Na. Ki.
+        multi_row(
+            field_row("Address:", d["mother_address"]),
+            field_row("Na. Ki.:", d["mother_na_ki"], label_style=RIGHT_LABEL),
+        ),
+        # Row 9: Spouse Name ... Citizenship No.
+        multi_row(
+            field_row("Spouse's Name:", d["spouse_name"]),
+            field_row("Citizenship No.:", d["spouse_citizenship_no"], label_style=RIGHT_LABEL),
+        ),
+        # Row 10: Spouse Address ... Na. Ki.
+        multi_row(
+            field_row("Address:", ""),
+            field_row("Na. Ki.:", d["spouse_na_ki"], label_style=RIGHT_LABEL),
+        ),
+        spacing="18px",
+        style=Style(font_size="20px"),
+    )
+
+    doc.add(
+        AbsoluteBox(
+            data_section,
+            left="350px",
+            top="220px",
+            style=Style(width="770px"),
+        )
+    )
+
+    # ── 8. Signature block ──────────────────────────────────────
+    if d["signatory_name"]:
+        doc.add(
+            AbsoluteBox(
+                FlexCol(
+                    Text(d["signatory_name"], style=Style(font_size="22px", font_weight="bold")),
+                    Text(d["signatory_title"], style=Style(font_size="20px", font_weight="bold")),
+                ),
+                left="70px",
+                bottom="70px",
+                style=Style(transform="rotate(-14deg)"),
+            )
+        )
+
+    return doc

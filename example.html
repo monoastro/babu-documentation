@@ -1,0 +1,300 @@
+this is a sample html document 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nepali Citizenship Translation Editor</title>
+
+<style>
+    body{
+        margin:0;
+        background:#d9d9d9;
+        font-family:"Times New Roman", serif;
+    }
+
+    .page{
+        width:1200px;
+        height:820px;
+        margin:30px auto;
+        background:#f5f5f5;
+        position:relative;
+        border:2px solid #444;
+        overflow:hidden;
+        box-shadow:0 0 20px rgba(0,0,0,0.2);
+    }
+
+    .texture{
+        position:absolute;
+        inset:0;
+        background:url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+        opacity:0.15;
+        pointer-events:none;
+    }
+
+    .emblem{
+        position:absolute;
+        left:40px;
+        top:35px;
+        width:120px;
+    }
+
+    .top-stamp{
+        position:absolute;
+        right:55px;
+        top:25px;
+        width:120px;
+        height:120px;
+        border:2px solid #333;
+        transform:rotate(-8deg);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:14px;
+        text-align:center;
+    }
+
+    .title{
+        position:absolute;
+        width:100%;
+        text-align:center;
+        top:25px;
+        line-height:1.5;
+    }
+
+    .title h1{
+        margin:0;
+        font-size:28px;
+    }
+
+    .title h2{
+        margin:0;
+        font-size:24px;
+    }
+
+    .title h3{
+        margin:0;
+        font-size:22px;
+    }
+
+    .title h4{
+        margin-top:10px;
+        font-size:30px;
+    }
+
+    .citizenship-no{
+        position:absolute;
+        top:185px;
+        left:45px;
+        font-size:22px;
+        font-weight:bold;
+    }
+
+    .photo{
+        position:absolute;
+        left:55px;
+        top:255px;
+        width:260px;
+        height:340px;
+        border:2px solid #111;
+        overflow:hidden;
+        background:#ccc;
+    }
+
+    .photo img{
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        filter:grayscale(100%);
+    }
+
+    .data{
+        position:absolute;
+        left:350px;
+        top:220px;
+        width:770px;
+        font-size:20px;
+    }
+
+    .row{
+        display:flex;
+        margin-bottom:18px;
+        align-items:flex-start;
+    }
+
+    .label{
+        width:240px;
+        font-weight:bold;
+    }
+
+    .value{
+        flex:1;
+    }
+
+    .editable{
+        border:none;
+        background:transparent;
+        font-family:"Times New Roman", serif;
+        font-size:20px;
+        width:100%;
+        outline:none;
+    }
+
+    .inline{
+        display:flex;
+        gap:20px;
+    }
+
+    .signature{
+        position:absolute;
+        left:70px;
+        bottom:70px;
+        transform:rotate(-14deg);
+        font-size:22px;
+        font-weight:bold;
+    }
+
+    .save-btn{
+        position:fixed;
+        right:20px;
+        bottom:20px;
+        padding:14px 24px;
+        font-size:16px;
+        cursor:pointer;
+        border:none;
+        background:#111;
+        color:white;
+        border-radius:8px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="texture"></div>
+
+    <img class="emblem"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Emblem_of_Nepal.svg/1200px-Emblem_of_Nepal.svg.png">
+
+    <div class="top-stamp">
+        Government of Nepal<br>
+        Ministry of Home Affairs<br>
+        District Administration Office
+    </div>
+
+    <div class="title">
+        <h1 contenteditable="true">Government of Nepal</h1>
+        <h2 contenteditable="true">Ministry of Home Affairs</h2>
+        <h3 contenteditable="true">District Administration Office, Mugu</h3>
+        <h4 contenteditable="true">Certificate of Nepali Citizenship</h4>
+    </div>
+
+    <div class="citizenship-no">
+        Citizenship No.:
+        <span contenteditable="true">58-02-76-00253</span>
+    </div>
+
+    <div class="photo">
+        <img src="your-photo.jpg" alt="Citizen Photo">
+    </div>
+
+    <div class="data">
+
+        <div class="row">
+            <div class="label">Full Name:</div>
+            <div class="value" contenteditable="true">Kamal Jaisi</div>
+
+            <div class="label">Gender:</div>
+            <div class="value" contenteditable="true">Male</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Birth Place:</div>
+            <div class="value">
+                <div contenteditable="true">District: Mugu</div>
+                <div contenteditable="true">Municipality/VDC: Soru</div>
+            </div>
+
+            <div class="label">Ward No.:</div>
+            <div class="value" contenteditable="true">20</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Permanent Address:</div>
+            <div class="value">
+                <div contenteditable="true">District: Mugu</div>
+                <div contenteditable="true">Municipality/VDC: Soru</div>
+            </div>
+
+            <div class="label">Ward No.:</div>
+            <div class="value" contenteditable="true">20</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Date of Birth:</div>
+            <div class="value inline">
+                <div contenteditable="true">Year: 2060</div>
+                <div contenteditable="true">Month: 02</div>
+                <div contenteditable="true">Day: 11 (B.S.)</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">Father’s Name:</div>
+            <div class="value" contenteditable="true">Punalal Jaisi</div>
+
+            <div class="label">Citizenship No.:</div>
+            <div class="value" contenteditable="true">332</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Address:</div>
+            <div class="value" contenteditable="true">
+                Soru Rural Municipality-20, Mugu
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">Mother’s Name:</div>
+            <div class="value" contenteditable="true">
+                Bhimati Tulasi Jaisi
+            </div>
+
+            <div class="label">Citizenship No.:</div>
+            <div class="value" contenteditable="true">
+                039157677
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">Address:</div>
+            <div class="value" contenteditable="true">
+                Soru Rural Municipality-20, Mugu
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">Spouse’s Name:</div>
+            <div class="value" contenteditable="true">XXX</div>
+
+            <div class="label">Citizenship No.:</div>
+            <div class="value" contenteditable="true">—</div>
+        </div>
+
+    </div>
+
+    <div class="signature" contenteditable="true">
+        K.M. Dhakal<br>
+        Chief District Officer
+    </div>
+
+</div>
+
+<button class="save-btn" onclick="window.print()">
+    Save / Print
+</button>
+
+</body>
+</html>
