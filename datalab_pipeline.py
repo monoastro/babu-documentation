@@ -2,7 +2,7 @@
 # #i need to input image, pass it to api, get it json and print it 
 
 api_key="zOs3hB4K3qAijnqgZXy18F5EaRAXq7HfYyKXfXGbpdw"
-image_path="test_tesse.png"
+image_path="D:\\Precision\\test_tesse.png"
 
 import requests
 
@@ -23,10 +23,10 @@ import requests
 url = "https://www.datalab.to/api/v1/convert"
 headers = {"X-API-Key":api_key}
 
-with open("document.pdf", "rb") as f:
+with open(image_path, "rb") as f:
     response = requests.post(
         url,
-        files={"file": ("document.pdf", f, "application/pdf")},
+        files={"file": (image_path, f, "image/png")},
         data={
             "output_format": "markdown",
             "mode": "balanced",
@@ -36,3 +36,4 @@ with open("document.pdf", "rb") as f:
 
 data = response.json()
 check_url = data["request_check_url"]
+print(check_url)
