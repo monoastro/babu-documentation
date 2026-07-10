@@ -54,6 +54,7 @@ class Document:
         body_style: Optional[Style] = None,
         extra_css: str = "",
         lang: str = "en",
+        show_page_numbers: bool = False,
     ):
         self.title = title
         self.page_width = page_width
@@ -66,6 +67,7 @@ class Document:
         self.body_style = body_style
         self.extra_css = extra_css
         self.lang = lang
+        self.show_page_numbers = show_page_numbers
         self.children: list[Component] = []
 
     def add(self, *components: Component) -> Document:
@@ -91,11 +93,11 @@ class Document:
         with open(path, "w", encoding="utf-8") as f:
             f.write(html)
 
-    def to_pdf(self, path: str) -> None:
+    def to_pdf(self, path: str, base_url: Optional[str] = None) -> None:
         """
         Render the document and convert it to a PDF file.
         Requires weasyprint.
         """
         from html_engine.pdf import html_to_pdf
         html = self.render()
-        html_to_pdf(html, path)
+        html_to_pdf(html, path, base_url=base_url)

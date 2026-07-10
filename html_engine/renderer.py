@@ -64,17 +64,31 @@ def render(doc: Document) -> str:
     children_html = "".join(child.to_html() for child in doc.children)
 
     # ── Print styles ────────────────────────────────────────────
-    print_css = """
-    @media print {
-        body { background: white !important; margin: 0 !important; }
-        .page {
+    page_numbers_css = ""
+    if doc.show_page_numbers:
+        page_numbers_css = """
+        @page {
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: inherit;
+                font-size: 12px;
+                color: #666;
+            }
+        }
+        """
+
+    print_css = f"""
+    @media print {{
+        body {{ background: white !important; margin: 0 !important; }}
+        .page {{
             margin: 0 !important;
             box-shadow: none !important;
             border: 2px solid #444 !important;
             page-break-after: always;
-        }
-        .no-print { display: none !important; }
-    }
+        }}
+        .no-print {{ display: none !important; }}
+    }}
+    {page_numbers_css}
     """
 
     # ── Assemble ────────────────────────────────────────────────

@@ -8,6 +8,7 @@ label–value rows.
 
 from __future__ import annotations
 
+import html
 from typing import Optional, Union
 
 from html_engine.components.base import Component
@@ -25,6 +26,7 @@ class LabelValue(Component):
         label: The label text (e.g. "Full Name:").
         value: The value — can be a plain string or a Component
                (for nested layouts like multi-line addresses).
+        escape: If True, string label and value will be HTML-escaped. Defaults to True.
         label_style: Override styles for the label element.
         value_style: Override styles for the value element.
         style: Styles for the outer container.
@@ -50,6 +52,7 @@ class LabelValue(Component):
         label: str,
         value: Union[str, Component] = "",
         *,
+        escape: bool = True,
         label_style: Optional[Style] = None,
         value_style: Optional[Style] = None,
         style: Optional[Style] = None,
@@ -60,6 +63,7 @@ class LabelValue(Component):
         super().__init__(style=merged_container, css_class=css_class)
         self.label = label
         self.value = value
+        self.escape = escape
         self.label_width = label_width
 
         self.label_style = self._default_label_style.clone(
@@ -77,11 +81,13 @@ class LabelValue(Component):
         if isinstance(self.value, Component):
             value_html = self.value.to_html()
         else:
-            value_html = str(self.value)
+            value_html = html.escape(str(self.value)) if self.escape else str(self.value)
+
+        label_html = html.escape(self.label) if self.escape else self.label
 
         return (
             f"<div{attrs}>"
-            f"<div{label_attrs}>{self.label}</div>"
+            f"<div{label_attrs}>{label_html}</div>"
             f"<div{value_attrs}>{value_html}</div>"
             f"</div>"
         )

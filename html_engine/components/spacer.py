@@ -47,3 +47,20 @@ class HorizontalRule(Component):
     def to_html(self) -> str:
         attrs = self._build_attrs()
         return f"<hr{attrs}>"
+
+
+class PageBreak(Component):
+    """
+    Renders a page break for print media.
+    """
+
+    def __init__(self, *, style: Optional[Style] = None, css_class: Optional[str] = None):
+        super().__init__(style=style, css_class=css_class)
+
+    def to_html(self) -> str:
+        # Avoid overriding the page-break style but merge others
+        base_style = Style(raw="page-break-after:always;break-after:page;")
+        merged_style = base_style.merge(self.style)
+        attrs = self._build_attrs(extra_style=merged_style)
+        return f"<div{attrs}></div>"
+

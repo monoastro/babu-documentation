@@ -7,7 +7,7 @@ writes the rendered HTML to ``output/citizenship.html``.
 
 Usage::
 
-    python documents/citizenship/generate.py
+    python document_builder/citizenship/generate.py
 """
 
 from __future__ import annotations
@@ -16,11 +16,10 @@ import os
 import sys
 from pathlib import Path
 
-# project root is on sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from documents.citizenship.layout import build_citizenship
+from document_builder.citizenship.layout import build_citizenship
 
 
 def main() -> None:

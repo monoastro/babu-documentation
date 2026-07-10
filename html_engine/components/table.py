@@ -7,6 +7,7 @@ fine-grained control via TableRow/TableCell objects.
 
 from __future__ import annotations
 
+import html
 from typing import Optional, Sequence, Union
 
 from html_engine.components.base import Component
@@ -22,6 +23,7 @@ class TableCell(Component):
         colspan: Number of columns this cell spans.
         rowspan: Number of rows this cell spans.
         is_header: If True, renders as ``<th>`` instead of ``<td>``.
+        escape: If True, string content will be HTML-escaped. Defaults to True.
         style: Inline styles for this cell.
     """
 
@@ -32,6 +34,7 @@ class TableCell(Component):
         colspan: int = 1,
         rowspan: int = 1,
         is_header: bool = False,
+        escape: bool = True,
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
     ):
@@ -40,6 +43,7 @@ class TableCell(Component):
         self.colspan = colspan
         self.rowspan = rowspan
         self.is_header = is_header
+        self.escape = escape
 
     def to_html(self) -> str:
         tag = "th" if self.is_header else "td"
@@ -54,7 +58,7 @@ class TableCell(Component):
         if isinstance(self.content, Component):
             inner = self.content.to_html()
         else:
-            inner = str(self.content)
+            inner = html.escape(str(self.content)) if self.escape else str(self.content)
 
         return f"<{tag}{span_attrs}{attrs}>{inner}</{tag}>"
 

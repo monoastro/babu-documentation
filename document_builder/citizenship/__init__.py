@@ -1,1 +1,0 @@
-# documents.citizenship package

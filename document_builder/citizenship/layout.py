@@ -56,7 +56,7 @@ from html_engine import (
 LABEL_STYLE = Style(font_weight="bold", font_size="20px", width="240px", flex_shrink="0")
 VALUE_STYLE = Style(font_size="20px", flex="1")
 SMALL_LABEL = Style(font_weight="bold", font_size="20px", width="180px", flex_shrink="0")
-RIGHT_LABEL = Style(font_weight="bold", font_size="20px", width="150px", flex_shrink="0", text_align="right", padding_right="10px")
+RIGHT_LABEL = Style(font_weight="bold", font_size="20px", width="220px", flex_shrink="0", text_align="right", padding_right="10px")
 ROW_STYLE = Style(margin_bottom="18px")
 
 
@@ -299,30 +299,30 @@ def build_citizenship(data: dict[str, Any]) -> Document:
             field_row("Father's Name:", d["father_name"]),
             field_row("Citizenship No.:", d["father_citizenship_no"], label_style=RIGHT_LABEL),
         ),
-        # Row 6: Father's Address ... Na. Ki.
+        # Row 6: Father's Address ... Citizenship Type
         multi_row(
             field_row("Address:", d["father_address"]),
-            field_row("Na. Ki.:", d["father_na_ki"], label_style=RIGHT_LABEL),
+            field_row("Citizenship Type:", d["father_na_ki"], label_style=RIGHT_LABEL),
         ),
         # Row 7: Mother's Name ... Citizenship No.
         multi_row(
             field_row("Mother's Name:", d["mother_name"]),
             field_row("Citizenship No.:", d["mother_citizenship_no"], label_style=RIGHT_LABEL),
         ),
-        # Row 8: Mother's Address ... Na. Ki.
+        # Row 8: Mother's Address ... Citizenship Type
         multi_row(
             field_row("Address:", d["mother_address"]),
-            field_row("Na. Ki.:", d["mother_na_ki"], label_style=RIGHT_LABEL),
+            field_row("Citizenship Type:", d["mother_na_ki"], label_style=RIGHT_LABEL),
         ),
         # Row 9: Spouse Name ... Citizenship No.
         multi_row(
             field_row("Spouse's Name:", d["spouse_name"]),
             field_row("Citizenship No.:", d["spouse_citizenship_no"], label_style=RIGHT_LABEL),
         ),
-        # Row 10: Spouse Address ... Na. Ki.
+        # Row 10: Spouse Address ... Citizenship Type
         multi_row(
             field_row("Address:", ""),
-            field_row("Na. Ki.:", d["spouse_na_ki"], label_style=RIGHT_LABEL),
+            field_row("Citizenship Type:", d["spouse_na_ki"], label_style=RIGHT_LABEL),
         ),
         spacing="18px",
         style=Style(font_size="20px"),
@@ -345,7 +345,7 @@ def build_citizenship(data: dict[str, Any]) -> Document:
                     Text(d["signatory_name"], style=Style(font_size="22px", font_weight="bold")),
                     Text(d["signatory_title"], style=Style(font_size="20px", font_weight="bold")),
                 ),
-                left="70px",
+                right="70px",
                 bottom="70px",
                 style=Style(transform="rotate(-14deg)"),
             )

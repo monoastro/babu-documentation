@@ -200,3 +200,29 @@ class Style:
     def __add__(self, other: Style) -> Style:
         """Shorthand: ``combined = style_a + style_b``."""
         return self.merge(other)
+
+
+def px(value: int | float) -> str:
+    """Return value as CSS pixel string."""
+    return f"{value}px"
+
+
+def pct(value: int | float) -> str:
+    """Return value as CSS percentage string."""
+    return f"{value}%"
+
+
+def em(value: int | float) -> str:
+    """Return value as CSS em string."""
+    return f"{value}em"
+
+
+def rem(value: int | float) -> str:
+    """Return value as CSS rem string."""
+    return f"{value}rem"
+
+
+def pt(value: int | float) -> str:
+    """Return value as CSS pt string."""
+    return f"{value}pt"
+
