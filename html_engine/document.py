@@ -53,10 +53,7 @@ class Document:
         page_style: Optional[Style] = None,
         body_style: Optional[Style] = None,
         extra_css: str = "",
-        lang: str ear
-
-
-        "en",
+        lang: str = "en",
         show_page_numbers: bool = False,
     ):
         self.title = title

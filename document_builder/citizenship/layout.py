@@ -125,7 +125,7 @@ def build_citizenship(data: dict[str, Any]) -> Document:
     # ── Government emblem (top-left) ─────────────────────────
     doc.add(
         AbsoluteBox(
-            Text("Emblem of Government of Nepal"),
+            Text("Coat of Arms of Nepal"),
             style=Style(
                 width="120px",
                 height="120px",
@@ -147,9 +147,7 @@ def build_citizenship(data: dict[str, Any]) -> Document:
             FlexCol(
                 Heading( "Government of Nepal", level=1, style=Style(margin="0", font_size="28px"),),
                 Heading( "Ministry of Home Affairs", level=2, style=Style(margin="0", font_size="28px"),),
-                Heading( f"District Administration Office {d['district_name']}", level=3, style=Style(margin="
-
-                0", font_size="28px"),),
+                Heading( f"District Administration Office, {d['district_name']}", level=3, style=Style(margin="0", font_size="28px"),),
                 Heading( "Certificate of Nepali Citizenship", level=4, style=Style(margin="0", font_size="28px"),),
                 style=Style(text_align="center", line_height="1.5"),
             ),
@@ -161,20 +159,16 @@ def build_citizenship(data: dict[str, Any]) -> Document:
     # ──  Official stamp (top-right) ───────────────────────────
     doc.add(
         AbsoluteBox(
-            Div(
-                Text("Government of Nepal"),
-                Text("Ministry of Home Affairs"),
-                Text("District Administration Office"),
-                style=Style(
-                    width="120px",
-                    height="120px",
-                    border="2px solid #333",
-                    display="flex",
-                    align_items="center",
-                    justify_content="center",
-                    font_size="14px",
-                    text_align="center",
-                ),
+            Text("Round Office Seal"),
+            style=Style(
+                width="120px",
+                height="120px",
+                border="2px solid #333",
+                display="flex",
+                align_items="center",
+                justify_content="center",
+                font_size="14px",
+                text_align="center",
             ),
             right="55px",
             top="25px",
