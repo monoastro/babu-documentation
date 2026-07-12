@@ -81,6 +81,8 @@ def multi_row(*parts: LabelValue, style: Style | None = None) -> MultiFieldRow:
 
 
 def build_citizenship(data: dict[str, Any]) -> Document:
+
+    # Defaults for missing fields
     d = {
         "citizenship_no": "",
         "full_name": "",
@@ -117,53 +119,44 @@ def build_citizenship(data: dict[str, Any]) -> Document:
         "Nepali Citizenship Certificate",
         page_width="1200px",
         page_height="820px",
-        background="#ffffff",
-        font_family='"Times New Roman"',
-        border="2px solid #000000",
+        background="#f5f5f5",
+        font_family='"Times New Roman", serif',
+        border="2px solid #444",
+        extra_css="""
+            .texture {
+                position: absolute;
+                inset: 0;
+                background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+                opacity: 0.15;
+                pointer-events: none;
+            }
+        """,
     )
 
-    # ── Government emblem (top-left) ─────────────────────────
+    # ── 1. Paper texture overlay ────────────────────────────────
+    doc.add(RawHTML('<div class="texture"></div>'))
+
+    # ── 2. Government emblem (top-left) ─────────────────────────
     doc.add(
         AbsoluteBox(
-            Text("Emblem of Government of Nepal"),
-            style=Style(
-                width="120px",
-                height="120px",
-                display="flex",
-                align_items="center",
-                border="2px solid #000000",
-                justify_content="center",
-                font_size="14px",
-                text_align="center",
-                ),
-            left="40px",
-            top="40px",
-        )
-    )
-
-    # ──  Title block (centered) ───────────────────────────────
-    doc.add(
-        AbsoluteBox(
-            FlexCol(
-                Heading( "Government of Nepal", level=1, style=Style(margin="0", font_size="28px"),),
-                Heading( "Ministry of Home Affairs", level=2, style=Style(margin="0", font_size="28px"),),
-                Heading( f"District Administration Office {d['district_name']}", level=3, style=Style(margin="
-
-                0", font_size="28px"),),
-                Heading( "Certificate of Nepali Citizenship", level=4, style=Style(margin="0", font_size="28px"),),
-                style=Style(text_align="center", line_height="1.5"),
+            Image(
+                d["emblem_src"],
+                alt="Government Emblem",
+                style=Style(width="120px"),
             ),
-            top="25px",
-            left="0",
-            style=Style(width="100%"),
+            left="40px",
+            top="35px",
         )
     )
-    # ──  Official stamp (top-right) ───────────────────────────
+
+    # ── 3. Official stamp (top-right) ───────────────────────────
     doc.add(
         AbsoluteBox(
             Div(
                 Text("Government of Nepal"),
+                RawHTML("<br>"),
                 Text("Ministry of Home Affairs"),
+                RawHTML("<br>"),
                 Text("District Administration Office"),
                 style=Style(
                     width="120px",
@@ -181,12 +174,51 @@ def build_citizenship(data: dict[str, Any]) -> Document:
         )
     )
 
+    # ── 4. Title block (centered) ───────────────────────────────
+    doc.add(
+        AbsoluteBox(
+            FlexCol(
+                Heading(
+                    "Government of Nepal",
+                    level=1,
+                    style=Style(margin="0", font_size="28px"),
+                ),
+                Heading(
+                    "Ministry of Home Affairs",
+                    level=2,
+                    style=Style(margin="0", font_size="24px"),
+                ),
+                Heading(
+                    f"District Administration Office {d['district_name']}",
+                    level=3,
+                    style=Style(margin="0", font_size="22px"),
+                ),
+                Heading(
+                    "Certificate of Nepali Citizenship",
+                    level=4,
+                    style=Style(margin_top="10px", margin_bottom="0", font_size="30px"),
+                ),
+                style=Style(text_align="center", line_height="1.5"),
+            ),
+            top="25px",
+            left="0",
+            style=Style(width="100%"),
+        )
+    )
 
+    # ── 5. Citizenship number ───────────────────────────────────
+    doc.add(
+        AbsoluteBox(
+            Text(
+                f"Citizenship No.: {d['citizenship_no']}",
+                style=Style(font_size="22px", font_weight="bold"),
+            ),
+            top="185px",
+            left="45px",
+        )
+    )
 
-    # ──  Citizenship number ───────────────────────────────────
-    doc.add( AbsoluteBox( Text( f"Citizenship No.: {d['citizenship_no']}", style=Style(font_size="22px", font_weight="bold"),), top="185px", left="45px",))
-
-    # ──  Citizen photo ────────────────────────────────────────
+    # ── 6. Citizen photo ────────────────────────────────────────
     if d["photo_src"]:
         doc.add(
             AbsoluteBox(
@@ -204,7 +236,7 @@ def build_citizenship(data: dict[str, Any]) -> Document:
                 top="255px",
                 style=Style(
                     width="260px",
-                    height="260px",
+                    height="340px",
                     border="2px solid #111",
                     overflow="hidden",
                     background="#ccc",
@@ -212,7 +244,7 @@ def build_citizenship(data: dict[str, Any]) -> Document:
             )
         )
 
-    # ──  Data fields section ──────────────────────────────────
+    # ── 7. Data fields section ──────────────────────────────────
 
     # Helper for 2-line address sub-values
     def _address_block(district: str, municipality: str) -> FlexCol:
@@ -303,5 +335,19 @@ def build_citizenship(data: dict[str, Any]) -> Document:
             style=Style(width="770px"),
         )
     )
+
+    # ── 8. Signature block ──────────────────────────────────────
+    if d["signatory_name"]:
+        doc.add(
+            AbsoluteBox(
+                FlexCol(
+                    Text(d["signatory_name"], style=Style(font_size="22px", font_weight="bold")),
+                    Text(d["signatory_title"], style=Style(font_size="20px", font_weight="bold")),
+                ),
+                right="70px",
+                bottom="70px",
+                style=Style(transform="rotate(-14deg)"),
+            )
+        )
 
     return doc
