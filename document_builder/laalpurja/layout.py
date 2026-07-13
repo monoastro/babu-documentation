@@ -29,10 +29,6 @@ from html_engine import (
     TableCell,
 )
 
-# ═══════════════════════════════════════════════════════════════════
-#  REUSABLE STYLE TOKENS
-# ═══════════════════════════════════════════════════════════════════
-
 _TABLE_HEADER_CELL_STYLE = Style(
     background="#ffffff",
     border="1px solid #000000",
@@ -50,14 +46,7 @@ _TABLE_BODY_CELL_STYLE = Style(
 )
 
 
-# ═══════════════════════════════════════════════════════════════════
-#  DOCUMENT BUILDER
-# ═══════════════════════════════════════════════════════════════════
-
 def build_laalpurja(data: dict[str, Any]) -> Document:
-    """
-    Build a Land Ownership Registration Certificate (Laal Purja) document matching landOwnership.png.
-    """
     d = {
         "certificate_no": "",
         "district": "",
@@ -78,7 +67,6 @@ def build_laalpurja(data: dict[str, Any]) -> Document:
     }
     d.update(data)
 
-    # landscape orientation A4 layout
     doc = Document(
         "Land Ownership Registration Certificate",
         page_width="1200px",
@@ -86,7 +74,7 @@ def build_laalpurja(data: dict[str, Any]) -> Document:
         min_height="840px",
         background="#ffffff",
         border="1px solid #000000",
-        font_family="'Liberation Sans', 'Helvetica Neue', Arial, sans-serif",
+        font_family="'Times New Roman'",
         page_style=Style(
             padding="30px 40px",
             box_sizing="border-box",
