@@ -1,0 +1,20 @@
+Tasks
+Handwritten Nepali OCR Model(TrOCR finetune, Tesseract)
+Preprocessing engine(Camscanner jasto)
+OCR engine
+HTML Abstraction engine over html and css that allows for combination of elements for creation of html of every possible document 
+document specific Knowledge
+HTML Editor(User can verify, add and change stuff, add blocks like nepali text here for gibberish)
+Integration connection between engines especially the json output of ocr to html engine
+Documents grouping; all necessary documents + additional ko list
+
+
+segment anything model for document analysis
+baidu stuff
+Next task is Feel free to modify the engine code to generalize stuff as we go, remove redundancies, The vision i had was, the engine builds the document based on the data receives, programmatically building formats, because even citizenship has multiple formats, Laal purja has tables with undefined number of rows/number of rows in the table differs from document to document. Attached is the image of a translated laalpurja. And for image handling, using file paths is good, pdf export is necessary
+
+Tools to checkout
+LayoutParser
+DocLayout-YOLO
+https://github.com/clovaai/donut
+https://github.com/datalab-to/surya

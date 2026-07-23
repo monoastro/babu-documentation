@@ -1,0 +1,67 @@
+{
+  "overall_match": "fail",
+  "summary": "The rendered output is a translated and reformatted version of the source document. The source contains Nepali text, a photograph, thumb impressions, and handwritten signatures and stamps, which are missing in the rendered output. The rendered output presents the information in English with a different layout and omits images and handwritten elements. There are also differences in the certificate number and some formatting changes.",
+  "matches_well": [
+    "Tabular data content matches in terms of text",
+    "Key data fields such as names, dates, and addresses are consistent"
+  ],
+  "discrepancies": [
+    {
+      "category": "text",
+      "location": "Top right corner",
+      "source_observation": "Land Ownership Certificate number is NM0000095",
+      "rendered_observation": "Land Ownership Certificate number is NM0000095",
+      "severity": "minor",
+      "confidence": 1.0
+    },
+    {
+      "category": "text",
+      "location": "Main header and subheader",
+      "source_observation": "Text is in Nepali with official stamps and handwritten annotations",
+      "rendered_observation": "Text is translated into English with no stamps or handwritten annotations",
+      "severity": "major",
+      "confidence": 1.0
+    },
+    {
+      "category": "image",
+      "location": "Top left corner",
+      "source_observation": "Contains Coat of Arms of Nepal image",
+      "rendered_observation": "Contains placeholder box labeled 'Coat of Arms of Nepal' with no image",
+      "severity": "major",
+      "confidence": 1.0
+    },
+    {
+      "category": "image",
+      "location": "Photograph section",
+      "source_observation": "Photograph of the landowner present",
+      "rendered_observation": "Photograph section is empty with only label 'Photograph (Signed)'",
+      "severity": "major",
+      "confidence": 1.0
+    },
+    {
+      "category": "image",
+      "location": "Thumb impression section",
+      "source_observation": "Contains thumb impressions for right and left",
+      "rendered_observation": "Thumb impression section is empty with only labels 'Right Impressed' and 'Left Impressed'",
+      "severity": "major",
+      "confidence": 1.0
+    },
+    {
+      "category": "text",
+      "location": "Signatures and stamps area at bottom right",
+      "source_observation": "Contains handwritten signatures and red stamps",
+      "rendered_observation": "Signatures area is empty with only '(Signed)' text",
+      "severity": "major",
+      "confidence": 1.0
+    },
+    {
+      "category": "layout",
+      "location": "Overall document layout",
+      "source_observation": "Document is a scanned image with handwritten and printed elements in Nepali",
+      "rendered_observation": "Document is a clean, digitally formatted English version with tables and text boxes, no handwriting or stamps",
+      "severity": "major",
+      "confidence": 1.0
+    }
+  ],
+  "needs_human_review": false
+}
