@@ -1,0 +1,17 @@
+{
+  "project": "babu-documentation",
+  "root": "/home/moon/pragya/babu-documentation",
+  "graphify_version": "0.9.29",
+  "outputs": {
+    "graph_html": "/home/moon/pragya/babu-documentation/graphify-out/graph.html",
+    "graph_json": "/home/moon/pragya/babu-documentation/graphify-out/graph.json",
+    "graph_report": "/home/moon/pragya/babu-documentation/graphify-out/GRAPH_REPORT.md"
+  },
+  "stats": {
+    "files_scanned": 54,
+    "nodes": 374,
+    "edges": 872,
+    "hyperedges": 3,
+    "communities": 12
+  }
+}

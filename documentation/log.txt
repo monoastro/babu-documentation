@@ -1,0 +1,26 @@
+first make it work, then make it better
+
+better
+- Siamese comparison model
+
+
+perfect match
+{
+  "overall_match": "pass",
+  "summary": "The rendered output accurately captures all the data fields, values, and layout structure of the source document. All Nepali text values are preserved correctly, and placeholders for the photograph, coat of arms, and seal are correctly positioned and labeled. The English translations of field labels are appropriate and consistent. No discrepancies found.",
+  "matches_well": [
+    "All text values match exactly",
+    "Field labels are correctly translated and placed",
+    "Placeholders for photograph, coat of arms, and seal are correct",
+    "Layout and structure of the document is preserved"
+  ],
+  "discrepancies": [],
+  "needs_human_review": false
+}
+
+ideal patching prompt
+input document
+output document
+layout.py
+schema
+html_engine docs

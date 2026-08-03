@@ -1,0 +1,172 @@
+{
+  "type": "object",
+  "title": "ExtractionSchema",
+  "description": "Schema for structured data extraction from a Nepal Land Ownership Registration Certificate (Laal Purja)",
+  "properties": {
+    "certificate_no": {
+      "type": "string",
+      "description": "The Land Ownership Certificate number printed on the top-right of the document. Extract the full number exactly as printed, preserving digits, slashes, or hyphens. Return an empty string if absent."
+    },
+    "office_vdc": {
+      "type": "string",
+      "description": "The V.D.C. or Municipality name of the Land Revenue Office that issued the certificate, as printed in the header (e.g. 'Lagankhel')."
+    },
+    "office_district": {
+      "type": "string",
+      "description": "The district of the Land Revenue Office that issued the certificate, as printed in the header (e.g. 'Lalitpur')."
+    },
+    "owner_name": {
+      "type": "string",
+      "description": "Full legal name of the landowner exactly as printed. Return an empty string if the field is blank on the document."
+    },
+    "owner_district": {
+      "type": "string",
+      "description": "District component of the landowner's address exactly as printed."
+    },
+    "owner_vdc": {
+      "type": "string",
+      "description": "M.C./V.D.C. component of the landowner's address exactly as printed."
+    },
+    "owner_ward": {
+      "type": "string",
+      "description": "Ward number component of the landowner's address exactly as printed."
+    },
+    "husband_name": {
+      "type": "string",
+      "description": "Full name of the landowner's husband exactly as printed. Return an empty string if absent."
+    },
+    "father_in_law": {
+      "type": "string",
+      "description": "Full name of the landowner's father-in-law exactly as printed. Return an empty string if absent."
+    },
+    "citizenship_no": {
+      "type": "string",
+      "description": "Citizenship certificate number of the landowner exactly as printed, preserving all digits, slashes, and hyphens."
+    },
+    "issue_date": {
+      "type": "string",
+      "description": "The issued date of the certificate exactly as printed, including era suffix (e.g. '2007/02/16 A.D.')."
+    },
+    "issue_office": {
+      "type": "string",
+      "description": "Full name of the office that issued the certificate, exactly as printed (e.g. 'District Administration Office: Gorkha')."
+    },
+    "doc_id": {
+      "type": "string",
+      "description": "The small document identifier printed at the bottom-left of the certificate (e.g. '103mm002'). Return an empty string if absent."
+    },
+    "print_date": {
+      "type": "string",
+      "description": "The print date shown in the footer line (e.g. '2013/06/10'). Exclude any era suffix like 'A.D.'."
+    },
+    "plots": {
+      "type": "array",
+      "description": "List of land plot records from the certificate table. Each plot occupies two rows in the table.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "plot_no": {
+            "type": "string",
+            "description": "Prior Plot Number — the leftmost cell in the Evd. Symbol section, spanning two rows (e.g. '1433')."
+          },
+          "evd_no": {
+            "type": "string",
+            "description": "Evidence symbol number printed in the top sub-row of the 'Description of transaction' column (e.g. '3933')."
+          },
+          "evd_date": {
+            "type": "string",
+            "description": "Evidence symbol date printed in the top sub-row of the 'Description of transaction' column (e.g. '2013/06/10')."
+          },
+          "transaction_type": {
+            "type": "string",
+            "description": "Type of transaction printed in the bottom sub-row, spanning the two 'Description of transaction' columns (e.g. 'Resignation')."
+          },
+          "vdc": {
+            "type": "string",
+            "description": "District/V.D.C./M.C. of the plot, spanning both sub-rows (e.g. 'Sanagaun')."
+          },
+          "ward_top": {
+            "type": "string",
+            "description": "Ward number or map sheet number shown in the top sub-row (e.g. '8')."
+          },
+          "ward_bottom": {
+            "type": "string",
+            "description": "Ward number or map sheet number shown in the bottom sub-row (e.g. '8 ka')."
+          },
+          "plot_section": {
+            "type": "string",
+            "description": "Plot No./Section No. spanning both sub-rows (e.g. '1447')."
+          },
+          "desc_top": {
+            "type": "string",
+            "description": "Description of the land shown in the top sub-row (e.g. 'Residential land')."
+          },
+          "desc_bottom": {
+            "type": "string",
+            "description": "Description of the land shown in the bottom sub-row (e.g. 'Private land')."
+          },
+          "owner_share": {
+            "type": "string",
+            "description": "Land owner share on title, spanning both sub-rows (e.g. 'Sole ownership')."
+          },
+          "tenant": {
+            "type": "string",
+            "description": "Tenant's name, spanning both sub-rows (e.g. 'Landowner herself')."
+          },
+          "kind_top": {
+            "type": "string",
+            "description": "Kind of land or class, spanning both sub-rows (e.g. 'First class dry agricultural land')."
+          },
+          "area_local": {
+            "type": "string",
+            "description": "Area in local units (Ropani-Aana-Paisa-Daam) shown in the top sub-row (e.g. '0-2-2-2')."
+          },
+          "area_sqm": {
+            "type": "string",
+            "description": "Area in square metres shown in the bottom sub-row (e.g. '83.47')."
+          },
+          "register_page": {
+            "type": "string",
+            "description": "Register page number shown in the top sub-row (e.g. '2069')."
+          },
+          "register_serial": {
+            "type": "string",
+            "description": "Register serial number shown in the bottom sub-row (e.g. '3933')."
+          },
+          "remark": {
+            "type": "string",
+            "description": "Remark text spanning both sub-rows. Return an empty string if blank."
+          },
+          "signature": {
+            "type": "string",
+            "description": "Signature of the certifier spanning both sub-rows (e.g. '(Signed)')."
+          }
+        },
+        "required": [
+          "plot_no", "evd_no", "evd_date", "transaction_type",
+          "vdc", "ward_top", "ward_bottom", "plot_section",
+          "desc_top", "desc_bottom", "owner_share", "tenant",
+          "kind_top", "area_local", "area_sqm",
+          "register_page", "register_serial", "remark", "signature"
+        ]
+      }
+    }
+  },
+  "required": [
+    "certificate_no",
+    "office_vdc",
+    "office_district",
+    "owner_name",
+    "owner_district",
+    "owner_vdc",
+    "owner_ward",
+    "husband_name",
+    "father_in_law",
+    "citizenship_no",
+    "issue_date",
+    "issue_office",
+    "doc_id",
+    "print_date",
+    "plots"
+  ]
+}

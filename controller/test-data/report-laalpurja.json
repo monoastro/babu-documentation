@@ -1,0 +1,47 @@
+{
+  "overall_match": "fail",
+  "summary": "The rendered output has multiple discrepancies compared to the source document. The Land Ownership Certificate Number is incorrect (rendered: NM0000095 vs source: NM0000095 with a different number in the source image). The landowner's name in the rendered output is 'उमा देवी चोलागाई' but the source shows 'उमा देवी चोलागाई' which matches. The address, husband's name, father-in-law's name, citizenship number, and issued date are consistent. However, the table content in the rendered output is incomplete and missing several rows and columns present in the source. The photograph and thumb impression placeholders are correctly placed but the source has a photograph and thumb impressions visible. The signature placeholders are present but the source has handwritten signatures and stamps. The total area value in the rendered output is 4332.09, but the source shows 4332.09 which matches. Overall, the rendered output misses significant table data and some details from the source, leading to a fail.",
+  "matches_well": [
+    "Landowner's name",
+    "Address details",
+    "Husband's and Father-in-law's names",
+    "Citizenship number and issued date",
+    "Photograph and thumb impression placeholders",
+    "Total area value"
+  ],
+  "discrepancies": [
+    {
+      "category": "text",
+      "location": "Top right corner",
+      "source_observation": "Land Ownership Certificate Number: PF002728503 and NM0000095",
+      "rendered_observation": "Land Ownership Certificate Number: NM0000095",
+      "severity": "major",
+      "confidence": 0.9
+    },
+    {
+      "category": "table",
+      "location": "Main table with land details",
+      "source_observation": "Multiple rows with detailed land transaction data including prior plot numbers, transaction descriptions, district, ward, plot numbers, descriptions, land owner shares, tenant names, land types, areas, register page numbers, remarks, and certifier signatures.",
+      "rendered_observation": "Table contains only three rows with limited data and missing many columns and rows present in the source.",
+      "severity": "critical",
+      "confidence": 0.95
+    },
+    {
+      "category": "image",
+      "location": "Photograph and thumb impression area",
+      "source_observation": "Photograph of landowner and thumb impressions visible.",
+      "rendered_observation": "Placeholders for Photograph and Thumb Impression present instead of actual images.",
+      "severity": "minor",
+      "confidence": 0.95
+    },
+    {
+      "category": "text",
+      "location": "Signature area at bottom right",
+      "source_observation": "Handwritten signatures and stamps present.",
+      "rendered_observation": "Placeholder text '(Signed)' used instead of actual signatures and stamps.",
+      "severity": "minor",
+      "confidence": 0.95
+    }
+  ],
+  "needs_human_review": false
+}

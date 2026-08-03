@@ -1,0 +1,77 @@
+{
+  "overall_match": "fail",
+  "summary": "The rendered output preserves the general certificate layout, but several important data and representation issues remain: a top-right identifier is missing, the official ministry/department names are mistranslated, the transaction code values appear wrong, blank table cells are filled with “None,” and a prominent certifier signature/mark is omitted. Some source values, especially transaction codes and bottom-left footer text, are blurry enough to require human confirmation.",
+  "matches_well": [
+    "Overall logical structure is preserved: header, title, photograph/thumb areas, landowner details, property table, and footer sections are present.",
+    "Landowner name, husband’s name, citizenship number, issued date, issued office, and main address fields mostly match the source.",
+    "The three property rows, plot numbers, ward/map information, ownership type, tenant name, land class, and total area are generally represented in the correct table structure.",
+    "Use of placeholder boxes for coat of arms, photograph, thumb impressions, and signatures is generally appropriate in principle."
+  ],
+  "discrepancies": [
+    {
+      "category": "missing_content",
+      "location": "top-right identifier area",
+      "source_observation": "The source shows an additional identifier above it, “PF002728503” under the Nepali landowner/code number label, as well as “NM०००००९५” below.",
+      "rendered_observation": "Only shows “Land Ownership Certificate No.: NM0000095”.",
+      "severity": "major",
+      "confidence": 0.95
+    },
+    {
+      "category": "text",
+      "location": "main header, ministry/department lines",
+      "source_observation": "The source header reads “भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय” and “भूमि व्यवस्थापन तथा अभिलेख विभाग”, i.e. Land Management/Cooperatives/Poverty Alleviation ministry and Land Management/Archive department, not the rendered ministry/department names.",
+      "rendered_observation": "Header reads “Ministry of Land Reform and Management” and “Department of Land Reform and Management”.",
+      "severity": "major",
+      "confidence": 0.9
+    },
+    {
+      "category": "text",
+      "location": "table, evidence/transaction code cells for all three plot entries",
+      "source_observation": "The source appears to show a different code, likely “ML00000XY”/similar, not “ML00000088”. The scan is somewhat blurry, so this value needs confirmation.",
+      "rendered_observation": "Each transaction code is rendered as “ML00000088”.",
+      "severity": "major",
+      "confidence": 0.72
+    },
+    {
+      "category": "extra_content",
+      "location": "table, Register Page No. column",
+      "source_observation": "The corresponding cells in the source appear blank; no “None” value is printed.",
+      "rendered_observation": "The Register Page No. cells contain “None” for each entry.",
+      "severity": "major",
+      "confidence": 0.85
+    },
+    {
+      "category": "image",
+      "location": "right side of table, certifier/signature column",
+      "source_observation": "The source contains a prominent red handwritten signature/mark crossing the right-side certifier/signature area.",
+      "rendered_observation": "The certifier signature column is blank.",
+      "severity": "major",
+      "confidence": 0.9
+    },
+    {
+      "category": "image",
+      "location": "photo placeholder area, left side",
+      "source_observation": "The source photograph area is a wider landscape-oriented rectangle; the placeholder does not roughly match the source aspect/size.",
+      "rendered_observation": "Photograph placeholder is a tall, narrow portrait box.",
+      "severity": "minor",
+      "confidence": 0.8
+    },
+    {
+      "category": "text",
+      "location": "bottom-left footer area",
+      "source_observation": "The source includes additional bottom-left office/section text and a signature line; some of the printed/handwritten content is not represented beyond a generic signed placeholder.",
+      "rendered_observation": "Rendered as “Printing done by: (Signed).”",
+      "severity": "major",
+      "confidence": 0.75
+    },
+    {
+      "category": "text",
+      "location": "bottom center/right footer",
+      "source_observation": "The source uses Devanagari digits for the total “४३३२.०९” and does not clearly show an added “A.D.” marker near the date.",
+      "rendered_observation": "Total area is rendered as “4332.09” and print date includes “A.D.”",
+      "severity": "minor",
+      "confidence": 0.8
+    }
+  ],
+  "needs_human_review": true
+}

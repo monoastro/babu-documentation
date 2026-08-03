@@ -1,0 +1,14 @@
+{
+  "overall_match": "pass",
+  "summary": "The rendered output accurately captures all the data fields, values, and layout structure of the source document. All Nepali text values are preserved correctly, and placeholders for the photograph, coat of arms, and seal are correctly positioned and labeled. The English translations of the field labels are appropriate and consistent. No discrepancies found.",
+  "matches_well": [
+    "Government and office header",
+    "All personal data fields and values",
+    "Photograph placeholder",
+    "Coat of Arms placeholder",
+    "Round Office Seal placeholder",
+    "Field labels and values alignment and grouping"
+  ],
+  "discrepancies": [],
+  "needs_human_review": false
+}

@@ -1,0 +1,45 @@
+{
+  "overall_match": "fail",
+  "summary": "The rendered output misses a significant portion of the source document's content, including multiple rows of the table, signatures, handwritten text, and the photograph and thumb impression placeholders are not present. The data in the rendered table is incomplete compared to the source. The header and some fields are correctly captured, but the majority of the detailed data and structure is missing.",
+  "matches_well": [
+    "Header text including Government of Nepal and Ministry details",
+    "Land Ownership Certificate number",
+    "Name of landowner and address details",
+    "Table headers and first few rows of the table"
+  ],
+  "discrepancies": [
+    {
+      "category": "missing_content",
+      "location": "Bottom half of the document",
+      "source_observation": "Multiple rows of the table with detailed land ownership data, handwritten signatures, stamps, and notes are present.",
+      "rendered_observation": "Only three rows of the table are present, and all handwritten signatures, stamps, and notes are missing.",
+      "severity": "critical",
+      "confidence": 1.0
+    },
+    {
+      "category": "image",
+      "location": "Top-left corner",
+      "source_observation": "Photograph of the landowner and thumb impression boxes are present.",
+      "rendered_observation": "Photograph and thumb impression replaced by a single placeholder box labeled 'Coat of Arms of Nepal', which is incorrect.",
+      "severity": "major",
+      "confidence": 1.0
+    },
+    {
+      "category": "missing_content",
+      "location": "Top-left corner",
+      "source_observation": "Photograph and thumb impression boxes with labels and images.",
+      "rendered_observation": "No placeholders for Photograph and Thumb Impression; replaced incorrectly by Coat of Arms placeholder.",
+      "severity": "major",
+      "confidence": 1.0
+    },
+    {
+      "category": "text",
+      "location": "Table content",
+      "source_observation": "Multiple rows with detailed transaction descriptions, plot numbers, areas, and remarks.",
+      "rendered_observation": "Only three rows are present, missing many rows from the source.",
+      "severity": "critical",
+      "confidence": 1.0
+    }
+  ],
+  "needs_human_review": false
+}

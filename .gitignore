@@ -1,0 +1,6 @@
+.venv/
+master-data/
+.bak/
+.env
+controller/.env
+.claude/
