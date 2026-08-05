@@ -4,8 +4,8 @@
   "description": "Schema for structured data extraction from a Nepal Land Ownership Registration Certificate (Laal Purja)",
   "properties": {
     "certificate_no": {
-      "type": "string",
-      "description": "The Land Ownership Certificate number printed on the top-right of the document. Extract the full number exactly as printed, preserving digits, slashes, or hyphens. Return an empty string if absent."
+      "type": "string加_field ? no, modify_field. Need valid action only. Oops ensure final JSON valid. I wrote malformed. Need produce complete JSON. Also field_type in schema patch for modify? format includes field_type required? properties not required but should include. For modify include string. Need be careful. Final with schema patches. Use ",
+      "description": "The Land Ownership Certificate number printed in the top-right header area, usually beginning with the prefix 'NM'. Extract only this certificate/serial value exactly as printed, preserving the prefix and all digits. Do not confuse it with the separate PF identification number printed nearby. For this document, carefully distinguish characters such as 1 and 5 and return the exact visible value, e.g. 'NM0000091' if that is what is printed. Return an empty string if the certificate number is absent."
     },
     "office_vdc": {
       "type": "string",
@@ -61,7 +61,7 @@
     },
     "plots": {
       "type": "array",
-      "description": "Extract all rows of land ownership details from the certificate table, including handwritten annotations and signatures. Each plot occupies two rows in the table. Ensure the OCR captures all rows present in the source document, not just the first three, including any handwritten text or annotations within the table cells.",
+      "description": "List of land plot records from the certificate table. Each plot occupies two rows in the table.",
       "items": {
         "type": "object",
         "properties": {
@@ -165,17 +165,9 @@
         ]
       }
     },
-    "photograph": {
+    "pf_identification_no": {
       "type": "string",
-      "description": "Extract the photograph of the landowner located on the left side below the header. Capture the image as a base64-encoded string or a direct image capture from the document. If no photograph is present, return an empty string."
-    },
-    "thumb_impressions": {
-      "type": "string",
-      "description": "Extract the thumb impressions of the landowner located below the photograph on the left side below the header. Capture the image(s) as base64-encoded string(s) or direct image capture(s). If no thumb impressions are present, return an empty string."
-    },
-    "handwritten_signatures": {
-      "type": "string",
-      "description": "Extract all handwritten signatures and stamps located at the bottom right corner of the document. Capture the signatures and stamps as base64-encoded images or direct image captures. If no signatures or stamps are present, return an empty string."
+      "description": "..."
     }
   },
   "required": [

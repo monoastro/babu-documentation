@@ -13,28 +13,28 @@ from pathlib import Path
 from controller.models import SchemaPatch
 
 
+"""Read *schema_path*, apply *patches*, write the result.
+
+Parameters
+----------
+schema_path:
+    Path to the original JSON schema.
+patches:
+    Ordered list of ``SchemaPatch`` operations.
+output_path:
+    Where to write the patched schema.  Defaults to
+    ``<stem>_patched.json`` alongside the original.
+
+Returns
+-------
+Path to the written patched schema.
+"""
 def apply_patches(
     schema_path: Path,
     patches: list[SchemaPatch],
     *,
     output_path: Path | None = None,
 ) -> Path:
-    """Read *schema_path*, apply *patches*, write the result.
-
-    Parameters
-    ----------
-    schema_path:
-        Path to the original JSON schema.
-    patches:
-        Ordered list of ``SchemaPatch`` operations.
-    output_path:
-        Where to write the patched schema.  Defaults to
-        ``<stem>_patched.json`` alongside the original.
-
-    Returns
-    -------
-    Path to the written patched schema.
-    """
     with open(schema_path, encoding="utf-8") as f:
         schema = json.load(f)
 

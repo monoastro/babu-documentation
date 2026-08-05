@@ -81,16 +81,15 @@ LAYOUT SECTIONS (use these as target_section values):
 """
 
 
-# ── Stage 1: Analyze ─────────────────────────────────────────────────────
 
+        """Send the verification report + schema to the LLM and get a RepairPlan.
+
+    This stage does NOT use vision — only text.  It is fast and cheap.
+    """
 def analyze(
     report: dict,
     schema_path: Path,
 ) -> RepairPlan:
-    """Send the verification report + schema to the LLM and get a RepairPlan.
-
-    This stage does NOT use vision — only text.  It is fast and cheap.
-    """
     load_dotenv()
     if not os.getenv("OPENAI_API_KEY"):
         raise RuntimeError(
@@ -113,7 +112,6 @@ def analyze(
     return planner.invoke([SystemMessage(ANALYSIS_PROMPT), message])
 
 
-# ── Stage 2: Repair ──────────────────────────────────────────────────────
 
 def repair(
     plan: RepairPlan,
@@ -133,19 +131,19 @@ def repair(
     # 1. Patch the extraction schema (if there are schema patches)
     if plan.schema_patches:
         patched_schema = apply_patches(schema_path, plan.schema_patches)
-        print(f"  ✓ Patched schema written to {patched_schema}")
+        print(f"Patched schema written to {patched_schema}")
     else:
         patched_schema = schema_path
 
     # 2. Re-extract data from the source image with the (possibly patched) schema
     if plan.needs_reextraction:
-        print(f"  ⟳ Re-extracting from {image_path} …")
+        print(f"Re-extracting from {image_path} …")
         extracted, schema = extract(
             image_path=str(image_path),
             schema_path=str(patched_schema),
         )
         data = build_data(extracted, schema)
-        print(f"  ✓ Extraction complete — {len(data)} fields")
+        print(f"Extraction complete — {len(data)} fields")
     else:
         # No re-extraction needed — load existing extracted data
         # (fall back to extracting with the original schema)
@@ -174,14 +172,13 @@ def repair(
             save_as=f"{document_type}_repaired.png",
             size=(1300, 1100),
         )
-        print(f"  ✓ Saved repaired PNG  to {png_path}")
+        print(f"Saved repaired PNG  to {png_path}")
     except Exception as exc:
-        print(f"  ⚠ PNG render skipped: {exc}")
+        print(f"PNG render skipped: {exc}")
 
     return html_path
 
 
-# ── CLI ───────────────────────────────────────────────────────────────────
 
 def main() -> None:
     parser = argparse.ArgumentParser(
