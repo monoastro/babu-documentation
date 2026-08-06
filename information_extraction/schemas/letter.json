@@ -1,0 +1,60 @@
+{
+  "type": "object",
+  "title": "ExtractionSchema",
+  "description": "Schema for structured data extraction for Tri-Chandra Multiple Campus official letter (English header, Nepali body)",
+  "properties": {
+    "ref_no": {
+      "type": "string",
+      "description": "Official reference number (सङ्ख्या/Ref. No.) at the top left. Extract exactly as printed including slashes, dashes, digits."
+    },
+    "date": {
+      "type": "string",
+      "description": "Official date (मिति) as printed at upper right in Nepali (Bikram Samvat), exactly as shown."
+    },
+    "recipient": {
+      "type": "string",
+      "description": "Full recipient line in the first address block under the header (including श्री and department/designation)—everything above त्रि–चन्द्र ब–क्याम्पस in the first block."
+    },
+    "subject": {
+      "type": "string",
+      "description": "The subject line (विषय:- ...), preserving full text after the colon and all punctuation, in Nepali."
+    },
+    "body": {
+      "type": "string",
+      "description": "Main letter body text after the subject, up to the lists of बोधार्थ. Preserve paragraphing if present; else, as one block. In Nepali."
+    },
+    "signed_name": {
+      "type": "string",
+      "description": "Printed official's name below the signature placeholder – e.g. प्रा. डा. नीलम श्रेष्ठ प्रधान."
+    },
+    "position": {
+      "type": "string",
+      "description": "Printed official designation below the name — typically 'क्याम्पस प्रमुख'"
+    },
+    "signature_placeholder": {
+      "type": "string",
+      "description": "Always '(Signed)' exactly, since signature is handwritten and replaced with a placeholder."
+    },
+    "seal_placeholder": {
+      "type": "string",
+      "description": "Always 'Round Office Seal' exactly. Positioned over stamp impression right of header."
+    },
+    "bodharth_list": {
+      "type": "array",
+      "description": "List of all Nepali बोधार्थ:/CC list/notification recipients, one string per item, as printed in the bottom section with enumeration.",
+      "items": { "type": "string" }
+    }
+  },
+  "required": [
+    "ref_no",
+    "date",
+    "recipient",
+    "subject",
+    "body",
+    "signed_name",
+    "position",
+    "signature_placeholder",
+    "seal_placeholder",
+    "bodharth_list"
+  ]
+}
