@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 from typing import TYPE_CHECKING
+
+from html_engine.monochrome import normalize_html
+
 if TYPE_CHECKING:
     from html_engine.document import Document
 
@@ -13,6 +16,11 @@ def render(doc: Document) -> str:
     - DOCTYPE, charset, viewport meta tags
     - A ``<style>`` block with body and page-wrapper rules
     - A ``.page`` wrapper div containing all rendered components
+
+    Colours are normalized to black-and-white as the last step, which covers
+    ``extra_css``, ``Document(background=...)``, the print rules, and any
+    style a component hardcoded into its own ``to_html()``. Text content is
+    never touched.
     """
     body_css_parts = [ "margin:0", "background:#ffffff", f"font-family:{doc.font_family}", ]
     if doc.body_style:
@@ -29,7 +37,7 @@ def render(doc: Document) -> str:
         f"background:{doc.background}",
         "position:relative",
         f"border:{doc.border}",
-        #"box-shadow:0 0 20px rgba(0,0,0,0.2)",
+        #"box-shadow:0 0 20px #000000",
     ]
     if doc.page_height != "auto":
         page_css_parts.append("overflow:hidden")
@@ -54,7 +62,7 @@ def render(doc: Document) -> str:
                 content: "Page " counter(page) " of " counter(pages);
                 font-family: inherit;
                 font-size: 12px;
-                color: #666;
+                color: #000000;
             }
         }
         """
@@ -65,7 +73,7 @@ def render(doc: Document) -> str:
         .page {{
             margin: 0 !important;
             box-shadow: none !important;
-            border: 2px solid #444 !important;
+            border: 2px solid #000000 !important;
             page-break-after: always;
         }}
         .no-print {{ display: none !important; }}
@@ -73,7 +81,8 @@ def render(doc: Document) -> str:
     {page_numbers_css}
     """
 
-    return f"""<!DOCTYPE html>
+    return normalize_html(
+        f"""<!DOCTYPE html>
 <html lang="{doc.lang}">
 <head>
 <meta charset="UTF-8">
@@ -92,3 +101,4 @@ def render(doc: Document) -> str:
 </div>
 </body>
 </html>"""
+    )

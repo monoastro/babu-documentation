@@ -16,8 +16,8 @@ _FS   = "13px"
 _FONT = '"Times New Roman", Times, serif'
 _BORDER = "1px solid #000000"
 _EDITABLE_CSS = """
-[contenteditable]:hover { outline: 2px dashed #4a90d9; cursor: text; }
-[contenteditable]:focus { outline: 2px solid #4a90d9; background: #fffde7; }
+[contenteditable]:hover { outline: 2px dashed #000000; cursor: text; }
+[contenteditable]:focus { outline: 2px solid #000000; background: #ffffff; }
 """
 
 _TH = Style(
@@ -66,8 +66,8 @@ def build_laalpurja(data: dict[str, Any]) -> Document:
         Text("Land Ownership Certificate No.:", style=Style(font_size="12px")),
         Text(d.get("certificate_no", ""), style=Style(font_size="13px", font_weight="bold", margin_top="2px"), attrs=_ea("certificate_no")),
         Spacer(height="5px"),
-        Text("Preprinted Identifier:", style=Style(font_size="11px", color="#333")),
-        Text(d.get("supplementary_id", ""), style=Style(font_size="12px", font_weight="bold", margin_top="1px", color="#333"), attrs=_ea("supplementary_id")),
+        Text("Preprinted Identifier:", style=Style(font_size="11px", color="#000000")),
+        Text(d.get("supplementary_id", ""), style=Style(font_size="12px", font_weight="bold", margin_top="1px", color="#000000"), attrs=_ea("supplementary_id")),
         style=Style(text_align="left", min_width="170px", align_self="flex-start")
     )
     coat_box = Div(
@@ -180,7 +180,7 @@ def build_laalpurja(data: dict[str, Any]) -> Document:
         ))
     doc.add(Table(thead_rows=thead, children=body_rows))
     doc.add(FlexRow(Text(f"Total Area (Sq.m.)  {total_sqm:.2f}",style=Style(font_size=_FS, font_weight="bold")),style=Style(justify_content="flex-end", width="100%", margin_top="6px")))
-    if d.get("doc_id"): doc.add(Spacer(height="4px")); doc.add(Text(d["doc_id"], style=Style(font_size="10px", color="#555")))
+    if d.get("doc_id"): doc.add(Spacer(height="4px")); doc.add(Text(d["doc_id"], style=Style(font_size="10px", color="#000000")))
     doc.add(Spacer(height="10px"))
     # Footer: checked-by date
     def _footer_item(bold_label: str, value: str) -> FlexRow:

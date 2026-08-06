@@ -226,10 +226,10 @@ class Card(Component):
 
     _default_style = Style(
         background="#ffffff",
-        border="1px solid #e0e0e0",
+        border="1px solid #000000",
         border_radius="8px",
         padding="20px",
-        box_shadow="0 4px 6px rgba(0, 0, 0, 0.05)",
+        box_shadow="none",
         margin_bottom="20px",
     )
 

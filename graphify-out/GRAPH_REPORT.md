@@ -1,37 +1,38 @@
 # Graph Report - babu-documentation  (2026-08-06)
 
 ## Corpus Check
-- 49 files · ~559,557 words
+- 55 files · ~585,950 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 527 nodes · 1010 edges · 36 communities (22 shown, 14 thin omitted)
-- Extraction: 90% EXTRACTED · 10% INFERRED · 1% AMBIGUOUS · INFERRED: 97 edges (avg confidence: 0.65)
+- 561 nodes · 1104 edges · 37 communities (23 shown, 14 thin omitted)
+- Extraction: 90% EXTRACTED · 9% INFERRED · 1% AMBIGUOUS · INFERRED: 98 edges (avg confidence: 0.65)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e94999bd`
+- Built from commit: `020cfda6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - pipeline.py
-- components/__init__.py
+- render_png
 - Editable Nepali citizenship certificate (romanized test render)
 - Component
 - Land Ownership Registration Certificate (Laalpurja)
-- html_engine/__init__.py
+- components/__init__.py
 - Nepali Citizenship Certificate Template (canonical static render)
 - Laalpurja certificate — editable master template
-- Style
 - "First make it work, then make it better"
 - Laalpurja Base Render (output/png)
+- TableCell
 - LangGraph controller
+- html_engine/__init__.py
 - list.py
+- Image
 - rag_engine.py
 - python-dotenv dependency
-- spacer.py
-- .to_css
+- Style
 - ._render_children
 - .__add__
 - route
@@ -50,16 +51,16 @@
 - pydantic dependency
 
 ## God Nodes (most connected - your core abstractions)
-1. `Style` - 80 edges
+1. `Style` - 84 edges
 2. `Component` - 62 edges
 3. `build_laalpurja()` - 23 edges
 4. `build_citizenship()` - 18 edges
-5. `analyze_and_repair()` - 16 edges
-6. `LabelValue` - 15 edges
-7. `generate_resources()` - 14 edges
-8. `digitize()` - 14 edges
-9. `TableCell` - 14 edges
-10. `Document` - 14 edges
+5. `Document` - 18 edges
+6. `LabelValue` - 17 edges
+7. `Text` - 17 edges
+8. `analyze_and_repair()` - 16 edges
+9. `build_letter()` - 15 edges
+10. `Div` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `LangGraph controller` --references--> `langgraph dependency`  [INFERRED]
@@ -88,27 +89,27 @@
 - **Ground-Truth Manual Capture vs Pipeline-Generated Render Comparison Loop** — output_png_manual_laal_screenshot, output_png_manual_laal_screenshot_groundtruthbaseline, output_png_output, output_png_output_htmltopngrenderstage, output_png_output_trailingwhitespaceartifact [INFERRED 0.75]
 - **Citizenship Identity Field Family: Personal Details, Parentage, Spouse and Bikram Sambat Dates in Devanagari** — output_png_output_personaldetailsgrid, output_png_output_parentageblock, output_png_output_spouseblock, output_png_output_bikramsambatdatefields, output_png_output_devanagarivaluerendering, output_png_output_nullvaluerenderingartifact [EXTRACTED 1.00]
 
-## Communities (36 total, 14 thin omitted)
+## Communities (37 total, 14 thin omitted)
 
 ### Community 0 - "pipeline.py"
-Cohesion: 0.46
+Cohesion: 0.50
 Nodes (5): build_data(), extract(), load_schema(), build_document(), digitize_document()
 
-### Community 1 - "components/__init__.py"
-Cohesion: 0.07
-Nodes (41): _address_block(), build_citizenship(), _ea(), field_row(), multi_row(), Any, main(), build_laalpurja() (+33 more)
+### Community 1 - "render_png"
+Cohesion: 0.36
+Nodes (7): _crop_to_page(), _page_metrics(), Path, Read the declared ``.page`` width and height out of rendered HTML. Returns…, Crop a rendered PNG down to the page itself. The ``.page`` wrapper carries a…, Render *html_path* to ``output_dir/save_as``. Parameters: size: Explicit…, render_png()
 
 ### Community 3 - "Component"
-Cohesion: 0.09
-Nodes (15): Component, Base class for all renderable document components. Parameters: style: Optional…, Append one or more child components. Returns self for chaining., Build the HTML attribute string for this element. Combines ``css_class``,…, AbsoluteBox, Card, Div, Grid (+7 more)
+Cohesion: 0.13
+Nodes (10): ABC, Component, Base class for all renderable document components. Parameters: style: Optional…, Append one or more child components. Returns self for chaining., Card, Grid, GridItem, CSS Grid container. Parameters: columns: Grid template columns (e.g. 12 or… (+2 more)
 
 ### Community 4 - "Land Ownership Registration Certificate (Laalpurja)"
 Cohesion: 0.09
 Nodes (31): Manual Laalpurja Screenshot (Reference Capture), Photograph and Right/Left Thumb Impression Cells, Land Ownership Certificate No. Field (4915149), Coat of Arms Placeholder Box, Fully English-Translated Field Labels, Footer Attestation Region (Printing done by / Print Date / Checked by), Ground-Truth Reference Baseline for Generated Renders, Laalpurja Header Region (Government of Nepal / Ministry of Land Reform) (+23 more)
 
-### Community 7 - "html_engine/__init__.py"
-Cohesion: 0.12
-Nodes (18): ABC, Abstract base class for all HTML Document Engine components. Every renderable…, Image component for the HTML Document Engine., Table components: Table, TableRow, TableCell. Supports both simple table…, Document, Render a Document class to a full HTML string. The output is a self-contained…, render(), em() (+10 more)
+### Community 5 - "components/__init__.py"
+Cohesion: 0.07
+Nodes (48): _address_block(), build_citizenship(), _ea(), field_row(), multi_row(), Any, main(), build_laalpurja() (+40 more)
 
 ### Community 8 - "Nepali Citizenship Certificate Template (canonical static render)"
 Cohesion: 0.10
@@ -118,33 +119,37 @@ Nodes (24): आदित्य जोशी (Aditya Joshi) - certificate holder,
 Cohesion: 0.11
 Nodes (28): Land Ownership Registration Certificate (laal.html rendering), Certificate identifiers: Certificate No. NM0000095, Evd. no. ML-series, B.S. dates २०८२/०४/१४, total area 4332.09 sq.m across 3 plots, Citizenship issuing office: जिल्ला प्रशासन कार्यालय, काठमाण्डौ, Nepali land vocabulary: आबादी/आवादी (cultivated), रैकर निजी (raikar private), एकलौटी (sole title), भिट/पाखो/बारी दोयम (land class), रोपनी area units, Landowner entity: उमा देवी चौलागाई (Uma Devi Chaulagain), Issuing authority: Land Revenue Office, साखु, काठमाण्डौ (Dept. of Land Reform and Management), 'None' literal artifact leaking into Register Page No./serial and transaction cells (unbound Python None serialized into HTML), Page style system: .page 1200px fixed-width white sheet, Times New Roman serif, 1px black borders, inline flexbox layout (+20 more)
 
-### Community 10 - "Style"
-Cohesion: 0.11
-Nodes (13): Image, Renders an ``<img>`` element. Parameters: src: Image source — a URL, file path,…, Resolve the image source, optionally embedding as base64., Link, Paragraph, Text components: Text, Heading, Paragraph, Link., Escape hatch: renders arbitrary HTML verbatim. Use sparingly — this bypasses…, Renders an anchor element ``<a>``. Parameters: content: The text content or… (+5 more)
-
 ### Community 13 - "Laalpurja Base Render (output/png)"
 Cohesion: 0.15
 Nodes (20): Certificate Number Field (4915149), Footer Region: Total Area, Print Date, Signatures, Header Region: Government of Nepal / Land Revenue Office, Identity Region: Photograph, Thumb Impression, Landowner Details, Latin-Script Transliterated Field Data, PNG Rasterization Output Stage (output/png directory), Laalpurja Base Render (output/png), Repaired Certificate Number Field (NM0000095) (+12 more)
+
+### Community 14 - "TableCell"
+Cohesion: 0.24
+Nodes (7): Table components: Table, TableRow, TableCell. Supports both simple table…, A full ``<table>`` element. Can be built from: - Explicit ``TableRow`` objects…, A single table cell (``<td>`` or ``<th>``). Parameters: content: Cell content —…, A table row (``<tr>``) containing one or more cells. Parameters: cells:…, Table, TableCell, TableRow
 
 ### Community 15 - "LangGraph controller"
 Cohesion: 0.05
 Nodes (40): Adding a new document type, Arbitrary HTML attributes (`attrs`), Architecture, Babu Document Digitization: Technical Documentation, Component reference, Contenteditable output, Document builders, Future work (+32 more)
 
+### Community 16 - "html_engine/__init__.py"
+Cohesion: 0.05
+Nodes (45): Abstract base class for all HTML Document Engine components. Every renderable…, Image component for the HTML Document Engine., HorizontalRule, Spacer and divider components., Horizontal rule (``<hr>``) divider. Parameters: style: Override styles (color,…, Link, Text components: Text, Heading, Paragraph, Link., Renders an anchor element ``<a>``. Parameters: content: The text content or… (+37 more)
+
 ### Community 17 - "list.py"
 Cohesion: 0.20
 Nodes (7): ListItem, OrderedList, List components: ListItem, UnorderedList, OrderedList., Renders a list item ``<li>``. Parameters: content: String content or nested…, Renders an unordered list ``<ul>``. Parameters: items: List items — can be…, Renders an ordered list ``<ol>``. Parameters: items: List items — can be…, UnorderedList
 
+### Community 19 - "Image"
+Cohesion: 0.40
+Nodes (3): Image, Renders an ``<img>`` element. Parameters: src: Image source — a URL, file path,…, Resolve the image source, optionally embedding as base64.
+
 ### Community 20 - "rag_engine.py"
-Cohesion: 0.10
-Nodes (37): _tool_query_context(), build_chunks(), build_index(), Chunk, chunk_file(), chunk_json_schema(), chunk_markdown(), chunk_python() (+29 more)
+Cohesion: 0.11
+Nodes (34): build_chunks(), build_index(), Chunk, chunk_file(), chunk_json_schema(), chunk_markdown(), chunk_python(), _embed() (+26 more)
 
-### Community 26 - "spacer.py"
-Cohesion: 0.20
-Nodes (5): HorizontalRule, PageBreak, Spacer and divider components., Horizontal rule (``<hr>``) divider. Parameters: style: Override styles (color,…, Renders a page break for print media.
-
-### Community 27 - ".to_css"
-Cohesion: 0.33
-Nodes (3): Convert a Python attribute name to its CSS property equivalent., Serialize all non-None attributes into a CSS inline style string. Returns: A…, Return a full ``style="..."`` HTML attribute string, or an empty string if…
+### Community 26 - "Style"
+Cohesion: 0.12
+Nodes (8): Build the HTML attribute string for this element. Combines ``css_class``,…, PageBreak, Renders a page break for print media., Paragraph, Block paragraph element rendered as ``<p>``. Parameters: content: The paragraph…, Immutable-ish style descriptor that maps 1:1 to CSS properties. Any attribute…, Return a copy of this Style with specific fields overridden. Usage:: base =…, Style
 
 ### Community 31 - "route"
 Cohesion: 0.67
@@ -152,7 +157,7 @@ Nodes (3): route, index(), process()
 
 ### Community 39 - "architect.py"
 Cohesion: 0.05
-Nodes (76): analyze_and_repair(), _build_system_prompt(), current_layout_path(), _dispatch_tool(), generate_resources(), _image(), _load_rules(), _log_call() (+68 more)
+Nodes (77): analyze_and_repair(), _build_system_prompt(), current_layout_path(), _dispatch_tool(), generate_resources(), _image(), _load_rules(), _log_call() (+69 more)
 
 ### Community 40 - "models.py"
 Cohesion: 0.14

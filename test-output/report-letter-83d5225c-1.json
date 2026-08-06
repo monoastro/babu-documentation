@@ -1,0 +1,103 @@
+{
+  "overall_match": "fail",
+  "summary": "The rendered output captures the main letter body, date, signer, and most cc text, but it omits important visual/header elements, the footer, part of the recipient block, and the stamp under the signature. The reference number is also incorrectly transcribed. Overall it does not faithfully reproduce the source document.",
+  "matches_well": [
+    "Main campus name and university header text are largely represented.",
+    "Phone number “+977-014244047” is present.",
+    "Date “२०८१/०८/२६” matches the source value aside from separator/label formatting.",
+    "Subject text and main body text are mostly accurately transcribed.",
+    "Signer name “प्रा. डा. नीलम श्रेष्ठ प्रधान” and title “क्याम्पस प्रमुख” are present.",
+    "The three cc recipients are mostly present, despite formatting and duplicate numbering issues."
+  ],
+  "discrepancies": [
+    {
+      "category": "image",
+      "location": "top-left header",
+      "source_observation": "A colored triangular Tribhuvan University/Tri-Chandra campus logo appears at the top-left.",
+      "rendered_observation": "No Tri-Chandra/TU triangular logo placeholder is shown; only small typed university text appears.",
+      "severity": "major",
+      "confidence": 0.98
+    },
+    {
+      "category": "image",
+      "location": "top-right header",
+      "source_observation": "A QR code appears below the phone number at the top-right.",
+      "rendered_observation": "The QR code is missing and no placeholder is provided.",
+      "severity": "major",
+      "confidence": 0.98
+    },
+    {
+      "category": "text",
+      "location": "Ref. No. field",
+      "source_observation": "Ref. No. appears as handwritten “८९६ / ०८१-०८२”.",
+      "rendered_observation": "Ref. No. is rendered as approximately “८६६ २०८१-०८२”.",
+      "severity": "major",
+      "confidence": 0.85
+    },
+    {
+      "category": "missing_content",
+      "location": "recipient block",
+      "source_observation": "Recipient block contains three lines: “श्री यसोदा कुमारी भट्ट जोशी”, “समाजशास्त्र विभाग”, and “त्रि-चन्द्र बहुमुखी क्याम्पस ।”",
+      "rendered_observation": "Recipient is rendered only as “श्री यसोदा कुमारी भट्ट जोशी समाजशास्त्र विभाग”.",
+      "severity": "major",
+      "confidence": 0.95
+    },
+    {
+      "category": "layout",
+      "location": "subject line",
+      "source_observation": "Subject is centered and underlined with the label “विषय:-” before the subject text.",
+      "rendered_observation": "Subject appears left-aligned under an English “Subject:” label.",
+      "severity": "minor",
+      "confidence": 0.9
+    },
+    {
+      "category": "image",
+      "location": "upper center seal",
+      "source_observation": "The round office seal is centered lower, overlapping the establishment line and upper body/header area.",
+      "rendered_observation": "A large circular placeholder labeled “Round Office Seal” is placed high/right over the campus title.",
+      "severity": "minor",
+      "confidence": 0.9
+    },
+    {
+      "category": "missing_content",
+      "location": "signature/stamp area, right side",
+      "source_observation": "Below the signature and title there is a purple official stamp reading “क्याम्पस प्रमुख / त्रि-चन्द्र बहुमुखी क्याम्पस”.",
+      "rendered_observation": "Signature placeholder, name, and title are present, but the purple campus-chief stamp below the signature is missing.",
+      "severity": "major",
+      "confidence": 0.95
+    },
+    {
+      "category": "extra_content",
+      "location": "बोधार्थ/cc list",
+      "source_observation": "The cc list uses only Nepali numbering: “१)”, “२)”, “३)”.",
+      "rendered_observation": "Each item has duplicated numbering such as “1) १)”, “2) २)”, and “3) ३)”.",
+      "severity": "minor",
+      "confidence": 0.9
+    },
+    {
+      "category": "layout",
+      "location": "बोधार्थ/cc list",
+      "source_observation": "Each cc item is formatted across multiple lines, with department/branch and campus on separate lines.",
+      "rendered_observation": "The cc items are compressed into single lines.",
+      "severity": "minor",
+      "confidence": 0.9
+    },
+    {
+      "category": "missing_content",
+      "location": "footer",
+      "source_observation": "Footer contains “Email: info@trc.tu.edu.np” at bottom-left and “Website: https://trc.tu.edu.np” at bottom-right, separated by a red horizontal line.",
+      "rendered_observation": "Footer email and website are absent.",
+      "severity": "major",
+      "confidence": 0.95
+    },
+    {
+      "category": "missing_content",
+      "location": "page background",
+      "source_observation": "A pale large central building watermark appears behind the letter body.",
+      "rendered_observation": "No watermark or placeholder for the central building image is present.",
+      "severity": "minor",
+      "confidence": 0.85
+    }
+  ],
+  "needs_human_review": false
+}

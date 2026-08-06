@@ -36,7 +36,7 @@ class HorizontalRule(Component):
 
     _default_style = Style(
         border="none",
-        border_top="1px solid #999",
+        border_top="1px solid #000000",
         margin="10px 0",
     )
 

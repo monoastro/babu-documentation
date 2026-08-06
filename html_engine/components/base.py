@@ -73,6 +73,12 @@ class Component(ABC):
                 parts.append(attr.strip())
 
         for key, val in self.attrs.items():
+            # A raw style attribute bypasses Style.to_css() entirely, so it
+            # needs normalizing here too — see html_engine.monochrome.
+            if key.strip().lower() == "style":
+                from html_engine.monochrome import normalize_declarations
+
+                val = normalize_declarations(val)
             parts.append(f'{key}="{val}"')
 
         return (" " + " ".join(parts)) if parts else ""

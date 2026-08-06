@@ -143,9 +143,15 @@ class Style:
         """
         Serialize all non-None attributes into a CSS inline style string.
 
+        Colours are normalized to black-and-white on the way out — see
+        ``html_engine.monochrome``. This is the ordinary enforcement path;
+        ``raw`` is normalized too, so the escape hatch cannot smuggle colour.
+
         Returns:
             A string like ``"font-weight:bold;font-size:28px;"``
         """
+        from html_engine.monochrome import normalize_value
+
         parts: list[str] = []
         for f in fields(self):
             if f.name == "raw":
@@ -153,9 +159,11 @@ class Style:
             value = getattr(self, f.name)
             if value is not None:
                 css_prop = self._attr_to_css_property(f.name)
-                parts.append(f"{css_prop}:{value}")
+                parts.append(f"{css_prop}:{normalize_value(css_prop, str(value))}")
         if self.raw:
-            parts.append(self.raw.rstrip(";"))
+            from html_engine.monochrome import normalize_declarations
+
+            parts.append(normalize_declarations(self.raw.rstrip(";")))
         return ";".join(parts)
 
     def to_attr(self) -> str:
@@ -188,7 +196,7 @@ class Style:
 
         Usage::
 
-            base = Style(font_size="16px", color="#333")
+            base = Style(font_size="16px", color="#000000")
             header = base.clone(font_size="28px", font_weight="bold")
         """
         kwargs = {}

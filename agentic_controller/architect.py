@@ -412,6 +412,13 @@ html_engine Document -> HTML -> headless-Chrome PNG -> vision verification.
   breaks it.
 - **Guard against None.** OCR returns absent fields as None. Convert to "" before
   rendering — a literal "None" in the output is a critical defect.
+- **Output is black and white.** Use only `#000000` for ink (text, borders, rules)
+  and `#ffffff` for surfaces. `html_engine` normalizes every colour on render, so
+  anything else you write is silently rewritten — your source would then disagree
+  with the output, which makes the layout harder to reason about. Do not reach for
+  colour to convey emphasis; use weight, size, borders, and spacing instead. If the
+  source scan is colourful, that is expected — the replica is still monochrome, and
+  a colour difference is never a discrepancy worth reporting.
 - **`needs_reextraction` is true whenever the schema changed.** Adding or
   rewording a field means nothing until OCR runs again.
 - **Write complete files.** No ellipses, no "unchanged above" markers, no TODOs.

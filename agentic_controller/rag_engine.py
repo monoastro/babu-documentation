@@ -51,8 +51,6 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Iterable, Sequence
 
-# ── Configuration ─────────────────────────────────────────────────
-
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 INDEX_DIR = Path(__file__).resolve().parent / ".rag_index"
 FAISS_PATH = INDEX_DIR / "vectors.faiss"
@@ -61,14 +59,14 @@ MANIFEST_PATH = INDEX_DIR / "manifest.json"
 
 DEFAULT_MODEL = os.getenv("RAG_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 
-#: Directories to index, relative to the project root.
+# Directories to index, relative to the project root
 SOURCE_DIRS: tuple[str, ...] = (
     "html_engine",
     "document_builder",
     "information_extraction",
 )
 
-#: Individual documentation files to index.
+# Individual documentation files to index.
 SOURCE_DOCS: tuple[str, ...] = (
     "documentation/DOCUMENTATION.md",
     "documentation/verification-rules.md",
@@ -80,7 +78,6 @@ EXCLUDE_PATTERNS: tuple[str, ...] = (
     "__pycache__",
     ".venv",
     ".rag_index",
-    "controller-old",   # deprecated — salvaged into agentic_controller/
     "graphify-out",
     "_patched.json",    # generated artifacts, not source of truth
     "test-",            # hand-written HTML fixtures, not engine code
@@ -92,8 +89,7 @@ INDEXED_SUFFIXES: tuple[str, ...] = (".py", ".json", ".md")
 MIN_CHUNK_CHARS = 40
 
 
-# ── Chunk model ───────────────────────────────────────────────────
-
+# Chunk model
 @dataclass
 class Chunk:
     """One retrievable unit of context."""
@@ -118,8 +114,7 @@ class Chunk:
         return f"{self.header()}\n{self.text.rstrip()}"
 
 
-# ── File discovery ────────────────────────────────────────────────
-
+# File discovery
 def _excluded(path: Path) -> bool:
     s = path.as_posix()
     return any(pat in s for pat in EXCLUDE_PATTERNS)
@@ -145,8 +140,7 @@ def iter_source_files(root: Path = PROJECT_ROOT) -> list[Path]:
     return found
 
 
-# ── Chunkers ──────────────────────────────────────────────────────
-
+# Chunkers
 def chunk_python(path: Path, root: Path = PROJECT_ROOT) -> list[Chunk]:
     """Split a Python file on top-level def/class boundaries.
 
@@ -341,8 +335,7 @@ def build_chunks(root: Path = PROJECT_ROOT) -> list[Chunk]:
     return chunks
 
 
-# ── Embeddings ────────────────────────────────────────────────────
-
+# Embeddings
 _model_cache: dict[str, object] = {}
 
 
@@ -377,8 +370,7 @@ def _embed(texts: Sequence[str], model_name: str = DEFAULT_MODEL):
     return np.asarray(vectors, dtype="float32")
 
 
-# ── Manifest (staleness detection) ────────────────────────────────
-
+# Manifest (staleness detection)
 def _manifest(root: Path = PROJECT_ROOT) -> dict:
     entries = {}
     for path in iter_source_files(root):
@@ -410,7 +402,7 @@ def index_is_stale(root: Path = PROJECT_ROOT) -> bool:
     return stored.get("digest") != current["digest"] or stored.get("model") != current["model"]
 
 
-# ── Build / load ──────────────────────────────────────────────────
+# build / load
 
 def build_index(root: Path = PROJECT_ROOT, *, force: bool = False, verbose: bool = True) -> int:
     """Build the FAISS index. Returns the number of chunks indexed.
@@ -472,8 +464,7 @@ def load_index():
     return chunks, index
 
 
-# ── Query ─────────────────────────────────────────────────────────
-
+# Query
 def query_context(
     question: str,
     k: int = 5,
@@ -573,8 +564,7 @@ def stats() -> dict:
     }
 
 
-# ── CLI ───────────────────────────────────────────────────────────
-
+# CLI
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="python -m agentic_controller.rag_engine",

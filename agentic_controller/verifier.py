@@ -51,6 +51,13 @@ structured reproduction. The following transformations are expected and correct
   4. HANDWRITTEN ELEMENTS — Handwritten text, manual signatures, and ink stamps
      in the source are replaced by typed text or placeholder labels. This is
      correct.
+  5. COLOUR — The rendered output is deliberately black and white. The source
+     may use coloured letterheads, blue or red headings, or coloured official
+     stamps; the replica renders all of it as black ink on white. NEVER report
+     a colour difference as a discrepancy. Judge a coloured element only on
+     whether its CONTENT is present — a purple stamp in the source must still
+     appear as a placeholder box with the right label, but the fact that it is
+     no longer purple is correct, not a defect.
 
 WHAT TO ACTUALLY CHECK
 Focus only on whether the digitized output accurately represents the source
@@ -78,14 +85,23 @@ needs_human_review. Do not guess. Do not suggest fixes.
 """
 
 
-def png_data_url(path: Path) -> str:
-    """Validate a local PNG and encode it for a multimodal model message."""
+def image_data_url(path: Path) -> str:
+    """Validate a local raster image and encode it for a multimodal model message.
+
+    Sources arrive as scans in whatever format the user has (PNG or JPEG);
+    renders are always PNG. The format is taken from the magic bytes rather
+    than the extension, so a mislabelled file still gets the correct MIME type.
+    """
     if not path.is_file():
         raise FileNotFoundError(f"Image not found: {path}")
     content = path.read_bytes()
-    if not content.startswith(b"\x89PNG\r\n\x1a\n"):
-        raise ValueError(f"Expected a PNG file: {path}")
-    return "data:image/png;base64," + base64.b64encode(content).decode("ascii")
+    if content.startswith(b"\x89PNG\r\n\x1a\n"):
+        mime = "image/png"
+    elif content.startswith(b"\xff\xd8\xff"):
+        mime = "image/jpeg"
+    else:
+        raise ValueError(f"Expected a PNG or JPEG image: {path}")
+    return f"data:{mime};base64," + base64.b64encode(content).decode("ascii")
 
 
 def verify(source: Path, rendered: Path) -> VerificationReport:
@@ -104,9 +120,9 @@ def verify(source: Path, rendered: Path) -> VerificationReport:
     message = HumanMessage(
         content=[
             {"type": "text", "text": "SOURCE document (reference):"},
-            {"type": "image_url", "image_url": {"url": png_data_url(source), "detail": "high"}},
+            {"type": "image_url", "image_url": {"url": image_data_url(source), "detail": "high"}},
             {"type": "text", "text": "RENDERED OUTPUT (compare against source):"},
-            {"type": "image_url", "image_url": {"url": png_data_url(rendered), "detail": "high"}},
+            {"type": "image_url", "image_url": {"url": image_data_url(rendered), "detail": "high"}},
         ]
     )
     return reviewer.invoke([SystemMessage(SYSTEM_PROMPT), message])
@@ -116,7 +132,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Compare a source document scan against its rendered replica.",
     )
-    parser.add_argument("source", type=Path, help="Reference/source PNG.")
+    parser.add_argument("source", type=Path, help="Reference/source scan (PNG or JPEG).")
     parser.add_argument("rendered", type=Path, help="PNG rendered from your layout.")
     parser.add_argument("--output", type=Path, help="Optional path for the JSON report")
     args = parser.parse_args()

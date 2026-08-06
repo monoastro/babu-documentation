@@ -24,8 +24,8 @@ RIGHT_LABEL = Style(font_weight="bold", font_size="20px", width="220px", flex_sh
 ROW_STYLE = Style(margin_bottom="18px")
 
 _EDITABLE_CSS = """
-[contenteditable]:hover { outline: 2px dashed #4a90d9; cursor: text; }
-[contenteditable]:focus { outline: 2px solid #4a90d9; background: #fffde7; }
+[contenteditable]:hover { outline: 2px dashed #000000; cursor: text; }
+[contenteditable]:focus { outline: 2px solid #000000; background: #ffffff; }
 """
 
 def _ea(field_name: str) -> dict[str, str]:
