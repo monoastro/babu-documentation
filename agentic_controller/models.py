@@ -17,7 +17,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 
-# ── Verification
+#  Verification
 
 class Discrepancy(BaseModel):
     """A single visible difference between the source and the rendered output."""

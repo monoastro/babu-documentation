@@ -3,6 +3,8 @@ import json
 from dotenv import load_dotenv
 from datalab_sdk import DatalabClient, ExtractOptions
 
+import os
+
 load_dotenv()
 client = DatalabClient()
 

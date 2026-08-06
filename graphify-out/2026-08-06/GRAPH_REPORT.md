@@ -1,12 +1,12 @@
 # Graph Report - babu-documentation  (2026-08-06)
 
 ## Corpus Check
-- 49 files · ~559,557 words
+- 57 files · ~563,928 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 527 nodes · 1011 edges · 38 communities (24 shown, 14 thin omitted)
-- Extraction: 90% EXTRACTED · 10% INFERRED · 1% AMBIGUOUS · INFERRED: 97 edges (avg confidence: 0.65)
+- 616 nodes · 1129 edges · 52 communities (32 shown, 20 thin omitted)
+- Extraction: 88% EXTRACTED · 11% INFERRED · 1% AMBIGUOUS · INFERRED: 128 edges (avg confidence: 0.66)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
@@ -15,36 +15,50 @@
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- pipeline.py
-- components/__init__.py
+- graph.py
+- citizenship/layout.py
 - Editable Nepali citizenship certificate (romanized test render)
-- Component
+- grid.py
 - Land Ownership Registration Certificate (Laalpurja)
-- Image
+- build_laalpurja
+- VerificationReport
 - html_engine/__init__.py
 - Nepali Citizenship Certificate Template (canonical static render)
 - Laalpurja certificate — editable master template
 - text.py
+- BaseModel
 - "First make it work, then make it better"
 - Laalpurja Base Render (output/png)
+- VerificationReport
 - LangGraph controller
-- base.py
-- list.py
+- spacer.py
+- Component
+- Print media stylesheet (@media print page rules)
+- components/__init__.py
 - rag_engine.py
+- Any
+- document_verifier.py
 - python-dotenv dependency
 - Style
 - .to_css
+- png_renderer.py
 - ._render_children
 - .__add__
 - route
 - DocLayout-YOLO
 - Segment Anything Model for document analysis
 - Surya (datalab-to)
+- analyze_and_repair
 - CLAUDE.md
 - architect.py
-- models.py
+- agentic_controller/models.py
 - 1. Document Verification Rules
+- Controller — Document Verification, Repair & LangGraph Pipeline
+- verify
+- controller-old/models.py
+- agentic_controller/run.py
 - Salvage record: `controller-old/` → `agentic_controller/`
+- SchemaPatch
 - agentic_controller/__init__.py
 - Ideal patching prompt composition
 - Perfect-match VerificationReport example
@@ -52,28 +66,28 @@
 - pydantic dependency
 
 ## God Nodes (most connected - your core abstractions)
-1. `Style` - 80 edges
+1. `Style` - 79 edges
 2. `Component` - 62 edges
 3. `build_laalpurja()` - 23 edges
 4. `build_citizenship()` - 18 edges
 5. `analyze_and_repair()` - 16 edges
-6. `LabelValue` - 15 edges
+6. `build_graph()` - 15 edges
 7. `generate_resources()` - 14 edges
 8. `digitize()` - 14 edges
-9. `TableCell` - 14 edges
-10. `Document` - 14 edges
+9. `PipelineState` - 14 edges
+10. `LabelValue` - 14 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `LangGraph controller` --references--> `langgraph dependency`  [INFERRED]
-  documentation/DOCUMENTATION.md → requirements.txt
-- `run_pipeline()` --calls--> `build_document()`  [EXTRACTED]
-  agentic_controller/run.py → information_extraction/pipeline.py
-- `field_row()` --references--> `Style`  [EXTRACTED]
-  document_builder/citizenship/layout.py → html_engine/styles.py
-- `multi_row()` --references--> `Style`  [EXTRACTED]
-  document_builder/citizenship/layout.py → html_engine/styles.py
-- `_address_block()` --calls--> `Style`  [EXTRACTED]
-  document_builder/citizenship/layout.py → html_engine/styles.py
+- `PipelineState` --uses--> `RepairPlan`  [INFERRED]
+  controller-old/graph.py → agentic_controller/models.py
+- `_lv()` --calls--> `LabelValue`  [INFERRED]
+  document_builder/laalpurja/layout.py → html_engine/components/field.py
+- `_th()` --calls--> `TableCell`  [INFERRED]
+  document_builder/laalpurja/layout.py → html_engine/components/table.py
+- `_td()` --calls--> `TableCell`  [INFERRED]
+  document_builder/laalpurja/layout.py → html_engine/components/table.py
+- `build_laalpurja()` --calls--> `FieldGroup`  [INFERRED]
+  document_builder/laalpurja/layout.py → html_engine/components/field.py
 
 ## Import Cycles
 - None detected.
@@ -90,27 +104,27 @@
 - **Ground-Truth Manual Capture vs Pipeline-Generated Render Comparison Loop** — output_png_manual_laal_screenshot, output_png_manual_laal_screenshot_groundtruthbaseline, output_png_output, output_png_output_htmltopngrenderstage, output_png_output_trailingwhitespaceartifact [INFERRED 0.75]
 - **Citizenship Identity Field Family: Personal Details, Parentage, Spouse and Bikram Sambat Dates in Devanagari** — output_png_output_personaldetailsgrid, output_png_output_parentageblock, output_png_output_spouseblock, output_png_output_bikramsambatdatefields, output_png_output_devanagarivaluerendering, output_png_output_nullvaluerenderingartifact [EXTRACTED 1.00]
 
-## Communities (38 total, 14 thin omitted)
+## Communities (52 total, 20 thin omitted)
 
-### Community 0 - "pipeline.py"
-Cohesion: 0.50
-Nodes (5): build_data(), extract(), load_schema(), build_document(), digitize_document()
+### Community 0 - "graph.py"
+Cohesion: 0.08
+Nodes (43): analyze_repair(), apply_edits(), apply_repair(), build_document(), build_graph(), check_resources(), compile_graph(), extract_data() (+35 more)
 
-### Community 1 - "components/__init__.py"
-Cohesion: 0.07
-Nodes (42): _address_block(), build_citizenship(), _ea(), field_row(), multi_row(), Any, main(), build_laalpurja() (+34 more)
+### Community 1 - "citizenship/layout.py"
+Cohesion: 0.14
+Nodes (18): _address_block(), build_citizenship(), _ea(), field_row(), multi_row(), Any, main(), FieldGroup (+10 more)
 
-### Community 3 - "Component"
-Cohesion: 0.10
-Nodes (16): Component, Base class for all renderable document components. Parameters: style: Optional…, Append one or more child components. Returns self for chaining., AbsoluteBox, Card, Div, Grid, GridItem (+8 more)
+### Community 3 - "grid.py"
+Cohesion: 0.09
+Nodes (13): AbsoluteBox, Card, Div, FlexRow, Grid, GridItem, Layout components: FlexRow, FlexCol, AbsoluteBox, Div. These are generic…, Absolutely positioned container. Use for elements that need precise pixel… (+5 more)
 
 ### Community 4 - "Land Ownership Registration Certificate (Laalpurja)"
 Cohesion: 0.09
 Nodes (31): Manual Laalpurja Screenshot (Reference Capture), Photograph and Right/Left Thumb Impression Cells, Land Ownership Certificate No. Field (4915149), Coat of Arms Placeholder Box, Fully English-Translated Field Labels, Footer Attestation Region (Printing done by / Print Date / Checked by), Ground-Truth Reference Baseline for Generated Renders, Laalpurja Header Region (Government of Nepal / Ministry of Land Reform) (+23 more)
 
-### Community 5 - "Image"
-Cohesion: 0.29
-Nodes (4): Image, Image component for the HTML Document Engine., Renders an ``<img>`` element. Parameters: src: Image source — a URL, file path,…, Resolve the image source, optionally embedding as base64.
+### Community 5 - "build_laalpurja"
+Cohesion: 0.25
+Nodes (11): Document, build_laalpurja(), _ea(), _lv(), Any, Land Ownership Registration Certificate (Laal Purja) — Layout Definition,…, _td(), _th() (+3 more)
 
 ### Community 7 - "html_engine/__init__.py"
 Cohesion: 0.15
@@ -125,52 +139,84 @@ Cohesion: 0.11
 Nodes (28): Land Ownership Registration Certificate (laal.html rendering), Certificate identifiers: Certificate No. NM0000095, Evd. no. ML-series, B.S. dates २०८२/०४/१४, total area 4332.09 sq.m across 3 plots, Citizenship issuing office: जिल्ला प्रशासन कार्यालय, काठमाण्डौ, Nepali land vocabulary: आबादी/आवादी (cultivated), रैकर निजी (raikar private), एकलौटी (sole title), भिट/पाखो/बारी दोयम (land class), रोपनी area units, Landowner entity: उमा देवी चौलागाई (Uma Devi Chaulagain), Issuing authority: Land Revenue Office, साखु, काठमाण्डौ (Dept. of Land Reform and Management), 'None' literal artifact leaking into Register Page No./serial and transaction cells (unbound Python None serialized into HTML), Page style system: .page 1200px fixed-width white sheet, Times New Roman serif, 1px black borders, inline flexbox layout (+20 more)
 
 ### Community 10 - "text.py"
-Cohesion: 0.14
-Nodes (7): Link, Paragraph, Text components: Text, Heading, Paragraph, Link., Escape hatch: renders arbitrary HTML verbatim. Use sparingly — this bypasses…, Renders an anchor element ``<a>``. Parameters: content: The text content or…, Block paragraph element rendered as ``<p>``. Parameters: content: The paragraph…, RawHTML
+Cohesion: 0.12
+Nodes (9): Heading, Link, Paragraph, Text components: Text, Heading, Paragraph, Link., Escape hatch: renders arbitrary HTML verbatim. Use sparingly — this bypasses…, Renders an anchor element ``<a>``. Parameters: content: The text content or…, Block heading element rendered as ``<h1>`` through ``<h6>``. Parameters:…, Block paragraph element rendered as ``<p>``. Parameters: content: The paragraph… (+1 more)
 
 ### Community 13 - "Laalpurja Base Render (output/png)"
 Cohesion: 0.15
 Nodes (20): Certificate Number Field (4915149), Footer Region: Total Area, Print Date, Signatures, Header Region: Government of Nepal / Land Revenue Office, Identity Region: Photograph, Thumb Impression, Landowner Details, Latin-Script Transliterated Field Data, PNG Rasterization Output Stage (output/png directory), Laalpurja Base Render (output/png), Repaired Certificate Number Field (NM0000095) (+12 more)
 
 ### Community 15 - "LangGraph controller"
-Cohesion: 0.05
-Nodes (40): Adding a new document type, Arbitrary HTML attributes (`attrs`), Architecture, Babu Document Digitization: Technical Documentation, Component reference, Contenteditable output, Document builders, Future work (+32 more)
+Cohesion: 0.04
+Nodes (45): Adding a new document type, Arbitrary HTML attributes (`attrs`), Architecture, Babu Document Digitization: Technical Documentation, Component reference, Contenteditable output, Document builders, Future work (+37 more)
 
-### Community 16 - "base.py"
-Cohesion: 0.25
-Nodes (5): ABC, Abstract base class for all HTML Document Engine components. Every renderable…, HorizontalRule, Spacer and divider components., Horizontal rule (``<hr>``) divider. Parameters: style: Override styles (color,…
+### Community 16 - "spacer.py"
+Cohesion: 0.16
+Nodes (7): HorizontalRule, PageBreak, Spacer and divider components., Empty vertical space with a fixed height. Parameters: height: CSS height value…, Horizontal rule (``<hr>``) divider. Parameters: style: Override styles (color,…, Renders a page break for print media., Spacer
 
-### Community 17 - "list.py"
-Cohesion: 0.22
-Nodes (5): OrderedList, List components: ListItem, UnorderedList, OrderedList., Renders an unordered list ``<ul>``. Parameters: items: List items — can be…, Renders an ordered list ``<ol>``. Parameters: items: List items — can be…, UnorderedList
+### Community 17 - "Component"
+Cohesion: 0.16
+Nodes (12): ABC, Component, Abstract base class for all HTML Document Engine components. Every renderable…, Base class for all renderable document components. Parameters: style: Optional…, Append one or more child components. Returns self for chaining., ListItem, OrderedList, List components: ListItem, UnorderedList, OrderedList. (+4 more)
+
+### Community 19 - "components/__init__.py"
+Cohesion: 0.23
+Nodes (8): html_engine.components — All renderable component types., Table components: Table, TableRow, TableCell. Supports both simple table…, A full ``<table>`` element. Can be built from: - Explicit ``TableRow`` objects…, A single table cell (``<td>`` or ``<th>``). Parameters: content: Cell content —…, A table row (``<tr>``) containing one or more cells. Parameters: cells:…, Table, TableCell, TableRow
 
 ### Community 20 - "rag_engine.py"
 Cohesion: 0.10
 Nodes (37): _tool_query_context(), build_chunks(), build_index(), Chunk, chunk_file(), chunk_json_schema(), chunk_markdown(), chunk_python() (+29 more)
 
+### Community 23 - "document_verifier.py"
+Cohesion: 0.46
+Nodes (7): Discrepancy, main(), png_data_url(), BaseModel, Path, VerificationReport, verify()
+
 ### Community 26 - "Style"
-Cohesion: 0.17
-Nodes (6): Build the HTML attribute string for this element. Combines ``css_class``,…, PageBreak, Renders a page break for print media., Immutable-ish style descriptor that maps 1:1 to CSS properties. Any attribute…, Return a copy of this Style with specific fields overridden. Usage:: base =…, Style
+Cohesion: 0.15
+Nodes (8): Build the HTML attribute string for this element. Combines ``css_class``,…, Image, Image component for the HTML Document Engine., Renders an ``<img>`` element. Parameters: src: Image source — a URL, file path,…, Resolve the image source, optionally embedding as base64., Immutable-ish style descriptor that maps 1:1 to CSS properties. Any attribute…, Return a copy of this Style with specific fields overridden. Usage:: base =…, Style
 
 ### Community 27 - ".to_css"
 Cohesion: 0.33
 Nodes (3): Convert a Python attribute name to its CSS property equivalent., Serialize all non-None attributes into a CSS inline style string. Returns: A…, Return a full ``style="..."`` HTML attribute string, or an empty string if…
 
+### Community 28 - "png_renderer.py"
+Cohesion: 0.60
+Nodes (4): Path, Render html to a PNG via headless Chrome/Chromium. Chrome/Chromium executable…, render_png(), test()
+
 ### Community 31 - "route"
 Cohesion: 0.67
 Nodes (3): route, index(), process()
 
-### Community 39 - "architect.py"
-Cohesion: 0.05
-Nodes (76): analyze_and_repair(), _build_system_prompt(), current_layout_path(), _dispatch_tool(), generate_resources(), _image(), _load_rules(), _log_call() (+68 more)
+### Community 37 - "analyze_and_repair"
+Cohesion: 0.16
+Nodes (18): analyze_and_repair(), generate_resources(), _image(), main(), next_layout_path(), _parse_contract(), Path, Create a layout builder and extraction schema for an unseen document type. This… (+10 more)
 
-### Community 40 - "models.py"
+### Community 39 - "architect.py"
 Cohesion: 0.14
-Nodes (15): Discrepancy, LayoutPatch, Pydantic models — the structured vocabulary the agent may use. Consolidates the…, The full proposal returned by the analysis step., A single visible difference between the source and the rendered output., Discrepancies the agent must fix — ``major`` and ``critical`` only. ``minor``…, A single change to the extraction JSON schema., A single structural change to the document layout builder. (+7 more)
+Nodes (28): _build_system_prompt(), _dispatch_tool(), _load_rules(), _log_call(), Any, The Architect Agent — autonomous layout and schema generation. Phase 2 of the…, Check that a written schema is valid JSON with the keys the extractor needs.…, Assemble the system prompt, with the verification rules embedded. (+20 more)
+
+### Community 40 - "agentic_controller/models.py"
+Cohesion: 0.14
+Nodes (17): Discrepancy, LayoutPatch, Pydantic models — the structured vocabulary the agent may use. Consolidates the…, The full proposal returned by the analysis step., A single visible difference between the source and the rendered output., Machine-readable result returned by the vision model. This is the contract the…, Discrepancies the agent must fix — ``major`` and ``critical`` only. ``minor``…, A single change to the extraction JSON schema. (+9 more)
 
 ### Community 41 - "1. Document Verification Rules"
 Cohesion: 0.14
 Nodes (13): 1.1 Expected transformations — never flag these, 1.2 What to actually check, 1.3 Severity guide, 1.4 Uncertainty, 1.5 Report shape, 1. Document Verification Rules, 2.1 Allowed schema patch actions, 2.2 Allowed layout patch actions (+5 more)
+
+### Community 42 - "Controller — Document Verification, Repair & LangGraph Pipeline"
+Cohesion: 0.15
+Nodes (12): 1. Verify a document, 2. Repair a document (standalone), Architecture, Contenteditable HTML output, Controller — Document Verification, Repair & LangGraph Pipeline, Design choices, Future: visual editor, Individual commands (+4 more)
+
+### Community 43 - "verify"
+Cohesion: 0.36
+Nodes (7): main(), png_data_url(), Path, Vision-model comparison of a source document against its rendered replica.…, Validate a local PNG and encode it for a multimodal model message., Compare *source* against *rendered* and return a structured report., verify()
+
+### Community 44 - "controller-old/models.py"
+Cohesion: 0.28
+Nodes (8): LayoutPatch, BaseModel, Pydantic models for the layout-repair pipeline. These define the structured…, A single change to the extraction JSON schema., A single structural change to the document layout builder., The full proposal returned by the analysis LLM call., RepairPlan, SchemaPatch
+
+### Community 45 - "agentic_controller/run.py"
+Cohesion: 0.14
+Nodes (21): current_layout_path(), Return the schema the pipeline should actually extract with. Prefers a…, Return the highest-numbered existing layout, or ``layout.py``, or None., resolve_schema_path(), Path, render_png(), _collect_decision(), _collect_user_concerns() (+13 more)
 
 ### Community 47 - "Salvage record: `controller-old/` → `agentic_controller/`"
 Cohesion: 0.33
@@ -197,9 +243,9 @@ Nodes (5): Behaviour to reproduce in Phase 2/3, Carried across, Deliberately dro
   output/png/output.png · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **72 isolated node(s):** `graphify`, `What is included`, `Setup`, `Run the full pipeline`, `Generate example documents` (+67 more)
+- **83 isolated node(s):** `Carried across`, `Deliberately dropped`, `Behaviour to reproduce in Phase 2/3`, `Not indexed by RAG`, `1.1 Expected transformations — never flag these` (+78 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **20 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

@@ -1,4 +1,39 @@
 {
+  "controller-old/document_verifier.py": {
+    "mtime": 1785944975.7798734,
+    "ast_hash": "3fa7526c1fa5c9b9ba02e53abeff68a2",
+    "semantic_hash": "3fa7526c1fa5c9b9ba02e53abeff68a2"
+  },
+  "controller-old/graph.py": {
+    "mtime": 1785944975.7800183,
+    "ast_hash": "c99d8a29bbf656a905c44e1d8464f44f",
+    "semantic_hash": "c99d8a29bbf656a905c44e1d8464f44f"
+  },
+  "controller-old/layout_repairer.py": {
+    "mtime": 1785944975.7801447,
+    "ast_hash": "d2805ea77624d45a5f49c1486eeb3dd8",
+    "semantic_hash": "d2805ea77624d45a5f49c1486eeb3dd8"
+  },
+  "controller-old/models.py": {
+    "mtime": 1785944975.7803037,
+    "ast_hash": "b80c9a31a9ed97d02c8ed512d72905c7",
+    "semantic_hash": "b80c9a31a9ed97d02c8ed512d72905c7"
+  },
+  "controller-old/png_renderer.py": {
+    "mtime": 1785944975.7804432,
+    "ast_hash": "2cc23b6be67fa0a3c83c1375ab6367f7",
+    "semantic_hash": "2cc23b6be67fa0a3c83c1375ab6367f7"
+  },
+  "controller-old/run.py": {
+    "mtime": 1785944975.7805734,
+    "ast_hash": "fb4476bbfd744aa33e267189a8fc864e",
+    "semantic_hash": "fb4476bbfd744aa33e267189a8fc864e"
+  },
+  "controller-old/schema_patcher.py": {
+    "mtime": 1785944975.7807004,
+    "ast_hash": "c7b30eca8bf0004051d6caf8ae5cc05a",
+    "semantic_hash": "c7b30eca8bf0004051d6caf8ae5cc05a"
+  },
   "document_builder/citizenship/layout.py": {
     "mtime": 1785741057.808892,
     "ast_hash": "a623fb7d861d73e1beccae705ff4d84b",
@@ -95,9 +130,9 @@
     "semantic_hash": "bda108a870d752ad294b69d5db6464b6"
   },
   "information_extraction/extractor.py": {
-    "mtime": 1785985802.8469977,
-    "ast_hash": "7bbe0b46125ba31581ac2831057c3de9",
-    "semantic_hash": ""
+    "mtime": 1785655629.3964276,
+    "ast_hash": "31bc3c425fd651cf7d87facee04b43fe",
+    "semantic_hash": "31bc3c425fd651cf7d87facee04b43fe"
   },
   "information_extraction/pipeline.py": {
     "mtime": 1784447751.9907262,
@@ -110,8 +145,8 @@
     "semantic_hash": "9abaf88f691c6612953ddc74ce1b625b"
   },
   "information_extraction/schemas/laalpurja.json": {
-    "mtime": 1785984057.0609853,
-    "ast_hash": "bd0be7891c838ba300474935dcbdf492",
+    "mtime": 1785947656.857087,
+    "ast_hash": "62f31bf761c1969600ee35f67a142446",
     "semantic_hash": ""
   },
   "information_extraction/translator.py": {
@@ -120,8 +155,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "main.py": {
-    "mtime": 1785985980.8926542,
-    "ast_hash": "05d71058913d49d5eb8c3c20580a598b",
+    "mtime": 1785947503.0272374,
+    "ast_hash": "5322fb9e846529bace49849a618267d2",
     "semantic_hash": ""
   },
   "web/app.py": {
@@ -133,6 +168,11 @@
     "mtime": 1785266013.323871,
     "ast_hash": "86e9eaba61cc86415475d3271af9d0d2",
     "semantic_hash": "86e9eaba61cc86415475d3271af9d0d2"
+  },
+  "controller-old/README.md": {
+    "mtime": 1785944975.779719,
+    "ast_hash": "a0443e6f27f557b6af7768b25edb4fb0",
+    "semantic_hash": "a0443e6f27f557b6af7768b25edb4fb0"
   },
   "document_builder/citizenship/test-citizenship.html": {
     "mtime": 1785741129.9732754,
@@ -157,6 +197,11 @@
   "documentation/tasks.txt": {
     "mtime": 1785920194.860468,
     "ast_hash": "8b06aa535978780c508fa2e57f1941a9",
+    "semantic_hash": ""
+  },
+  "laalpurja.html": {
+    "mtime": 1785948300.295031,
+    "ast_hash": "c59ea5b5cc882931be51887554d69e54",
     "semantic_hash": ""
   },
   "output/html/citizenship/aditya-digital.html": {
@@ -235,8 +280,8 @@
     "semantic_hash": ""
   },
   "agentic_controller/__init__.py": {
-    "mtime": 1785986010.9189968,
-    "ast_hash": "2d238bb784eb5cb904120c5383bfa43e",
+    "mtime": 1785981861.5389378,
+    "ast_hash": "518c53de5a4f5fa4a90026e000477189",
     "semantic_hash": ""
   },
   "agentic_controller/architect.py": {
@@ -245,8 +290,8 @@
     "semantic_hash": ""
   },
   "agentic_controller/models.py": {
-    "mtime": 1785986010.9363856,
-    "ast_hash": "841bdde51676e8116b8786e9ad426cba",
+    "mtime": 1785980278.933233,
+    "ast_hash": "409cd3fb95436451242e62b3631640d2",
     "semantic_hash": ""
   },
   "agentic_controller/rag_engine.py": {
@@ -432,11 +477,6 @@
   "test-data/output_citizenship.png": {
     "mtime": 1785944975.7814958,
     "ast_hash": "67caba788afaa6317c81bff8b1b78e6d",
-    "semantic_hash": ""
-  },
-  "output/final-laal.html": {
-    "mtime": 1785985890.6654472,
-    "ast_hash": "647b549bb3c1f79d1313d2c130b595ab",
     "semantic_hash": ""
   }
 }
