@@ -3,3 +3,8 @@ langgraph
 langchain-openai
 python-dotenv
 pydantic
+
+# agentic_controller RAG + agent loop (Phases 1 & 2)
+sentence-transformers
+faiss-cpu
+anthropic

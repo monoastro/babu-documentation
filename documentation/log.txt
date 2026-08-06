@@ -27,7 +27,3 @@ html_engine docs
 
 graphify is installed but not recognized as a skill, reference your skills in .claude/skills and run graphify
 
-omniroute setup-claude
-graphify install
-graphify claude install
-graphify hook install

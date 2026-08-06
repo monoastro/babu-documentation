@@ -1,0 +1,547 @@
+Start phase 3
+
+  Thought for 10s, read 1 file (ctrl+o to expand)
+
+● Reading Phase 3 specification and reference implementations.
+
+  Read 1 file (ctrl+o to expand)
+
+● Bash(timeout 300 graphify query "how does the end-to-end pipeline run: OCR extraction, document builder registry, render to PNG, and
+      verification" 2>&1 | head -80)
+  ⎿  Traversal: BFS depth=2 | Start: ['render()', 'Pipeline output stage: synthetic Nepali government document renders', 'Documen
+     t Generation Pipeline (data -> template -> rendered certificate)', 'Document builders', 'Document', 'Pipeline Role — Source
+     Scan Fed to the Document Extraction / HTML Reconstruction Step', 'OCR JSON → HTML engine integration', 'pipeline.py', 'png_r
+     … +55 lines (ctrl+o to expand)
+
+● Graph oriented me on the flow. Now reading the exact signatures I need to wire together.
+
+  Read 4 files (ctrl+o to expand)
+
+● Reading verification and rendering signatures.
+
+  Read 2 files (ctrl+o to expand)
+
+● Writing agentic_controller/run.py — the integrated CLI that wires OCR → build → render → verify → human checkpoint → auto-fix loop.
+
+● Write(agentic_controller/run.py)
+  ⎿  Wrote 78 lines to agentic_controller/run.py
+       1 """Integrated autonomous document digitization pipeline.
+       2
+       3 Phase 3 deliverable: the CLI that implements the user's end-to-end flow.
+       4
+       5 Flow:
+       6   1. Check whether layout and schema exist for the document type.
+       7   2. If absent: generate_resources() to create them from the source image.
+       8   3. Run the pipeline: OCR → build → render PNG.
+       9   4. Verify: compare source against rendered output.
+      10   5. Single human checkpoint: show report, collect decision.
+     … +68 lines (ctrl+o to expand)
+
+● Auto mode lets Claude handle permission prompts automatically — Claude checks each tool call for risky actions and prompt
+  injection before executing. Actions Claude identifies as safe are executed, while actions Claude identifies as risky are
+  blocked and Claude may try a different approach. Ideal for long-running tasks. Sessions are slightly more expensive. Claude
+  can make mistakes that allow harmful commands to run, it's recommended to only use in isolated environments. Shift+Tab to
+  change mode.
+
+● Continuing the file.
+
+● Update(agentic_controller/run.py)
+  ⎿  Added 64 lines
+       76                  print(f"   Source:   {src_obs[:80]}")
+       77              if rnd_obs:
+       78                  print(f"   Rendered: {rnd_obs[:80]}")
+       79 +    else:
+       80 +        print("\n✓ No discrepancies found.")
+       81 +
+       82 +    needs_human = report_dict.get("needs_human_review", False)
+       83 +    if needs_human:
+       84 +        print("\n⚠ The verifier flagged this for human review.")
+       85 +
+       86 +    print()
+       87 +
+       88 +
+       89 +def _collect_decision(iteration: int, max_iter: int, blocking_count: int) -> str:
+       90 +    """Prompt the user for their decision at the checkpoint.
+       91 +
+       92 +    Returns "approve", "retry", or "edit".
+       93 +    """
+       94 +    at_limit = iteration >= max_iter
+       95 +
+       96 +    if at_limit:
+       97 +        print("Maximum iterations reached.")
+       98 +        print("You can only [a]pprove the current output.")
+       99 +        print()
+      100 +
+      101 +    while True:
+      102 +        if at_limit:
+      103 +            choices = "[a]pprove"
+      104 +        elif blocking_count == 0:
+      105 +            choices = "[a]pprove (no blocking issues) / [r]etry anyway / [e]dit with concerns"
+      106 +        else:
+      107 +            choices = "[a]pprove anyway / [r]etry auto-fix / [e]dit with concerns"
+      108 +
+      109 +        raw = input(f"Decision ({choices}): ").strip().lower()
+      110 +
+      111 +        if raw in ("a", "approve"):
+      112 +            return "approve"
+      113 +        if at_limit:
+      114 +            print("  → Only 'approve' is available at the iteration limit.")
+      115 +            continue
+      116 +        if raw in ("r", "retry"):
+      117 +            return "retry"
+      118 +        if raw in ("e", "edit"):
+      119 +            return "edit"
+      120 +
+      121 +        print(f"Unknown choice '{raw}'. Try again.")
+      122 +
+      123 +
+      124 +def _collect_user_concerns() -> str:
+      125 +    """Collect free-form user concerns for the user-guided repair branch."""
+      126 +    print()
+      127 +    print("Describe what needs fixing (free-form text).")
+      128 +    print("The agent will use this guidance when generating the repair.")
+      129 +    print("Empty line to finish.")
+      130 +    print()
+      131 +
+      132 +    lines = []
+      133 +    while True:
+      134 +        line = input(" > ").strip()
+      135 +        if not line:
+      136 +            break
+      137 +        lines.append(line)
+      138 +
+      139 +    concerns = "\n".join(lines)
+      140 +    if concerns:
+      141 +        print(f"\n  User concerns: {concerns[:100]}...")
+      142 +    return concerns
+
+● Now the pipeline stage and resource check.
+
+● Update(agentic_controller/run.py)
+  ⎿  Added 61 lines
+      140      if concerns:
+      141          print(f"\n  User concerns: {concerns[:100]}...")
+      142      return concerns
+      143 +
+      144 +
+      145 +def _resources_exist(document_type: str) -> tuple[bool, str]:
+      146 +    """Check whether a usable schema and layout already exist.
+      147 +
+      148 +    Returns ``(exists, description)``. The description explains what was found
+      149 +    or what is missing, for display to the user.
+      150 +    """
+      151 +    missing = []
+      152 +
+      153 +    try:
+      154 +        schema_path = resolve_schema_path(document_type)
+      155 +        has_schema = schema_path.is_file()
+      156 +    except Exception:
+      157 +        schema_path = None
+      158 +        has_schema = False
+      159 +    if not has_schema:
+      160 +        missing.append("schema")
+      161 +
+      162 +    layout_path = current_layout_path(document_type)
+      163 +    if layout_path is None or not layout_path.is_file():
+      164 +        missing.append("layout")
+      165 +
+      166 +    if missing:
+      167 +        return False, f"missing: {', '.join(missing)}"
+      168 +
+      169 +    return True, f"schema={schema_path.name}, layout={layout_path.name}"
+      170 +
+      171 +
+      172 +def run_pipeline(
+      173 +    document_type: str,
+      174 +    image_path: Path,
+      175 +    output_dir: Path,
+      176 +    tag: str,
+      177 +) -> tuple[Path | None, Path | None]:
+      178 +    """OCR → build → save HTML → render PNG.
+      179 +
+      180 +    Returns ``(html_path, png_path)``. Either may be ``None`` if that stage
+      181 +    failed; a missing PNG degrades verification but does not stop the run.
+      182 +    """
+      183 +    output_dir.mkdir(parents=True, exist_ok=True)
+      184 +    html_path = output_dir / f"{document_type}-{tag}.html"
+      185 +
+      186 +    print(f"  → Extracting and building ({document_type})...")
+      187 +    try:
+      188 +        doc = build_document(document_type, str(image_path))
+      189 +        doc.save(str(html_path))
+      190 +    except Exception as exc:
+      191 +        print(f"  ✗ Pipeline failed: {exc}")
+      192 +        return None, None
+      193 +    print(f"  ✓ HTML: {html_path}")
+      194 +
+      195 +    png_name = f"{document_type}-{tag}.png"
+      196 +    print(f"  → Rendering PNG...")
+      197 +    if render_png(html_path, output_dir, png_name):
+      198 +        png_path = output_dir / png_name
+      199 +        print(f"  ✓ PNG:  {png_path}")
+      200 +        return html_path, png_path
+      201 +
+      202 +    print("  ⚠ PNG render skipped — verification will be unavailable.")
+      203 +    return html_path, None
+
+● Now the main orchestration loop.
+
+● Update(agentic_controller/run.py)
+  ⎿  Added 80 lines
+      201
+      202      print("  ⚠ PNG render skipped — verification will be unavailable.")
+      203      return html_path, None
+      204 +
+      205 +
+      206 +def digitize(
+      207 +    image_path: Path,
+      208 +    document_type: str,
+      209 +    *,
+      210 +    max_iterations: int = MAX_REPAIR_ITERATIONS,
+      211 +    output_dir: Path = OUTPUT_DIR,
+      212 +    auto_approve: bool = False,
+      213 +) -> dict:
+      214 +    """Run the full autonomous digitization flow.
+      215 +
+      216 +    Returns a result dict with the final artifacts and the append-only history.
+      217 +    """
+      218 +    run_id = uuid4().hex[:8]
+      219 +    history: list[dict] = []
+      220 +
+      221 +    print(SEP)
+      222 +    print("  AUTONOMOUS DOCUMENT DIGITIZATION")
+      223 +    print(SEP)
+      224 +    print(f"  Image:    {image_path}")
+      225 +    print(f"  Type:     {document_type}")
+      226 +    print(f"  Max iter: {max_iterations}")
+      227 +    print(f"  Run:      {run_id}")
+      228 +    print(SEP)
+      229 +
+      230 +    # ---- Stage 0: do the resources exist? -----------------------------------
+      231 +    exists, description = _resources_exist(document_type)
+      232 +    print(f"\nResources: {description}")
+      233 +
+      234 +    if not exists:
+      235 +        print(f"\n{SEP}")
+      236 +        print("  GENERATING RESOURCES (unseen document type)")
+      237 +        print(SEP)
+      238 +        print("  The agent will analyze the source image and write both a")
+      239 +        print("  schema and a layout from scratch. This may take a minute.\n")
+      240 +
+      241 +        try:
+      242 +            gen = generate_resources(image_path, document_type)
+      243 +        except Exception as exc:
+      244 +            print(f"\n✗ Resource generation failed: {exc}", file=sys.stderr)
+      245 +            return {"status": "generation_failed", "error": str(exc), "history": history}
+      246 +
+      247 +        print(f"\n{gen.describe()}")
+      248 +        history.append(
+      249 +            {
+      250 +                "iteration": 0,
+      251 +                "action": "generate_resources",
+      252 +                "summary": gen.summary,
+      253 +                "schema": str(gen.schema_path) if gen.schema_path else None,
+      254 +                "layout": str(gen.layout_path) if gen.layout_path else None,
+      255 +            }
+      256 +        )
+      257 +
+      258 +        if gen.layout_path is None and gen.schema_path is None:
+      259 +            print("\n✗ The agent produced no usable resources. Stopping.", file=sys.stderr)
+      260 +            return {"status": "generation_empty", "history": history}
+      261 +
+      262 +        print("\n⚠ Generated resources are not yet wired into the registry.")
+      263 +        print("  Review them, then register the builder before re-running:")
+      264 +        if gen.layout_path:
+      265 +            print(f"    layout: {gen.layout_path}")
+      266 +        if gen.schema_path:
+      267 +            print(f"    schema: {gen.schema_path}")
+      268 +
+      269 +        # A brand-new document type has no registry entry, so build_document()
+      270 +        # cannot dispatch to it yet. That wiring is a deliberate human step.
+      271 +        try:
+      272 +            from document_builder.registry import DOCUMENTS
+      273 +
+      274 +            if document_type not in DOCUMENTS:
+      275 +                print("\n  Registry has no entry for this type — stopping after generation.")
+      276 +                return {
+      277 +                    "status": "generated_needs_registration",
+      278 +                    "schema_path": str(gen.schema_path) if gen.schema_path else None,
+      279 +                    "layout_path": str(gen.layout_path) if gen.layout_path else None,
+      280 +                    "history": history,
+      281 +                }
+      282 +        except Exception:
+      283 +            pass
+
+● Now the iteration loop with the human checkpoint.
+
+● Update(agentic_controller/run.py)
+  ⎿  Added 67 lines
+      281                  }
+      282          except Exception:
+      283              pass
+      284 +
+      285 +    # ---- Stage 1..N: pipeline → verify → checkpoint → repair ----------------
+      286 +    iteration = 1
+      287 +    final_html: Path | None = None
+      288 +    final_png: Path | None = None
+      289 +
+      290 +    while iteration <= max_iterations:
+      291 +        print(f"\n{SEP}")
+      292 +        print(f"  PIPELINE RUN {iteration}/{max_iterations}")
+      293 +        print(SEP)
+      294 +
+      295 +        html_path, png_path = run_pipeline(
+      296 +            document_type, image_path, output_dir, tag=f"{run_id}-{iteration}"
+      297 +        )
+      298 +        if html_path is None:
+      299 +            return {"status": "pipeline_failed", "iteration": iteration, "history": history}
+      300 +
+      301 +        final_html, final_png = html_path, png_path
+      302 +
+      303 +        if png_path is None:
+      304 +            print("\n⚠ Cannot verify without a rendered PNG.")
+      305 +            print("  Install chromium or set CHROME_EXECUTABLE, then re-run.")
+      306 +            return {
+      307 +                "status": "unverified",
+      308 +                "html_path": str(html_path),
+      309 +                "iteration": iteration,
+      310 +                "history": history,
+      311 +            }
+      312 +
+      313 +        # ---- Verify ----
+      314 +        print("\n  → Verifying against source...")
+      315 +        try:
+      316 +            report = verify(image_path, png_path)
+      317 +        except Exception as exc:
+      318 +            print(f"  ✗ Verification failed: {exc}", file=sys.stderr)
+      319 +            return {
+      320 +                "status": "verification_failed",
+      321 +                "error": str(exc),
+      322 +                "html_path": str(html_path),
+      323 +                "png_path": str(png_path),
+      324 +                "iteration": iteration,
+      325 +                "history": history,
+      326 +            }
+      327 +
+      328 +        report_dict = report.model_dump()
+      329 +        blocking = report.blocking()
+      330 +
+      331 +        report_path = output_dir / f"report-{document_type}-{run_id}-{iteration}.json"
+      332 +        report_path.write_text(
+      333 +            json.dumps(report_dict, indent=2, ensure_ascii=False), encoding="utf-8"
+      334 +        )
+      335 +
+      336 +        _show_report(report_dict, iteration, max_iterations)
+      337 +        print(f"Blocking issues (major/critical): {len(blocking)}")
+      338 +        print(f"Report saved: {report_path}")
+      339 +
+      340 +        history.append(
+      341 +            {
+      342 +                "iteration": iteration,
+      343 +                "action": "verify",
+      344 +                "discrepancies": len(report_dict.get("discrepancies", [])),
+      345 +                "blocking": len(blocking),
+      346 +                "html": str(html_path),
+      347 +                "png": str(png_path),
+      348 +                "report": str(report_path),
+      349 +            }
+      350 +        )
+
+● Now the checkpoint decision and repair branches.
+
+● Update(agentic_controller/run.py)
+  ⎿  Added 113 lines
+      348                  "report": str(report_path),
+      349              }
+      350          )
+      351 +
+      352 +        # ---- The single human checkpoint ----
+      353 +        if auto_approve:
+      354 +            if not blocking:
+      355 +                print("\n[auto-approve] No blocking issues — accepting output.")
+      356 +                decision = "approve"
+      357 +            elif iteration >= max_iterations:
+      358 +                print("\n[auto-approve] Iteration limit reached — accepting output.")
+      359 +                decision = "approve"
+      360 +            else:
+      361 +                print(f"\n[auto-approve] {len(blocking)} blocking issue(s) — running auto-fix.")
+      362 +                decision = "retry"
+      363 +        else:
+      364 +            print("\nReview the rendered output:")
+      365 +            print(f"  {png_path}")
+      366 +            decision = _collect_decision(iteration, max_iterations, len(blocking))
+      367 +
+      368 +        if decision == "approve":
+      369 +            history.append({"iteration": iteration, "action": "approve"})
+      370 +            print("\n✓ Output approved.")
+      371 +            break
+      372 +
+      373 +        user_concerns = _collect_user_concerns() if decision == "edit" else None
+      374 +        if decision == "edit" and not user_concerns:
+      375 +            print("  No concerns entered — falling back to autonomous repair.")
+      376 +
+      377 +        # ---- Repair ----
+      378 +        print(f"\n{SEP}")
+      379 +        print(f"  ARCHITECT REPAIR (iteration {iteration})")
+      380 +        print(SEP)
+      381 +
+      382 +        try:
+      383 +            schema_path = resolve_schema_path(document_type)
+      384 +        except Exception as exc:
+      385 +            print(f"✗ Cannot resolve schema: {exc}", file=sys.stderr)
+      386 +            return {"status": "schema_unresolved", "error": str(exc), "history": history}
+      387 +
+      388 +        try:
+      389 +            repair = analyze_and_repair(
+      390 +                report=report,
+      391 +                source_image=image_path,
+      392 +                document_type=document_type,
+      393 +                current_schema_path=schema_path,
+      394 +                current_layout_path=current_layout_path(document_type),
+      395 +                rendered_image=png_path,
+      396 +                user_concerns=user_concerns,
+      397 +                iteration=iteration,
+      398 +            )
+      399 +        except Exception as exc:
+      400 +            print(f"\n✗ Repair failed: {exc}", file=sys.stderr)
+      401 +            return {
+      402 +                "status": "repair_failed",
+      403 +                "error": str(exc),
+      404 +                "iteration": iteration,
+      405 +                "html_path": str(html_path),
+      406 +                "png_path": str(png_path),
+      407 +                "history": history,
+      408 +            }
+      409 +
+      410 +        print(f"\n{repair.describe()}")
+      411 +        history.append(
+      412 +            {
+      413 +                "iteration": iteration,
+      414 +                "action": "repair",
+      415 +                "mode": "user_guided" if user_concerns else "autonomous",
+      416 +                "summary": repair.summary,
+      417 +                "needs_reextraction": repair.needs_reextraction,
+      418 +                "schema": str(repair.schema_path) if repair.schema_path else None,
+      419 +                "layout": str(repair.layout_path) if repair.layout_path else None,
+      420 +            }
+      421 +        )
+      422 +        history.extend(repair.history)
+      423 +
+      424 +        if repair.schema_path is None and repair.layout_path is None:
+      425 +            print("\n⚠ The agent changed nothing. Stopping to avoid a no-op loop.")
+      426 +            break
+      427 +
+      428 +        if repair.layout_path is not None:
+      429 +            print(f"\n⚠ New layout written: {repair.layout_path.name}")
+      430 +            print("  The registry still points at the original layout, so the next")
+      431 +            print("  run will NOT pick it up until you repoint it. Promotion is a")
+      432 +            print("  deliberate human step — review the diff first.")
+      433 +
+      434 +        iteration += 1
+      435 +
+      436 +    # ---- Done ----
+      437 +    print(f"\n{SEP}")
+      438 +    print("  RUN COMPLETE")
+      439 +    print(SEP)
+      440 +    if final_html:
+      441 +        print(f"  HTML: {final_html}")
+      442 +    if final_png:
+      443 +        print(f"  PNG:  {final_png}")
+      444 +
+      445 +    print(f"\n  History ({len(history)} entries):")
+      446 +    for h in history:
+      447 +        it = h.get("iteration", "?")
+      448 +        action = h.get("action", "?")
+      449 +        extra = ""
+      450 +        if action == "verify":
+      451 +            extra = f" — {h.get('discrepancies', 0)} disc, {h.get('blocking', 0)} blocking"
+      452 +        elif action == "repair":
+      453 +            extra = f" — {h.get('mode', '')}"
+      454 +        print(f"    [{it}] {action}{extra}")
+      455 +    print()
+      456 +
+      457 +    return {
+      458 +        "status": "complete",
+      459 +        "html_path": str(final_html) if final_html else None,
+      460 +        "png_path": str(final_png) if final_png else None,
+      461 +        "iterations": iteration,
+      462 +        "history": history,
+      463 +    }
+
+● Now the CLI entry point.
+
+● Update(agentic_controller/run.py)
+  ⎿  Added 66 lines
+      461          "iterations": iteration,
+      462          "history": history,
+      463      }
+      464 +
+      465 +
+      466 +def main() -> None:
+      467 +    parser = argparse.ArgumentParser(
+      468 +        description="Autonomous document digitization with a single human checkpoint.",
+      469 +    )
+      470 +    parser.add_argument("image", type=Path, help="Source document image (PNG).")
+      471 +    parser.add_argument(
+      472 +        "-t",
+      473 +        "--document-type",
+      474 +        default="laalpurja",
+      475 +        help="Document type (default: laalpurja).",
+      476 +    )
+      477 +    parser.add_argument(
+      478 +        "--max-iterations",
+      479 +        type=int,
+      480 +        default=MAX_REPAIR_ITERATIONS,
+      481 +        help=f"Maximum repair iterations (default: {MAX_REPAIR_ITERATIONS}).",
+      482 +    )
+      483 +    parser.add_argument(
+      484 +        "--output-dir",
+      485 +        type=Path,
+      486 +        default=OUTPUT_DIR,
+      487 +        help="Directory for HTML, PNG, and report artifacts.",
+      488 +    )
+      489 +    parser.add_argument(
+      490 +        "--auto-approve",
+      491 +        action="store_true",
+      492 +        help="Run without prompting: auto-fix while blocking issues remain, "
+      493 +        "then accept. Use for unattended runs.",
+      494 +    )
+      495 +    parser.add_argument(
+      496 +        "--result-json",
+      497 +        type=Path,
+      498 +        help="Optional path to write the run result (including history) as JSON.",
+      499 +    )
+      500 +    args = parser.parse_args()
+      501 +
+      502 +    if not args.image.is_file():
+      503 +        print(f"Error: Image not found: {args.image}", file=sys.stderr)
+      504 +        sys.exit(1)
+      505 +
+      506 +    if args.max_iterations < 1:
+      507 +        print("Error: --max-iterations must be at least 1.", file=sys.stderr)
+      508 +        sys.exit(1)
+      509 +
+      510 +    result = digitize(
+      511 +        args.image.resolve(),
+      512 +        args.document_type,
+      513 +        max_iterations=args.max_iterations,
+      514 +        output_dir=args.output_dir,
+      515 +        auto_approve=args.auto_approve,
+      516 +    )
+      517 +
+      518 +    if args.result_json:
+      519 +        args.result_json.parent.mkdir(parents=True, exist_ok=True)
+      520 +        args.result_json.write_text(
+      521 +            json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+      522 +        )
+      523 +        print(f"Result written to {args.result_json}")
+      524 +
+      525 +    sys.exit(0 if result.get("status") == "complete" else 2)
+      526 +
+      527 +
+      528 +if __name__ == "__main__":
+      529 +    main()
+
+● Please run /login · API Error: 403 [agentrouter/claude-opus-5] [403]: user quota is not enough (request id:
+  2026080520122582657538297dgrSunhXecI) (reset after 10s)
+

@@ -115,7 +115,7 @@
     "semantic_hash": "5c66426c6a58c4f144a31565bb766a66"
   },
   "html_engine/components/table.py": {
-    "mtime": 1785927942.4199483,
+    "mtime": 1785142101.6139655,
     "ast_hash": "6ce099cf9e05286b8b7247e11318b47f",
     "semantic_hash": "6ce099cf9e05286b8b7247e11318b47f"
   },
@@ -165,9 +165,9 @@
     "semantic_hash": "4b85cea1ff692a331140014764c67622"
   },
   "information_extraction/schemas/laalpurja_patched.json": {
-    "mtime": 1785930575.8455777,
-    "ast_hash": "f752571b8796fe9bf22659971828c363",
-    "semantic_hash": ""
+    "mtime": 1785757275.4783697,
+    "ast_hash": "0025e938a2bedf231c25bebf450124e5",
+    "semantic_hash": "0025e938a2bedf231c25bebf450124e5"
   },
   "information_extraction/translator.py": {
     "mtime": 1783505404.3809938,
@@ -225,14 +225,14 @@
     "semantic_hash": "534b05ab044bbfbeb9904fd297e16520"
   },
   "documentation/log.txt": {
-    "mtime": 1785920187.462238,
-    "ast_hash": "ae268b61f69b255402f8b17be5fe94f3",
-    "semantic_hash": ""
+    "mtime": 1785919619.105059,
+    "ast_hash": "2703e5976da0064651d4388c0a1e88ca",
+    "semantic_hash": "2703e5976da0064651d4388c0a1e88ca"
   },
   "documentation/tasks.txt": {
-    "mtime": 1785920194.860468,
-    "ast_hash": "8b06aa535978780c508fa2e57f1941a9",
-    "semantic_hash": ""
+    "mtime": 1785752926.537878,
+    "ast_hash": "6393688caf728479f024ad3c573dd4f1",
+    "semantic_hash": "6393688caf728479f024ad3c573dd4f1"
   },
   "laalpurja.html": {
     "mtime": 1785660321.5162077,
@@ -300,9 +300,9 @@
     "semantic_hash": "0a57486cd000f2928abc5d3336d4ad02"
   },
   "requirements.txt": {
-    "mtime": 1785930847.5989373,
-    "ast_hash": "298bf963b0237c36357d028c3f21b651",
-    "semantic_hash": ""
+    "mtime": 1785136387.9112394,
+    "ast_hash": "21ea0d1cd6e73ea1fce3ce85903083f5",
+    "semantic_hash": "21ea0d1cd6e73ea1fce3ce85903083f5"
   },
   "controller-old/test-data/input.png": {
     "mtime": 1784792067.4690225,
@@ -367,56 +367,6 @@
   "CLAUDE.md": {
     "mtime": 1785919891.313739,
     "ast_hash": "82efb97a359f5c7290bf2513d14686be",
-    "semantic_hash": ""
-  },
-  "agentic_controller/__init__.py": {
-    "mtime": 1785930234.2399395,
-    "ast_hash": "f3dc05f6e39eec7e11073d7ed6244709",
-    "semantic_hash": ""
-  },
-  "agentic_controller/architect.py": {
-    "mtime": 1785930482.1679385,
-    "ast_hash": "84be5b35d54a65bf8791cbff39d8bfc7",
-    "semantic_hash": ""
-  },
-  "agentic_controller/models.py": {
-    "mtime": 1785926995.7369518,
-    "ast_hash": "1370927939d16316ec11f339dabe4424",
-    "semantic_hash": ""
-  },
-  "agentic_controller/rag_engine.py": {
-    "mtime": 1785927348.6769505,
-    "ast_hash": "7087dacb3ed3d5bf1bbbcfcfe230af28",
-    "semantic_hash": ""
-  },
-  "agentic_controller/rendering.py": {
-    "mtime": 1785927084.8399515,
-    "ast_hash": "a8eddf9c58a2c58e9782cc991ae138fc",
-    "semantic_hash": ""
-  },
-  "agentic_controller/schema_patcher.py": {
-    "mtime": 1785927159.2199512,
-    "ast_hash": "ad41701af9c5092f9aeaaef7dd10d44a",
-    "semantic_hash": ""
-  },
-  "agentic_controller/verifier.py": {
-    "mtime": 1785927215.182951,
-    "ast_hash": "a27dfca504f60c8fb51c4cbb70e61591",
-    "semantic_hash": ""
-  },
-  "document_builder/laalpurja/layout_1.py": {
-    "mtime": 1785930603.7085059,
-    "ast_hash": "ee54e48ec5663a113d4a40d01c720312",
-    "semantic_hash": ""
-  },
-  "agentic_controller/SALVAGE.md": {
-    "mtime": 1785927388.9839504,
-    "ast_hash": "ca944b12add2ecab1065bc1ec56693f0",
-    "semantic_hash": ""
-  },
-  "documentation/verification-rules.md": {
-    "mtime": 1785926275.8209546,
-    "ast_hash": "64502401c02a0e6b5576be822581ca20",
     "semantic_hash": ""
   }
 }

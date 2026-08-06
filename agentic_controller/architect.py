@@ -1,0 +1,1260 @@
+"""The Architect Agent — autonomous layout and schema generation.
+
+Phase 2 of the agentic controller. Replaces the LangGraph state machine with a
+tool-calling agent loop.
+
+WHAT THE AGENT SEES
+-------------------
+Every call carries the four context sources named in the design brief:
+
+1. the **source scan** (image block),
+2. the **rendered output** (image block, absent on a from-scratch run),
+3. the current **layout builder** and **extraction schema** (paths, read on demand),
+4. **html_engine** and the existing builders, via the RAG index.
+
+`documentation/verification-rules.md` is injected *directly* into the system
+prompt rather than retrieved. It is small, needed on every call, and prose-to-prose
+retrieval scored 0.32-0.39 against it — too weak to rely on.
+
+TWO ENTRY POINTS
+----------------
+- :func:`analyze_and_repair` — a render exists and failed verification. The agent
+  gets the ``VerificationReport`` plus both images and writes ``layout_N.py`` /
+  ``<doc>_patched.json``.
+- :func:`generate_resources` — no layout or schema exists yet. The agent gets the
+  source scan alone and writes both from scratch. This is the ``NotImplementedError``
+  stub from ``controller-old/graph.py``, now the feature.
+
+AUTONOMY vs CONSTRAINT
+----------------------
+The old controller used a **constrained patch vocabulary** — the LLM emitted
+``SchemaPatch``/``LayoutPatch`` operations, never raw code. Safe, but it could not
+generalize to an unseen document type.
+
+This agent writes layout code directly, gated by :func:`validate_layout`: the
+generated module must compile, import, and expose a ``build_<doc_type>`` callable
+before a caller may use it. Schema edits still go through
+:func:`agentic_controller.schema_patcher.apply_patches` when the agent chooses the
+patch route, so the ``*_patched.json`` sidecar convention holds either way.
+
+BEHAVIOURS CARRIED FROM ``controller-old`` (SALVAGE.md §"Behaviour to reproduce")
+--------------------------------------------------------------------------------
+1. Re-extraction ordering — schema lands before OCR re-runs; the caller honours
+   ``RepairResult.needs_reextraction``.
+2. Patched-schema preference — :func:`resolve_schema_path` prefers an existing
+   ``*_patched.json`` sidecar. Without this the pipeline silently re-extracts with
+   the unpatched schema and the repair appears to do nothing.
+3. Iteration cap — ``MAX_REPAIR_ITERATIONS = 3``, with a forced stop.
+4. Append-only history — every tool call is appended to ``RepairResult.history``.
+5. Dotted-path edits — ``plots.0.plot_no`` is the user-guided edit syntax, and the
+   ``data-field`` attributes the layout must preserve for it to work.
+
+USAGE
+-----
+```python
+from agentic_controller.architect import analyze_and_repair, resolve_schema_path
+from agentic_controller.verifier import verify
+
+report = verify(source_png, rendered_png)
+if report.overall_match != "pass":
+    result = analyze_and_repair(
+        report=report,
+        source_image=source_png,
+        rendered_image=rendered_png,
+        document_type="laalpurja",
+        current_schema_path=resolve_schema_path("laalpurja"),
+        current_layout_path=Path("document_builder/laalpurja/layout.py"),
+    )
+```
+"""
+
+from __future__ import annotations
+
+import argparse
+import ast
+import base64
+import json
+import os
+import subprocess
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Literal
+
+from dotenv import load_dotenv
+
+from agentic_controller.models import VerificationReport
+from agentic_controller.rag_engine import format_context, query_context
+
+load_dotenv()
+
+
+# ── Constants ─────────────────────────────────────────────────────
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+SCHEMA_DIR = PROJECT_ROOT / "information_extraction" / "schemas"
+BUILDER_DIR = PROJECT_ROOT / "document_builder"
+RULES_PATH = PROJECT_ROOT / "documentation" / "verification-rules.md"
+
+MAX_REPAIR_ITERATIONS = 3
+"""Forced stop on the outer repair loop. Matches ``controller-old`` default."""
+
+MAX_TOOL_CALLS = 24
+"""Budget for the inner tool-use loop of a single agent invocation."""
+
+COMMAND_TIMEOUT = 120
+
+_ALLOWED_COMMAND_PREFIXES = (
+    "python -m agentic_controller",
+    "python -m information_extraction",
+    "python -c",
+    "python -m py_compile",
+    "ls",
+    "cat",
+    "head",
+    "tail",
+    "grep",
+    "rg",
+    "find",
+    "wc",
+)
+"""``execute_command`` allowlist. The agent may inspect and re-run the pipeline;
+it may not install packages, touch git, or reach the network."""
+
+_IMAGE_MEDIA_TYPES = {
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".webp": "image/webp",
+    ".gif": "image/gif",
+}
+
+
+# ── Result model ──────────────────────────────────────────────────
+
+@dataclass
+class RepairResult:
+    """What the Architect Agent produced on one invocation."""
+
+    summary: str
+    """One-paragraph explanation of what was wrong and what changed."""
+
+    needs_reextraction: bool
+    """True when the schema changed — OCR must re-run before the rebuild."""
+
+    schema_path: Path | None = None
+    """The patched schema, if one was written (``<doc>_patched.json``)."""
+
+    layout_path: Path | None = None
+    """The updated layout, if one was written (``layout_N.py``)."""
+
+    iteration: int = 1
+    """Which repair iteration produced this result."""
+
+    history: list[dict[str, Any]] = field(default_factory=list)
+    """Append-only trace: one entry per tool call, in order."""
+
+    def describe(self) -> str:
+        """Human-readable one-screen summary, for the Phase 3 checkpoint."""
+        lines = [f"Iteration {self.iteration}: {self.summary}"]
+        if self.schema_path:
+            lines.append(f"  schema → {self.schema_path}")
+        if self.layout_path:
+            lines.append(f"  layout → {self.layout_path}")
+        lines.append(f"  re-extraction needed: {self.needs_reextraction}")
+        lines.append(f"  tool calls: {len(self.history)}")
+        return "\n".join(lines)
+
+
+# ── Path resolution (SALVAGE.md behaviour 2) ──────────────────────
+
+def resolve_schema_path(document_type: str, *, schema_dir: Path | None = None) -> Path:
+    """Return the schema the pipeline should actually extract with.
+
+    Prefers a ``<doc>_patched.json`` sidecar over the original. ``controller-old``
+    did this inside ``graph.apply_repair``; skipping it makes every schema repair
+    look like a no-op, because OCR re-runs against the unpatched base.
+    """
+    directory = schema_dir or SCHEMA_DIR
+    patched = directory / f"{document_type}_patched.json"
+    if patched.is_file():
+        return patched
+    return directory / f"{document_type}.json"
+
+
+def next_layout_path(document_type: str, *, builder_dir: Path | None = None) -> Path:
+    """Return the next unused ``layout_N.py`` for *document_type*.
+
+    Originals are never overwritten: ``layout.py`` stays intact for rollback and
+    iterations land beside it as ``layout_1.py``, ``layout_2.py``, ...
+    """
+    directory = (builder_dir or BUILDER_DIR) / document_type
+    n = 1
+    while (directory / f"layout_{n}.py").exists():
+        n += 1
+    return directory / f"layout_{n}.py"
+
+
+def current_layout_path(document_type: str, *, builder_dir: Path | None = None) -> Path | None:
+    """Return the highest-numbered existing layout, or ``layout.py``, or None."""
+    directory = (builder_dir or BUILDER_DIR) / document_type
+    if not directory.is_dir():
+        return None
+    versioned = sorted(
+        (p for p in directory.glob("layout_*.py") if p.stem.split("_")[-1].isdigit()),
+        key=lambda p: int(p.stem.split("_")[-1]),
+    )
+    if versioned:
+        return versioned[-1]
+    base = directory / "layout.py"
+    return base if base.is_file() else None
+
+
+# ── Validation gate ───────────────────────────────────────────────
+
+def validate_layout(layout_path: Path, document_type: str) -> tuple[bool, str]:
+    """Check that a generated layout module is safe for the caller to use.
+
+    Three gates, cheapest first: the file parses as Python, it imports without
+    raising, and it exposes a ``build_<document_type>`` callable with the
+    ``(data: dict) -> Document`` shape the pipeline calls.
+
+    Returns ``(ok, message)``. The agent is told validation happens downstream;
+    this is that downstream check, and Phase 3 runs it before repointing the
+    registry.
+    """
+    if not layout_path.is_file():
+        return False, f"Layout not found: {layout_path}"
+
+    source = layout_path.read_text(encoding="utf-8")
+    try:
+        ast.parse(source, filename=str(layout_path))
+    except SyntaxError as e:
+        return False, f"SyntaxError at line {e.lineno}: {e.msg}"
+
+    builder_name = f"build_{document_type}"
+    probe = (
+        "import importlib.util, sys\n"
+        f"spec = importlib.util.spec_from_file_location('_probe_layout', r'{layout_path}')\n"
+        "mod = importlib.util.module_from_spec(spec)\n"
+        "sys.modules['_probe_layout'] = mod\n"
+        "spec.loader.exec_module(mod)\n"
+        f"fn = getattr(mod, {builder_name!r}, None)\n"
+        "assert callable(fn), 'missing callable "
+        f"{builder_name}'\n"
+        "print('OK')\n"
+    )
+    completed = subprocess.run(
+        [os.getenv("PYTHON_EXECUTABLE", "python"), "-c", probe],
+        cwd=PROJECT_ROOT,
+        capture_output=True,
+        text=True,
+        timeout=COMMAND_TIMEOUT,
+    )
+    if completed.returncode != 0:
+        detail = (completed.stderr or completed.stdout).strip()
+        return False, f"Import failed: {detail[-1200:]}"
+    return True, f"{layout_path.name} compiles, imports, and exposes {builder_name}()."
+
+
+def validate_schema(schema_path: Path) -> tuple[bool, str]:
+    """Check that a written schema is valid JSON with the keys the extractor needs.
+
+    ``information_extraction.extractor.build_data`` reads ``schema["required"]``
+    and drops everything else, so a schema whose new fields are absent from
+    ``required`` extracts fine and then renders nothing.
+    """
+    if not schema_path.is_file():
+        return False, f"Schema not found: {schema_path}"
+    try:
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        return False, f"Invalid JSON: {e}"
+    if not isinstance(schema, dict):
+        return False, "Schema root must be a JSON object."
+
+    properties = schema.get("properties")
+    required = schema.get("required")
+    if not isinstance(properties, dict) or not properties:
+        return False, "Schema has no 'properties' object."
+    if not isinstance(required, list) or not required:
+        return False, (
+            "Schema has no 'required' list. build_data() only keeps required keys, "
+            "so nothing would reach the layout."
+        )
+    orphans = [k for k in required if k not in properties]
+    if orphans:
+        return False, f"'required' names fields absent from 'properties': {orphans}"
+    unrequired = [k for k in properties if k not in required]
+    note = f" ({len(unrequired)} property/properties not in 'required' will be dropped by build_data)" if unrequired else ""
+    return True, f"{schema_path.name}: {len(properties)} properties, {len(required)} required{note}."
+
+
+# ── System prompt ─────────────────────────────────────────────────
+
+def _load_rules() -> str:
+    try:
+        return RULES_PATH.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return (
+            "(verification-rules.md unavailable. Fall back to first principles: "
+            "English labels over Devanagari values, placeholder boxes for seals, "
+            "photos and signatures, and clean typography are all INTENDED "
+            "transformations and must never be reported as defects. Only wrong or "
+            "missing data and genuine structural mismatches are defects.)"
+        )
+
+
+_OUTPUT_CONTRACT = """{
+  "summary": "string - what was wrong and what you changed",
+  "needs_reextraction": true or false,
+  "schema_path": "absolute path or null",
+  "layout_path": "absolute path or null"
+}"""
+
+
+def _build_system_prompt(mode: Literal["repair", "generate"]) -> str:
+    """Assemble the system prompt, with the verification rules embedded."""
+    if mode == "repair":
+        job = """Your job: read a VerificationReport produced by a vision model that compared a
+source document scan against its digitally rendered replica, then repair the layout
+builder and/or the extraction schema so the next render passes verification."""
+        workflow = """# WORKFLOW
+
+1. **Read the report against the images.** Both the source scan and the rendered
+   output are attached. Trust your own eyes over the report's prose when they
+   disagree, but only act on discrepancies the report marks major or critical.
+
+2. **Classify each blocking discrepancy** as one of:
+   - *missing or wrong data* — OCR did not capture it, or captured it badly.
+     This is a schema problem. Usually the field description is too weak, not
+     the schema structure.
+   - *data present but not rendered* — the schema has it and the layout drops it,
+     or renders it in the wrong cell. This is a layout problem.
+   - *structural mismatch* — column counts, row spans, section order, placeholder
+     position. Layout problem.
+
+3. **Retrieve what you need.** `query_context` covers html_engine, the existing
+   builders, and the schemas. Look up the component before you use it.
+
+4. **Read before you write.** `read_file` the current layout and schema. Do not
+   assume a helper exists.
+
+5. **Write.** Schema edits go to `<doc_type>_patched.json`; layouts go to the
+   `layout_N.py` path given in the task message. Never overwrite an original.
+
+6. **Emit the JSON contract** as your final message."""
+    else:
+        job = """Your job: a document type has no layout builder and no extraction schema yet.
+The source scan is attached. Design both from scratch, so the pipeline can extract
+this document and render a faithful replica of it."""
+        workflow = """# WORKFLOW
+
+1. **Read the scan.** Identify the document's real structure: header block, the
+   label/value information panel, any tabular region and its exact column count,
+   the footer, and every seal, photo, or signature that needs a placeholder box.
+
+2. **Study a sibling builder first.** `query_context` for an existing layout and
+   its schema, then `read_file` that layout in full. Your output must look like it
+   was written by the same hand: same helper names, same section comments, same
+   component vocabulary.
+
+3. **Write the schema first.** One property per field you can actually see, each
+   with a description precise enough for an OCR model to find it. Every field you
+   intend to render must also appear in `required` — `build_data()` drops the rest.
+
+4. **Then write the layout.** It must define `build_<doc_type>(data: dict) -> Document`,
+   read only keys present in the schema's `required` list, and guard every lookup
+   against None so a missing value renders as an empty string rather than the
+   literal text "None".
+
+5. **Emit the JSON contract** as your final message, with `needs_reextraction`
+   set to true — no extraction has happened yet."""
+
+    return f"""You are the Architect Agent for an autonomous Nepali document digitization pipeline.
+
+{job}
+
+The pipeline is: scan -> schema-guided OCR -> JSON data -> layout builder ->
+html_engine Document -> HTML -> headless-Chrome PNG -> vision verification.
+
+# VERIFICATION RULES (your optimization target)
+
+{_load_rules()}
+
+# TOOLS
+
+- **query_context(question, k)** — semantic search over `html_engine/` (the
+  component library), `document_builder/` (existing builders), and
+  `information_extraction/` (extractor and schemas). Ask in prose: "how to render a
+  table", "laalpurja header structure", "citizenship schema father fields".
+- **read_file(path)** — read a file. Absolute paths, or paths relative to the
+  project root.
+- **write_file(path, content)** — write a file. Only paths inside the project's
+  `document_builder/` and `information_extraction/schemas/` trees are accepted.
+- **execute_command(cmd)** — read-only inspection and pipeline re-runs only.
+  Package installs, git, and network access are rejected.
+
+{workflow}
+
+# HARD RULES
+
+- **Blocking issues only.** A `minor` discrepancy is not worth a layout change;
+  churning the file to chase one costs a verification cycle and usually regresses
+  something else.
+- **Schema-first.** A missing field is more often a weak extraction description
+  than a missing property. Sharpen the description before you add structure.
+- **Never overwrite an original.** `layout.py` and `<doc_type>.json` are the
+  rollback point. Write `layout_N.py` and `<doc_type>_patched.json`.
+- **Preserve contenteditable.** If the current layout attaches
+  `contenteditable="true"` and `data-field="..."` attributes, carry every one of
+  them across, with identical field names. The dotted paths (`plots.0.plot_no`)
+  are the contract the user-guided edit flow binds to; renaming one silently
+  breaks it.
+- **Guard against None.** OCR returns absent fields as None. Convert to "" before
+  rendering — a literal "None" in the output is a critical defect.
+- **`needs_reextraction` is true whenever the schema changed.** Adding or
+  rewording a field means nothing until OCR runs again.
+- **Write complete files.** No ellipses, no "unchanged above" markers, no TODOs.
+  The file you write is the file that runs.
+
+# OUTPUT
+
+Your final message — the one with no tool call — must be exactly this JSON object
+and nothing else. No prose before it, no markdown fence around it:
+
+{_OUTPUT_CONTRACT}
+
+Use null, not a guess, for a file you did not write.
+"""
+
+
+# ── Tool schemas ──────────────────────────────────────────────────
+
+TOOLS: list[dict[str, Any]] = [
+    {
+        "name": "query_context",
+        "description": (
+            "Semantic search over the project's own source: html_engine (component "
+            "library), document_builder (existing layout builders), and "
+            "information_extraction (OCR extractor and JSON schemas). Ask in prose. "
+            "Use this to find component usage, layout patterns worth imitating, and "
+            "schema field definitions."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "question": {
+                    "type": "string",
+                    "description": "Prose query, e.g. 'how to render a table with merged header cells'.",
+                },
+                "k": {
+                    "type": "integer",
+                    "description": "How many chunks to return. Default 5, max 12.",
+                },
+                "source_filter": {
+                    "type": "string",
+                    "description": (
+                        "Optional path prefix to restrict results, e.g. 'html_engine' "
+                        "or 'document_builder/laalpurja'."
+                    ),
+                },
+            },
+            "required": ["question"],
+        },
+    },
+    {
+        "name": "read_file",
+        "description": (
+            "Read a text file. Accepts an absolute path or one relative to the project "
+            "root. Use it on the current layout and schema before proposing changes."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Absolute or project-relative path."},
+            },
+            "required": ["path"],
+        },
+    },
+    {
+        "name": "write_file",
+        "description": (
+            "Write a complete file. Restricted to document_builder/ and "
+            "information_extraction/schemas/. Originals (layout.py, <doc>.json) are "
+            "rejected — write layout_N.py and <doc>_patched.json instead."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Absolute or project-relative path."},
+                "content": {"type": "string", "description": "The entire file content."},
+            },
+            "required": ["path", "content"],
+        },
+    },
+    {
+        "name": "execute_command",
+        "description": (
+            "Run a read-only inspection command or re-run the pipeline. Allowed: "
+            "python -m agentic_controller..., python -m information_extraction..., "
+            "python -c, python -m py_compile, ls, cat, head, tail, grep, rg, find, wc. "
+            "Anything else is rejected."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "cmd": {"type": "string", "description": "The shell command."},
+            },
+            "required": ["cmd"],
+        },
+    },
+]
+
+
+# ── Tool implementations ──────────────────────────────────────────
+
+def _resolve(path_str: str) -> Path:
+    """Resolve a model-supplied path against the project root."""
+    p = Path(path_str).expanduser()
+    if not p.is_absolute():
+        p = PROJECT_ROOT / p
+    return p.resolve()
+
+
+def _write_allowed(path: Path) -> tuple[bool, str]:
+    """Gate write_file: inside the writable trees, and never onto an original."""
+    writable = (BUILDER_DIR.resolve(), SCHEMA_DIR.resolve())
+    if not any(path == root or root in path.parents for root in writable):
+        return False, (
+            f"Refused: {path} is outside the writable trees "
+            f"(document_builder/, information_extraction/schemas/)."
+        )
+    if path.suffix == ".py" and path.name == "layout.py":
+        return False, (
+            "Refused: layout.py is the rollback original. Write layout_N.py instead."
+        )
+    if path.suffix == ".json" and not path.stem.endswith("_patched"):
+        return False, (
+            f"Refused: {path.name} is the base schema. Write {path.stem}_patched.json instead."
+        )
+    if path.suffix not in (".py", ".json"):
+        return False, f"Refused: only .py and .json writes are allowed, got {path.suffix or '(none)'}."
+    return True, ""
+
+
+def _tool_query_context(question: str, k: int = 5, source_filter: str | None = None) -> str:
+    k = max(1, min(int(k or 5), 12))
+    try:
+        results = query_context(question, k=k, source_filter=source_filter)
+    except Exception as e:  # index missing, model download failure, ...
+        return f"Error: retrieval failed ({type(e).__name__}: {e})"
+    if not results:
+        return "No results. Try broader wording, or drop source_filter."
+    return format_context(results, max_chars=9000)
+
+
+def _tool_read_file(path: str) -> str:
+    p = _resolve(path)
+    try:
+        text = p.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return f"Error: file not found: {p}"
+    except IsADirectoryError:
+        listing = "\n".join(sorted(c.name for c in p.iterdir()))
+        return f"{p} is a directory. Contents:\n{listing}"
+    except UnicodeDecodeError:
+        return f"Error: {p} is not UTF-8 text."
+    except OSError as e:
+        return f"Error reading {p}: {e}"
+    if len(text) > 60_000:
+        return text[:60_000] + f"\n\n... [truncated, {len(text)} bytes total]"
+    return text
+
+
+def _tool_write_file(path: str, content: str) -> str:
+    p = _resolve(path)
+    ok, why = _write_allowed(p)
+    if not ok:
+        return why
+    if not content.strip():
+        return "Refused: empty content."
+    try:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(content, encoding="utf-8")
+    except OSError as e:
+        return f"Error writing {p}: {e}"
+
+    # Immediate feedback so the agent can fix its own mistake in-loop rather than
+    # handing a broken file to the caller.
+    if p.suffix == ".py":
+        try:
+            ast.parse(content, filename=str(p))
+        except SyntaxError as e:
+            return (
+                f"Wrote {len(content)} bytes to {p}, but it does NOT parse: "
+                f"SyntaxError line {e.lineno}: {e.msg}. Rewrite the file."
+            )
+    elif p.suffix == ".json":
+        valid, msg = validate_schema(p)
+        if not valid:
+            return f"Wrote {len(content)} bytes to {p}, but it is not usable: {msg}"
+        return f"Wrote {len(content)} bytes to {p}. {msg}"
+    return f"Wrote {len(content)} bytes to {p} (parses cleanly)."
+
+
+def _tool_execute_command(cmd: str) -> str:
+    stripped = cmd.strip()
+    if not stripped.startswith(_ALLOWED_COMMAND_PREFIXES):
+        return (
+            f"Refused: {stripped.split()[0] if stripped else '(empty)'} is not on the "
+            f"allowlist. Allowed prefixes: {', '.join(_ALLOWED_COMMAND_PREFIXES)}."
+        )
+    try:
+        completed = subprocess.run(
+            stripped,
+            shell=True,
+            cwd=PROJECT_ROOT,
+            capture_output=True,
+            text=True,
+            timeout=COMMAND_TIMEOUT,
+        )
+    except subprocess.TimeoutExpired:
+        return f"Error: command exceeded {COMMAND_TIMEOUT}s and was killed."
+    except OSError as e:
+        return f"Error executing command: {e}"
+    out = (completed.stdout + completed.stderr).strip()
+    if len(out) > 20_000:
+        out = out[:20_000] + "\n... [truncated]"
+    return out or f"(exit code {completed.returncode}, no output)"
+
+
+def _dispatch_tool(name: str, args: dict[str, Any]) -> str:
+    try:
+        if name == "query_context":
+            return _tool_query_context(
+                args["question"], args.get("k", 5), args.get("source_filter")
+            )
+        if name == "read_file":
+            return _tool_read_file(args["path"])
+        if name == "write_file":
+            return _tool_write_file(args["path"], args["content"])
+        if name == "execute_command":
+            return _tool_execute_command(args["cmd"])
+    except KeyError as e:
+        return f"Error: tool {name} called without required argument {e}."
+    except Exception as e:
+        return f"Error: tool {name} raised {type(e).__name__}: {e}"
+    return f"Error: unknown tool {name!r}."
+
+
+# ── Content blocks (backend-neutral) ──────────────────────────────
+#
+# The loop runs on either the Anthropic or the OpenAI SDK. Prompts are assembled
+# as neutral blocks and converted per backend at send time, so the entry points
+# below never mention a provider.
+
+def _text(text: str) -> dict[str, Any]:
+    return {"kind": "text", "text": text}
+
+
+def _image(path: Path) -> dict[str, Any]:
+    """A neutral image block. Validates eagerly — a bad path should fail here,
+    not three tool calls into a paid loop."""
+    if not path.is_file():
+        raise FileNotFoundError(f"Image not found: {path}")
+    media_type = _IMAGE_MEDIA_TYPES.get(path.suffix.lower())
+    if media_type is None:
+        raise ValueError(
+            f"Unsupported image type {path.suffix!r} for {path}. "
+            f"Supported: {', '.join(sorted(_IMAGE_MEDIA_TYPES))}"
+        )
+    return {
+        "kind": "image",
+        "media_type": media_type,
+        "data": base64.b64encode(path.read_bytes()).decode("ascii"),
+    }
+
+
+def _to_anthropic_blocks(blocks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out = []
+    for b in blocks:
+        if b["kind"] == "text":
+            out.append({"type": "text", "text": b["text"]})
+        else:
+            out.append({
+                "type": "image",
+                "source": {
+                    "type": "base64",
+                    "media_type": b["media_type"],
+                    "data": b["data"],
+                },
+            })
+    return out
+
+
+def _to_openai_blocks(blocks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out = []
+    for b in blocks:
+        if b["kind"] == "text":
+            out.append({"type": "text", "text": b["text"]})
+        else:
+            out.append({
+                "type": "image_url",
+                "image_url": {
+                    "url": f"data:{b['media_type']};base64,{b['data']}",
+                    "detail": "high",
+                },
+            })
+    return out
+
+
+# ── Backend selection ─────────────────────────────────────────────
+
+def _select_backend() -> tuple[str, Any, str]:
+    """Return ``(backend, client, model)``.
+
+    Prefers Anthropic when its key is present — the tool-calling loop was designed
+    against it and image reasoning is stronger. Falls back to any OpenAI-compatible
+    endpoint, which is what the verifier already uses, so a project with only
+    ``OPENAI_API_KEY`` still runs end to end.
+
+    ``ARCHITECT_BACKEND=anthropic|openai`` forces the choice.
+    """
+    forced = (os.getenv("ARCHITECT_BACKEND") or "").strip().lower()
+    has_anthropic = bool(os.getenv("ANTHROPIC_API_KEY"))
+    has_openai = bool(os.getenv("OPENAI_API_KEY"))
+
+    if forced == "anthropic" or (not forced and has_anthropic):
+        if not has_anthropic:
+            raise RuntimeError("ARCHITECT_BACKEND=anthropic but ANTHROPIC_API_KEY is not set.")
+        try:
+            from anthropic import Anthropic
+        except ImportError as e:
+            raise RuntimeError("pip install anthropic") from e
+        model = os.getenv("ARCHITECT_MODEL", "claude-sonnet-4-5-20250929")
+        return "anthropic", Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY")), model
+
+    if forced == "openai" or (not forced and has_openai):
+        if not has_openai:
+            raise RuntimeError("ARCHITECT_BACKEND=openai but OPENAI_API_KEY is not set.")
+        try:
+            from openai import OpenAI
+        except ImportError as e:
+            raise RuntimeError("pip install openai") from e
+        model = os.getenv("ARCHITECT_MODEL", "gpt-4.1")
+        return "openai", OpenAI(api_key=os.getenv("OPENAI_API_KEY")), model
+
+    raise RuntimeError(
+        "No API key found. The Architect Agent needs ANTHROPIC_API_KEY "
+        "(preferred) or OPENAI_API_KEY. Add one to .env."
+    )
+
+
+_OPENAI_TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": t["name"],
+            "description": t["description"],
+            "parameters": t["input_schema"],
+        },
+    }
+    for t in TOOLS
+]
+
+
+# ── Agent loop ────────────────────────────────────────────────────
+
+_BUDGET_NOTICE = (
+    "Tool budget exhausted. Do not call any more tools. Reply now with the final "
+    "JSON object only, describing the files you actually wrote."
+)
+
+
+def _record(history: list[dict[str, Any]], name: str, args: dict[str, Any], result: str) -> None:
+    """Append-only trace — SALVAGE.md behaviour 4."""
+    history.append({
+        "tool": name,
+        "input": {k: (f"<{len(v)} bytes>" if k == "content" else v) for k, v in args.items()},
+        "result": result[:400],
+    })
+
+
+def _log_call(verbose: bool, n: int, name: str, args: dict[str, Any]) -> None:
+    if verbose:
+        preview = args.get("question") or args.get("path") or args.get("cmd") or ""
+        print(f"  [{n}] {name}({str(preview)[:80]})")
+
+
+def _run_agent_anthropic(
+    client: Any, model: str, system_prompt: str,
+    blocks: list[dict[str, Any]], max_tool_calls: int, verbose: bool,
+) -> tuple[str, list[dict[str, Any]]]:
+    messages: list[dict[str, Any]] = [{"role": "user", "content": _to_anthropic_blocks(blocks)}]
+    history: list[dict[str, Any]] = []
+    calls = 0
+    forced_finish = False
+
+    while True:
+        response = client.messages.create(
+            model=model, max_tokens=16_000, system=system_prompt,
+            messages=messages, tools=TOOLS,
+        )
+        messages.append({"role": "assistant", "content": response.content})
+
+        tool_uses = [b for b in response.content if getattr(b, "type", None) == "tool_use"]
+        if not tool_uses:
+            texts = [b.text for b in response.content if getattr(b, "type", None) == "text"]
+            final = "\n".join(texts).strip()
+            if not final:
+                raise RuntimeError(
+                    f"Agent stopped with neither text nor a tool call "
+                    f"(stop_reason={response.stop_reason})."
+                )
+            return final, history
+
+        if forced_finish or calls + len(tool_uses) > max_tool_calls:
+            messages.append({"role": "user", "content": [
+                {"type": "tool_result", "tool_use_id": tu.id,
+                 "content": _BUDGET_NOTICE, "is_error": True}
+                for tu in tool_uses
+            ]})
+            _record(history, "(budget)", {}, _BUDGET_NOTICE)
+            forced_finish = True
+            continue
+
+        results = []
+        for tu in tool_uses:
+            calls += 1
+            args = dict(tu.input or {})
+            _log_call(verbose, calls, tu.name, args)
+            result = _dispatch_tool(tu.name, args)
+            _record(history, tu.name, args, result)
+            results.append({"type": "tool_result", "tool_use_id": tu.id, "content": result})
+        messages.append({"role": "user", "content": results})
+
+
+def _run_agent_openai(
+    client: Any, model: str, system_prompt: str,
+    blocks: list[dict[str, Any]], max_tool_calls: int, verbose: bool,
+) -> tuple[str, list[dict[str, Any]]]:
+    messages: list[dict[str, Any]] = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": _to_openai_blocks(blocks)},
+    ]
+    history: list[dict[str, Any]] = []
+    calls = 0
+    forced_finish = False
+
+    while True:
+        response = client.chat.completions.create(
+            model=model, messages=messages, tools=_OPENAI_TOOLS, max_tokens=16_000,
+        )
+        message = response.choices[0].message
+        tool_calls = list(message.tool_calls or [])
+
+        # Echo the assistant turn back verbatim; the API rejects a tool result
+        # whose originating tool_call is absent from the history.
+        messages.append({
+            "role": "assistant",
+            "content": message.content or "",
+            **({"tool_calls": [
+                {"id": tc.id, "type": "function",
+                 "function": {"name": tc.function.name, "arguments": tc.function.arguments}}
+                for tc in tool_calls
+            ]} if tool_calls else {}),
+        })
+
+        if not tool_calls:
+            final = (message.content or "").strip()
+            if not final:
+                raise RuntimeError(
+                    f"Agent stopped with neither text nor a tool call "
+                    f"(finish_reason={response.choices[0].finish_reason})."
+                )
+            return final, history
+
+        if forced_finish or calls + len(tool_calls) > max_tool_calls:
+            for tc in tool_calls:
+                messages.append({"role": "tool", "tool_call_id": tc.id, "content": _BUDGET_NOTICE})
+            _record(history, "(budget)", {}, _BUDGET_NOTICE)
+            forced_finish = True
+            continue
+
+        for tc in tool_calls:
+            calls += 1
+            try:
+                args = json.loads(tc.function.arguments or "{}")
+            except json.JSONDecodeError as e:
+                result = f"Error: arguments were not valid JSON ({e}). Retry the call."
+                _record(history, tc.function.name, {}, result)
+                messages.append({"role": "tool", "tool_call_id": tc.id, "content": result})
+                continue
+            _log_call(verbose, calls, tc.function.name, args)
+            result = _dispatch_tool(tc.function.name, args)
+            _record(history, tc.function.name, args, result)
+            messages.append({"role": "tool", "tool_call_id": tc.id, "content": result})
+
+
+def _run_agent(
+    system_prompt: str,
+    blocks: list[dict[str, Any]],
+    *,
+    max_tool_calls: int = MAX_TOOL_CALLS,
+    verbose: bool = True,
+) -> tuple[str, list[dict[str, Any]]]:
+    """Drive the tool-use loop until the model answers with text.
+
+    Returns ``(final_text, history)``.
+    """
+    backend, client, model = _select_backend()
+    if verbose:
+        print(f"  backend: {backend} ({model})")
+    runner = _run_agent_anthropic if backend == "anthropic" else _run_agent_openai
+    return runner(client, model, system_prompt, blocks, max_tool_calls, verbose)
+
+
+
+def _parse_contract(final_text: str) -> dict[str, Any]:
+    """Extract the JSON contract from the agent's final message."""
+    text = final_text.strip()
+    if text.startswith("```"):
+        # ```json ... ``` or ``` ... ```
+        body = text.split("```")
+        text = body[1] if len(body) > 1 else text
+        if text.lstrip().lower().startswith("json"):
+            text = text.lstrip()[4:]
+        text = text.strip()
+    try:
+        parsed = json.loads(text)
+    except json.JSONDecodeError:
+        # Last resort: the outermost {...} span.
+        start, end = text.find("{"), text.rfind("}")
+        if start == -1 or end <= start:
+            raise RuntimeError(f"Agent returned no JSON object:\n\n{final_text[:2000]}") from None
+        try:
+            parsed = json.loads(text[start:end + 1])
+        except json.JSONDecodeError as e:
+            raise RuntimeError(f"Agent returned invalid JSON: {e}\n\n{final_text[:2000]}") from e
+    if not isinstance(parsed, dict) or "summary" not in parsed:
+        raise RuntimeError(f"Agent JSON is missing 'summary':\n\n{final_text[:2000]}")
+    return parsed
+
+
+def _result_from_contract(
+    contract: dict[str, Any],
+    history: list[dict[str, Any]],
+    iteration: int,
+) -> RepairResult:
+    """Build a RepairResult, trusting the filesystem over the agent's claims."""
+    schema_path = contract.get("schema_path")
+    layout_path = contract.get("layout_path")
+
+    schema = _resolve(schema_path) if schema_path else None
+    layout = _resolve(layout_path) if layout_path else None
+
+    # The agent sometimes names a file it decided not to write. Drop phantoms.
+    if schema is not None and not schema.is_file():
+        schema = None
+    if layout is not None and not layout.is_file():
+        layout = None
+
+    needs_reextraction = bool(contract.get("needs_reextraction", False))
+    if schema is not None and not needs_reextraction:
+        # A schema change is inert until OCR re-runs (SALVAGE.md behaviour 1).
+        needs_reextraction = True
+
+    return RepairResult(
+        summary=str(contract["summary"]),
+        needs_reextraction=needs_reextraction,
+        schema_path=schema,
+        layout_path=layout,
+        iteration=iteration,
+        history=history,
+    )
+
+
+# ── Public entry point: repair ────────────────────────────────────
+
+def analyze_and_repair(
+    report: VerificationReport,
+    source_image: Path,
+    document_type: str,
+    current_schema_path: Path,
+    current_layout_path: Path | None = None,
+    *,
+    rendered_image: Path | None = None,
+    user_concerns: str | None = None,
+    iteration: int = 1,
+    max_tool_calls: int = MAX_TOOL_CALLS,
+    verbose: bool = True,
+) -> RepairResult:
+    """Repair the layout and/or schema so the next render passes verification.
+
+    Parameters
+    ----------
+    report:
+        The report from comparing source against rendered.
+    source_image:
+        The source scan. Attached to the prompt as an image.
+    document_type:
+        Slug, e.g. ``"laalpurja"``.
+    current_schema_path:
+        The schema currently in use. Pass :func:`resolve_schema_path` output so a
+        prior ``*_patched.json`` wins over the base.
+    current_layout_path:
+        The layout currently in use, or None.
+    rendered_image:
+        The failed render. Attached alongside the source when given — the agent
+        reasons far better from the pair than from the report's prose alone.
+    user_concerns:
+        Free text from the user-guided branch. When present it takes priority over
+        the report's own ranking.
+    iteration:
+        Which repair iteration this is; names ``layout_N.py``.
+    max_tool_calls:
+        Budget for the inner tool loop.
+
+    Returns
+    -------
+    RepairResult
+    """
+    blocking = report.blocking()
+    layout_target = next_layout_path(document_type)
+    schema_target = SCHEMA_DIR / f"{document_type}_patched.json"
+
+    if blocking:
+        blocking_text = "\n".join(
+            f"- [{d.severity.upper()}] {d.category} @ {d.location}\n"
+            f"    source:   {d.source_observation}\n"
+            f"    rendered: {d.rendered_observation}"
+            for d in blocking
+        )
+    else:
+        blocking_text = (
+            "(none marked major or critical — the user is dissatisfied anyway; "
+            "work from their concerns and from the images)"
+        )
+
+    concerns_block = (
+        f"\n## The user's own concerns (these take priority)\n\n{user_concerns.strip()}\n"
+        if user_concerns and user_concerns.strip()
+        else ""
+    )
+
+    task = f"""# Repair task
+
+The render below failed verification. Fix the layout and/or schema so the next
+render passes.
+
+## Context
+
+- Document type:  {document_type}
+- Source scan:    {source_image}
+- Rendered output:{f" {rendered_image}" if rendered_image else " (not available)"}
+- Current schema: {current_schema_path}
+- Current layout: {current_layout_path or "(none — you are writing the first one)"}
+- Iteration:      {iteration}
+
+## Where to write
+
+- Schema changes -> {schema_target}
+- Layout changes -> {layout_target}
+
+Use exactly these paths. Do not invent others, and do not touch the originals.
+
+## Verification report
+
+```json
+{report.model_dump_json(indent=2)}
+```
+
+## Blocking discrepancies ({len(blocking)} of {len(report.discrepancies)} total)
+
+{blocking_text}
+{concerns_block}
+## Now
+
+Retrieve the context you need, read the current files, decide whether this is a
+schema problem, a layout problem, or both, write the fix, and return the JSON
+object. Begin."""
+
+    blocks: list[dict[str, Any]] = [
+        _text(task),
+        _text("SOURCE scan (the reference):"),
+        _image(source_image),
+    ]
+    if rendered_image is not None:
+        blocks.append(_text("RENDERED output (what your pipeline produced):"))
+        blocks.append(_image(rendered_image))
+
+    if verbose:
+        print(f"Architect (repair, iteration {iteration}) — {len(blocking)} blocking issue(s)")
+
+    final_text, history = _run_agent(
+        _build_system_prompt("repair"),
+        blocks,
+        max_tool_calls=max_tool_calls,
+        verbose=verbose,
+    )
+    result = _result_from_contract(_parse_contract(final_text), history, iteration)
+
+    if result.layout_path is not None:
+        ok, msg = validate_layout(result.layout_path, document_type)
+        result.history.append({"tool": "(validate_layout)", "input": {}, "result": msg})
+        if verbose:
+            print(f"  validate_layout: {'OK' if ok else 'FAILED'} — {msg}")
+        if not ok:
+            result.summary += f"\n\n[VALIDATION FAILED] {msg}"
+    return result
+
+
+# ── Public entry point: generate from scratch ─────────────────────
+
+def generate_resources(
+    source_image: Path,
+    document_type: str,
+    *,
+    user_notes: str | None = None,
+    max_tool_calls: int = MAX_TOOL_CALLS,
+    verbose: bool = True,
+) -> RepairResult:
+    """Create a layout builder and extraction schema for an unseen document type.
+
+    This is the feature that ``controller-old/graph.py`` left as a
+    ``NotImplementedError`` stub. The agent sees only the source scan — no render
+    exists yet — and must infer the structure, write
+    ``information_extraction/schemas/<doc_type>_patched.json`` and
+    ``document_builder/<doc_type>/layout_1.py``, imitating an existing builder.
+
+    The returned ``needs_reextraction`` is always True: nothing has been
+    extracted yet.
+    """
+    schema_target = SCHEMA_DIR / f"{document_type}_patched.json"
+    layout_target = BUILDER_DIR / document_type / "layout_1.py"
+    notes_block = (
+        f"\n## Notes from the user\n\n{user_notes.strip()}\n" if user_notes and user_notes.strip() else ""
+    )
+
+    task = f"""# Generation task
+
+The document type `{document_type}` has no layout builder and no extraction schema.
+Create both from the attached scan.
+
+## Where to write
+
+- Schema -> {schema_target}
+- Layout -> {layout_target}
+
+Use exactly these paths.
+
+## Requirements
+
+- The layout module must define `build_{document_type}(data: dict) -> Document`,
+  importing components from `html_engine`.
+- It must read only keys that appear in your schema's `required` list —
+  `build_data()` discards everything else.
+- Every value lookup must survive a missing key: render "" rather than "None".
+- Attach `contenteditable="true"` and `data-field="<dotted.path>"` to each editable
+  value, matching the convention in the existing builders. Repeating rows use an
+  index segment, e.g. `plots.0.plot_no`.
+- Seals, photos, and signatures are placeholder boxes, never reproduced imagery.
+{notes_block}
+## Now
+
+Study an existing builder and its schema before writing anything. Then write the
+schema, then the layout, then return the JSON object. Begin."""
+
+    blocks: list[dict[str, Any]] = [
+        _text(task),
+        _text(f"SOURCE scan of the {document_type} document:"),
+        _image(source_image),
+    ]
+
+    if verbose:
+        print(f"Architect (generate) — new document type '{document_type}'")
+
+    final_text, history = _run_agent(
+        _build_system_prompt("generate"),
+        blocks,
+        max_tool_calls=max_tool_calls,
+        verbose=verbose,
+    )
+    result = _result_from_contract(_parse_contract(final_text), history, iteration=1)
+    result.needs_reextraction = True  # nothing has been extracted yet, by definition
+
+    if result.layout_path is not None:
+        ok, msg = validate_layout(result.layout_path, document_type)
+        result.history.append({"tool": "(validate_layout)", "input": {}, "result": msg})
+        if verbose:
+            print(f"  validate_layout: {'OK' if ok else 'FAILED'} — {msg}")
+        if not ok:
+            result.summary += f"\n\n[VALIDATION FAILED] {msg}"
+    if result.schema_path is None:
+        result.summary += "\n\n[WARNING] No schema was written — extraction cannot run."
+    return result
+
+
+# ── CLI ───────────────────────────────────────────────────────────
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog="python -m agentic_controller.architect",
+        description="Run the Architect Agent against a verification report, or "
+                    "generate a layout and schema for a new document type.",
+    )
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    rep = sub.add_parser("repair", help="Repair from an existing VerificationReport.")
+    rep.add_argument("document_type")
+    rep.add_argument("source", type=Path, help="Source scan PNG.")
+    rep.add_argument("rendered", type=Path, help="Rendered output PNG.")
+    rep.add_argument(
+        "--report", type=Path,
+        help="VerificationReport JSON. Omit to run the verifier now.",
+    )
+    rep.add_argument("--concerns", help="Free-text user concerns (user-guided branch).")
+    rep.add_argument("--iteration", type=int, default=1)
+
+    gen = sub.add_parser("generate", help="Create layout + schema for a new document type.")
+    gen.add_argument("document_type")
+    gen.add_argument("source", type=Path, help="Source scan PNG.")
+    gen.add_argument("--notes", help="Free-text guidance for the generator.")
+
+    args = parser.parse_args(argv)
+
+    if args.command == "generate":
+        result = generate_resources(
+            source_image=args.source,
+            document_type=args.document_type,
+            user_notes=args.notes,
+        )
+    else:
+        if args.report:
+            report = VerificationReport.model_validate_json(
+                args.report.read_text(encoding="utf-8")
+            )
+        else:
+            from agentic_controller.verifier import verify
+            print("No --report given; running the verifier...")
+            report = verify(args.source, args.rendered)
+            print(f"  overall_match: {report.overall_match}")
+
+        result = analyze_and_repair(
+            report=report,
+            source_image=args.source,
+            rendered_image=args.rendered,
+            document_type=args.document_type,
+            current_schema_path=resolve_schema_path(args.document_type),
+            current_layout_path=current_layout_path(args.document_type),
+            user_concerns=args.concerns,
+            iteration=args.iteration,
+        )
+
+    print("\n" + result.describe())
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+

@@ -1,0 +1,45 @@
+{
+  "overall_match": "fail",
+  "summary": "The rendered output captures the main structure and much of the tabular data, but it has major issues in the top-right identifier section and misses the visible certifier signature mark in the table. The source also contains a handwritten date in the checked-by area that is not represented.",
+  "matches_well": [
+    "The overall document type and logical structure are preserved: header, owner information, photograph/thumb-impression placeholders, land details table, totals, and bottom signature areas are represented.",
+    "The coat of arms, photograph, thumb impressions, official stamp, and signatures are appropriately replaced with placeholder boxes or labels in most locations.",
+    "Most main owner details, address fields, citizenship information, issued date, issued office, and the three land-record table rows are represented in a sensible order.",
+    "The total area value is numerically consistent with the source."
+  ],
+  "discrepancies": [
+    {
+      "category": "missing_content",
+      "location": "top-right identifier area",
+      "source_observation": "The source shows an upper identifier “PF002728503” in the top-right area, which is not present in the rendered output.",
+      "rendered_observation": "The rendered output shows only one identifier, labeled “Land Ownership Certificate No.: NM0000095”.",
+      "severity": "major",
+      "confidence": 0.95
+    },
+    {
+      "category": "text",
+      "location": "top-right identifier area",
+      "source_observation": "The source lower identifier appears as “NM0000091”, not “NM0000095”.",
+      "rendered_observation": "The rendered identifier value is “NM0000095”.",
+      "severity": "major",
+      "confidence": 0.9
+    },
+    {
+      "category": "image",
+      "location": "rightmost column of land details table / certifier signature area",
+      "source_observation": "The source contains a large red handwritten signature/mark across the rightmost certifier signature column.",
+      "rendered_observation": "The “Signature of the certifier” column is blank.",
+      "severity": "major",
+      "confidence": 0.95
+    },
+    {
+      "category": "missing_content",
+      "location": "bottom-right checked-by/signature area",
+      "source_observation": "The source shows the checked-by signature area with an additional handwritten date below the signature, which is not captured in the rendered output.",
+      "rendered_observation": "The rendered output shows “Checked by: (Signed)” only.",
+      "severity": "major",
+      "confidence": 0.8
+    }
+  ],
+  "needs_human_review": false
+}

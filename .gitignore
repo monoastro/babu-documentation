@@ -4,3 +4,4 @@ master-data/
 .env
 controller/.env
 .claude/
+agentic_controller/.rag_index/

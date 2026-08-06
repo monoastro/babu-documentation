@@ -1,0 +1,53 @@
+{
+  "overall_match": "fail",
+  "summary": "The rendered output captures the general layout and many core landowner/parcel details, but it has major issues in the top-right identification numbers, issuing authority wording, and missing placeholders for visible official stamp/signature elements. These prevent it from being a faithful digitization of the source.",
+  "matches_well": [
+    "Main document structure is preserved: header, photograph/thumb impression area, landowner details box, parcel table, and bottom certification area are present.",
+    "The landowner name, address, husband’s name, father-in-law name, citizenship number, issued date, and issued office appear to largely match the source.",
+    "Photograph and thumb impressions are appropriately represented with bordered placeholders.",
+    "The parcel table layout and most visible parcel entries, transaction descriptions, plot numbers, land class, tenant names, and total area are generally represented."
+  ],
+  "discrepancies": [
+    {
+      "category": "text",
+      "location": "top-right certificate/owner number area",
+      "source_observation": "The source shows “जग्गाधनी संकेत नम्बर: PF002728503” at the top right and a separate number “NMO000091” below it. “NM0000095” does not match the visible source number, and the PF002728503 number is omitted.",
+      "rendered_observation": "Shows only “Land Ownership Certificate No.: NM0000095”.",
+      "severity": "major",
+      "confidence": 0.97
+    },
+    {
+      "category": "text",
+      "location": "header issuing authority",
+      "source_observation": "The source header reads “भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय” and “भूमि व्यवस्थापन तथा अभिलेख विभाग”, i.e. different issuing authority wording than the rendered output.",
+      "rendered_observation": "Header reads “Ministry of Land Reform and Management” and “Department of Land Reform and Management”.",
+      "severity": "major",
+      "confidence": 0.9
+    },
+    {
+      "category": "image",
+      "location": "upper-left/header official seal area",
+      "source_observation": "The source contains a prominent red round official seal/stamp overlapping the upper-left emblem/header area.",
+      "rendered_observation": "Only a coat-of-arms placeholder is shown and “(Official Stamp)” appears as small text under the office name; there is no bordered placeholder for the visible red round office seal.",
+      "severity": "major",
+      "confidence": 0.88
+    },
+    {
+      "category": "image",
+      "location": "far-right column of land parcel table",
+      "source_observation": "The source shows a large red signature/mark in the far-right certification/signature column spanning the table rows.",
+      "rendered_observation": "The “Signature of the certifier” column is blank.",
+      "severity": "major",
+      "confidence": 0.93
+    },
+    {
+      "category": "text",
+      "location": "bottom center print date",
+      "source_observation": "The source shows “प्रिन्ट मिति: २०८२/०४/१४” without an “A.D.” calendar designation.",
+      "rendered_observation": "Shows “Print Date: २०८२/०४/१४ A.D.”",
+      "severity": "minor",
+      "confidence": 0.82
+    }
+  ],
+  "needs_human_review": false
+}

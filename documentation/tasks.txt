@@ -23,3 +23,8 @@ https://github.com/datalab-to/surya
   - Implement generate_resources — teach the controller to build layout+schema for new document types via LLM
   - Query the graph about something specific (/graphify query "...")
   - Clean up orphans (study_plan.py, main.py)
+
+omniroute setup-claude
+graphify install
+graphify claude install
+graphify hook install

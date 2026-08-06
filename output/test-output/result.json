@@ -1,0 +1,21 @@
+{
+  "status": "complete",
+  "html_path": "test-output/laalpurja-2de16e5e-1.html",
+  "png_path": "test-output/laalpurja-2de16e5e-1.png",
+  "iterations": 1,
+  "history": [
+    {
+      "iteration": 1,
+      "action": "verify",
+      "discrepancies": 0,
+      "blocking": 0,
+      "html": "test-output/laalpurja-2de16e5e-1.html",
+      "png": "test-output/laalpurja-2de16e5e-1.png",
+      "report": "test-output/report-laalpurja-2de16e5e-1.json"
+    },
+    {
+      "iteration": 1,
+      "action": "approve"
+    }
+  ]
+}

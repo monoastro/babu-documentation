@@ -1,0 +1,70 @@
+{
+  "overall_match": "fail",
+  "summary": "The rendered output captures the general layout and many fields, but it has several major data and completeness issues: the top-right identifiers are incomplete and the certificate number is wrong, a source certification/signature mark in the table is missing, the print date is mislabeled as A.D., and at least one address/plot value appears incorrect.",
+  "matches_well": [
+    "Overall logical structure is recognizable: government header, title, photograph/thumb placeholders, owner information box, parcel table, total area, and footer signatures are present.",
+    "Photograph, coat of arms, and thumb impressions are represented with bordered placeholders in approximately the correct left-side positions.",
+    "Most owner identity fields such as landowner name, citizenship number, issue date, and issued office appear to be captured.",
+    "The parcel table generally preserves the source’s column structure and the three main land entries.",
+    "Total area is rendered as 4332.09 sq.m., matching the visible total in the source."
+  ],
+  "discrepancies": [
+    {
+      "category": "missing_content",
+      "location": "top-right identification area",
+      "source_observation": "The source shows two identifiers: “जग्गाधनी संकेत नम्बर” with value “PF002728503” and “प्रमाणपत्र नम्बर” with value “NMO000091”.",
+      "rendered_observation": "Only one field is shown: “Land Ownership Certificate No.: NM0000095”/similar.",
+      "severity": "major",
+      "confidence": 0.96
+    },
+    {
+      "category": "text",
+      "location": "top-right certificate number",
+      "source_observation": "The source certificate number reads “NMO000091”.",
+      "rendered_observation": "The certificate number is rendered as “NM0000095”/similar.",
+      "severity": "major",
+      "confidence": 0.92
+    },
+    {
+      "category": "text",
+      "location": "owner address / V.D.C.-M.C. field and table district/VDC column",
+      "source_observation": "The source appears to show “नाङ्लेभारे” for the V.D.C./M.C. name.",
+      "rendered_observation": "The place name is rendered as “नाईलभौरे”/similar.",
+      "severity": "major",
+      "confidence": 0.82
+    },
+    {
+      "category": "text",
+      "location": "main land parcel table, third entry, prior plot number",
+      "source_observation": "The source appears to show the third prior plot number as “६९२”.",
+      "rendered_observation": "The third prior plot number is rendered as “६१२”.",
+      "severity": "major",
+      "confidence": 0.78
+    },
+    {
+      "category": "image",
+      "location": "right side of parcel table, certifier/signature area",
+      "source_observation": "The source contains a large red handwritten/signature or certification mark in this area, which should be represented by a placeholder such as “Signed/Certified”.",
+      "rendered_observation": "The “Signature of the certifier” column is blank.",
+      "severity": "major",
+      "confidence": 0.9
+    },
+    {
+      "category": "text",
+      "location": "bottom center print date",
+      "source_observation": "The source shows “प्रिन्ट मिति २०८२/०४/१४” without “A.D.”; adding “A.D.” changes the calendar meaning.",
+      "rendered_observation": "Rendered as “Print Date: २०८२/०४/१४ A.D.”",
+      "severity": "major",
+      "confidence": 0.9
+    },
+    {
+      "category": "text",
+      "location": "header issuing authority",
+      "source_observation": "The source names “भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय” and “भूमि व्यवस्थापन तथा अभिलेख विभाग”; the rendered English institutional names are not faithful translations.",
+      "rendered_observation": "Rendered as “Ministry of Land Reform and Management” and “Department of Land Reform and Management”.",
+      "severity": "minor",
+      "confidence": 0.75
+    }
+  ],
+  "needs_human_review": false
+}

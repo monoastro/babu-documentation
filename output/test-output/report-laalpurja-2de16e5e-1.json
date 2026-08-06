@@ -1,0 +1,13 @@
+{
+  "overall_match": "pass",
+  "summary": "The rendered output accurately captures all the data fields, values, and layout structure of the source document. All text, numbers, and placeholders match correctly, including the table content and header information. The placeholders for the Coat of Arms, Photograph, Thumb Impressions, and signatures are correctly positioned and labeled. No discrepancies found.",
+  "matches_well": [
+    "Header text and titles",
+    "Landowner details section",
+    "Table with land transaction details",
+    "Placeholders for Coat of Arms, Photograph, Thumb Impressions, and signatures",
+    "Footer text with printing and checking details"
+  ],
+  "discrepancies": [],
+  "needs_human_review": false
+}
