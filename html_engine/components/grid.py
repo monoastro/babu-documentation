@@ -7,7 +7,7 @@ using CSS Flexbox and absolute positioning.
 
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from html_engine.components.base import Component
 from html_engine.styles import Style
@@ -28,12 +28,13 @@ class Div(Component):
 
     def __init__(
         self,
-        *children: Component,
+        *children: Any,
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
         attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
     ):
-        super().__init__(style=style, css_class=css_class, children=list(children), attrs=attrs)
+        super().__init__(style=style, css_class=css_class, children=list(children), attrs=attrs, field=field)
 
     def to_html(self) -> str:
         attrs = self._build_attrs()
@@ -55,17 +56,18 @@ class FlexRow(Component):
 
     def __init__(
         self,
-        *children: Component,
+        *children: Any,
         gap: Optional[str] = None,
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
         attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
     ):
         base = Style(display="flex", flex_direction="row")
         if gap:
             base = base.clone(gap=gap)
         merged = base.merge(style)
-        super().__init__(style=merged, css_class=css_class, children=list(children), attrs=attrs)
+        super().__init__(style=merged, css_class=css_class, children=list(children), attrs=attrs, field=field)
 
     def to_html(self) -> str:
         attrs = self._build_attrs()
@@ -87,17 +89,18 @@ class FlexCol(Component):
 
     def __init__(
         self,
-        *children: Component,
+        *children: Any,
         gap: Optional[str] = None,
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
         attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
     ):
         base = Style(display="flex", flex_direction="column")
         if gap:
             base = base.clone(gap=gap)
         merged = base.merge(style)
-        super().__init__(style=merged, css_class=css_class, children=list(children), attrs=attrs)
+        super().__init__(style=merged, css_class=css_class, children=list(children), attrs=attrs, field=field)
 
     def to_html(self) -> str:
         attrs = self._build_attrs()
@@ -121,7 +124,7 @@ class AbsoluteBox(Component):
 
     def __init__(
         self,
-        *children: Component,
+        *children: Any,
         top: Optional[str] = None,
         right: Optional[str] = None,
         bottom: Optional[str] = None,
@@ -129,6 +132,7 @@ class AbsoluteBox(Component):
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
         attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
     ):
         base = Style(
             position="absolute",
@@ -138,7 +142,7 @@ class AbsoluteBox(Component):
             left=left,
         )
         merged = base.merge(style)
-        super().__init__(style=merged, css_class=css_class, children=list(children), attrs=attrs)
+        super().__init__(style=merged, css_class=css_class, children=list(children), attrs=attrs, field=field)
 
     def to_html(self) -> str:
         attrs = self._build_attrs()
@@ -159,13 +163,14 @@ class Grid(Component):
 
     def __init__(
         self,
-        *children: Component,
+        *children: Any,
         columns: Union[int, str] = 12,
         rows: Optional[str] = None,
         gap: Optional[str] = None,
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
         attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
     ):
         col_str = f"repeat({columns}, 1fr)" if isinstance(columns, int) else columns
         base = Style(display="grid", grid_template_columns=col_str)
@@ -174,7 +179,7 @@ class Grid(Component):
         if gap:
             base = base.clone(gap=gap)
         merged = base.merge(style)
-        super().__init__(style=merged, css_class=css_class, children=list(children), attrs=attrs)
+        super().__init__(style=merged, css_class=css_class, children=list(children), attrs=attrs, field=field)
 
     def to_html(self) -> str:
         attrs = self._build_attrs()
@@ -194,12 +199,13 @@ class GridItem(Component):
 
     def __init__(
         self,
-        *children: Component,
+        *children: Any,
         column_span: Optional[Union[int, str]] = None,
         row_span: Optional[Union[int, str]] = None,
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
         attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
     ):
         base = Style()
         if column_span is not None:
@@ -209,7 +215,7 @@ class GridItem(Component):
             row_val = f"span {row_span}" if isinstance(row_span, int) else row_span
             base = base.clone(grid_row=row_val)
         merged = base.merge(style)
-        super().__init__(style=merged, css_class=css_class, children=list(children), attrs=attrs)
+        super().__init__(style=merged, css_class=css_class, children=list(children), attrs=attrs, field=field)
 
     def to_html(self) -> str:
         attrs = self._build_attrs()
@@ -235,13 +241,14 @@ class Card(Component):
 
     def __init__(
         self,
-        *children: Component,
+        *children: Any,
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
         attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
     ):
         merged = self._default_style.merge(style)
-        super().__init__(style=merged, css_class=css_class, children=list(children), attrs=attrs)
+        super().__init__(style=merged, css_class=css_class, children=list(children), attrs=attrs, field=field)
 
     def to_html(self) -> str:
         attrs = self._build_attrs()

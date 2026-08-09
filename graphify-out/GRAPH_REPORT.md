@@ -1,49 +1,65 @@
-# Graph Report - babu-documentation  (2026-08-06)
+# Graph Report - babu-documentation  (2026-08-09)
 
 ## Corpus Check
-- 55 files · ~585,950 words
+- 65 files · ~757,770 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 561 nodes · 1104 edges · 37 communities (23 shown, 14 thin omitted)
-- Extraction: 90% EXTRACTED · 9% INFERRED · 1% AMBIGUOUS · INFERRED: 98 edges (avg confidence: 0.65)
+- 724 nodes · 1492 edges · 53 communities (36 shown, 17 thin omitted)
+- Extraction: 92% EXTRACTED · 8% INFERRED · 1% AMBIGUOUS · INFERRED: 112 edges (avg confidence: 0.63)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `020cfda6`
+- Built from commit: `28ef9f00`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- pipeline.py
-- render_png
+- test_main_cli.py
+- Text
 - Editable Nepali citizenship certificate (romanized test render)
 - Component
 - Land Ownership Registration Certificate (Laalpurja)
 - components/__init__.py
+- html_engine/__init__.py
+- test_styles.py
 - Nepali Citizenship Certificate Template (canonical static render)
 - Laalpurja certificate — editable master template
+- Spacer
+- analyze_and_repair
 - "First make it work, then make it better"
 - Laalpurja Base Render (output/png)
-- TableCell
-- LangGraph controller
-- html_engine/__init__.py
-- list.py
+- laalpurja/layout.py
+- Babu Document Digitization
+- document.py
+- ListItem
+- run.py
 - Image
 - rag_engine.py
+- verify
+- Salvage record: `controller-old/` → `agentic_controller/`
+- langgraph dependency
 - python-dotenv dependency
-- Style
+- validate_layout
+- Paragraph
+- test_monochrome.py
+- .to_css
 - ._render_children
 - .__add__
 - route
 - DocLayout-YOLO
 - Segment Anything Model for document analysis
 - Surya (datalab-to)
+- Style
 - CLAUDE.md
 - architect.py
 - models.py
 - 1. Document Verification Rules
-- Salvage record: `controller-old/` → `agentic_controller/`
+- Document
+- find_violations
+- normalize_declarations
+- run_all.py
+- test_route_2_raw_style_string_in_attrs
 - agentic_controller/__init__.py
 - Ideal patching prompt composition
 - Perfect-match VerificationReport example
@@ -51,28 +67,28 @@
 - pydantic dependency
 
 ## God Nodes (most connected - your core abstractions)
-1. `Style` - 84 edges
-2. `Component` - 62 edges
-3. `build_laalpurja()` - 23 edges
-4. `build_citizenship()` - 18 edges
-5. `Document` - 18 edges
-6. `LabelValue` - 17 edges
-7. `Text` - 17 edges
-8. `analyze_and_repair()` - 16 edges
-9. `build_letter()` - 15 edges
-10. `Div` - 15 edges
+1. `Style` - 124 edges
+2. `Component` - 66 edges
+3. `Text` - 36 edges
+4. `Document` - 28 edges
+5. `Spacer` - 24 edges
+6. `build_laalpurja()` - 23 edges
+7. `LabelValue` - 23 edges
+8. `AbsoluteBox` - 21 edges
+9. `build_letter()` - 20 edges
+10. `FlexRow` - 20 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `LangGraph controller` --references--> `langgraph dependency`  [INFERRED]
-  documentation/DOCUMENTATION.md → requirements.txt
-- `run_pipeline()` --calls--> `build_document()`  [EXTRACTED]
-  agentic_controller/run.py → information_extraction/pipeline.py
-- `field_row()` --references--> `Style`  [EXTRACTED]
-  document_builder/citizenship/layout.py → html_engine/styles.py
-- `multi_row()` --references--> `Style`  [EXTRACTED]
-  document_builder/citizenship/layout.py → html_engine/styles.py
-- `_address_block()` --calls--> `Style`  [EXTRACTED]
-  document_builder/citizenship/layout.py → html_engine/styles.py
+- `test_route_1_style_to_css()` --calls--> `Style`  [EXTRACTED]
+  tests/test_monochrome.py → html_engine/styles.py
+- `test_route_3_style_raw_escape_hatch()` --calls--> `Style`  [EXTRACTED]
+  tests/test_monochrome.py → html_engine/styles.py
+- `test_clone_removes_with_none()` --calls--> `Style`  [EXTRACTED]
+  tests/test_styles.py → html_engine/styles.py
+- `test_merge_overrides_and_concatenates_raw()` --calls--> `Style`  [EXTRACTED]
+  tests/test_styles.py → html_engine/styles.py
+- `test_merge_with_none_returns_self_equivalent()` --calls--> `Style`  [EXTRACTED]
+  tests/test_styles.py → html_engine/styles.py
 
 ## Import Cycles
 - None detected.
@@ -89,27 +105,35 @@
 - **Ground-Truth Manual Capture vs Pipeline-Generated Render Comparison Loop** — output_png_manual_laal_screenshot, output_png_manual_laal_screenshot_groundtruthbaseline, output_png_output, output_png_output_htmltopngrenderstage, output_png_output_trailingwhitespaceartifact [INFERRED 0.75]
 - **Citizenship Identity Field Family: Personal Details, Parentage, Spouse and Bikram Sambat Dates in Devanagari** — output_png_output_personaldetailsgrid, output_png_output_parentageblock, output_png_output_spouseblock, output_png_output_bikramsambatdatefields, output_png_output_devanagarivaluerendering, output_png_output_nullvaluerenderingartifact [EXTRACTED 1.00]
 
-## Communities (37 total, 14 thin omitted)
+## Communities (53 total, 17 thin omitted)
 
-### Community 0 - "pipeline.py"
-Cohesion: 0.50
-Nodes (5): build_data(), extract(), load_schema(), build_document(), digitize_document()
+### Community 0 - "test_main_cli.py"
+Cohesion: 0.11
+Nodes (27): An unrecognized CSS property name reached ``Style``. Probably a typo., StyleWarning, build_data(), extract(), load_schema(), build_document(), digitize_document(), _blank_data() (+19 more)
 
-### Community 1 - "render_png"
-Cohesion: 0.36
-Nodes (7): _crop_to_page(), _page_metrics(), Path, Read the declared ``.page`` width and height out of rendered HTML. Returns…, Crop a rendered PNG down to the page itself. The ``.page`` wrapper carries a…, Render *html_path* to ``output_dir/save_as``. Parameters: size: Explicit…, render_png()
+### Community 1 - "Text"
+Cohesion: 0.08
+Nodes (36): corner_box(), PlaceholderBox, Faint centred text behind the page content. Absolutely positioned and non-…, The signature cluster that closes an official letter. Stacks, top to bottom:…, A labelled outline standing in for artwork that cannot be rendered. Renders a…, A placeholder pinned to one corner of the page — crest, QR block, stamp.…, SignatureBlock, Watermark (+28 more)
 
 ### Community 3 - "Component"
-Cohesion: 0.13
-Nodes (10): ABC, Component, Base class for all renderable document components. Parameters: style: Optional…, Append one or more child components. Returns self for chaining., Card, Grid, GridItem, CSS Grid container. Parameters: columns: Grid template columns (e.g. 12 or… (+2 more)
+Cohesion: 0.10
+Nodes (13): ABC, Component, editable_attrs(), Attributes that make one rendered value editable in the browser. The ``data-…, Base class for all renderable document components. Parameters: style: Optional…, Append one or more child components. Returns self for chaining., Card, Grid (+5 more)
 
 ### Community 4 - "Land Ownership Registration Certificate (Laalpurja)"
 Cohesion: 0.09
 Nodes (31): Manual Laalpurja Screenshot (Reference Capture), Photograph and Right/Left Thumb Impression Cells, Land Ownership Certificate No. Field (4915149), Coat of Arms Placeholder Box, Fully English-Translated Field Labels, Footer Attestation Region (Printing done by / Print Date / Checked by), Ground-Truth Reference Baseline for Generated Renders, Laalpurja Header Region (Government of Nepal / Ministry of Land Reform) (+23 more)
 
 ### Community 5 - "components/__init__.py"
-Cohesion: 0.07
-Nodes (48): _address_block(), build_citizenship(), _ea(), field_row(), multi_row(), Any, main(), build_laalpurja() (+40 more)
+Cohesion: 0.17
+Nodes (15): _address_block(), build_citizenship(), _ea(), field_row(), multi_row(), Any, main(), FieldGroup (+7 more)
+
+### Community 6 - "html_engine/__init__.py"
+Cohesion: 0.11
+Nodes (21): Abstract base class for all HTML Document Engine components. Every renderable…, Layout components: FlexRow, FlexCol, AbsoluteBox, Div. These are generic…, Image component for the HTML Document Engine., OrderedList, List components: ListItem, UnorderedList, OrderedList., Renders an ordered list ``<ol>``. Parameters: items: List items — can be…, Placeholder components for document furniture the render cannot reproduce. A…, Spacer and divider components. (+13 more)
+
+### Community 7 - "test_styles.py"
+Cohesion: 0.08
+Nodes (22): Tests for the open property bag that replaced the closed ``Style`` dataclass.…, Monochrome is enforced on the way out, including for unlisted props., The reported crash. Any valid CSS property must survive to the output., Both are deliberate, so neither should look like a typo., The trade for accepting anything: a misspelling is no longer a TypeError. It…, What ``main.py --strict`` relies on., A name CSS could never accept is a bug worth stopping for., CSS resolves duplicates last-one-wins, so ``margin`` emitted after ``margin-… (+14 more)
 
 ### Community 8 - "Nepali Citizenship Certificate Template (canonical static render)"
 Cohesion: 0.10
@@ -119,57 +143,101 @@ Nodes (24): आदित्य जोशी (Aditya Joshi) - certificate holder,
 Cohesion: 0.11
 Nodes (28): Land Ownership Registration Certificate (laal.html rendering), Certificate identifiers: Certificate No. NM0000095, Evd. no. ML-series, B.S. dates २०८२/०४/१४, total area 4332.09 sq.m across 3 plots, Citizenship issuing office: जिल्ला प्रशासन कार्यालय, काठमाण्डौ, Nepali land vocabulary: आबादी/आवादी (cultivated), रैकर निजी (raikar private), एकलौटी (sole title), भिट/पाखो/बारी दोयम (land class), रोपनी area units, Landowner entity: उमा देवी चौलागाई (Uma Devi Chaulagain), Issuing authority: Land Revenue Office, साखु, काठमाण्डौ (Dept. of Land Reform and Management), 'None' literal artifact leaking into Register Page No./serial and transaction cells (unbound Python None serialized into HTML), Page style system: .page 1200px fixed-width white sheet, Times New Roman serif, 1px black borders, inline flexbox layout (+20 more)
 
+### Community 10 - "Spacer"
+Cohesion: 0.12
+Nodes (25): build_letter(), _ea(), Any, build_letter(), _ea(), Any, build_letter(), _ea() (+17 more)
+
+### Community 11 - "analyze_and_repair"
+Cohesion: 0.14
+Nodes (20): analyze_and_repair(), _build_system_prompt(), generate_resources(), _image(), _load_rules(), main(), next_layout_path(), _parse_contract() (+12 more)
+
 ### Community 13 - "Laalpurja Base Render (output/png)"
 Cohesion: 0.15
 Nodes (20): Certificate Number Field (4915149), Footer Region: Total Area, Print Date, Signatures, Header Region: Government of Nepal / Land Revenue Office, Identity Region: Photograph, Thumb Impression, Landowner Details, Latin-Script Transliterated Field Data, PNG Rasterization Output Stage (output/png directory), Laalpurja Base Render (output/png), Repaired Certificate Number Field (NM0000095) (+12 more)
 
-### Community 14 - "TableCell"
+### Community 14 - "laalpurja/layout.py"
+Cohesion: 0.16
+Nodes (16): build_laalpurja(), _ea(), _lv(), Any, Land Ownership Registration Certificate (Laal Purja) — Layout Definition,…, _td(), _th(), _to_float() (+8 more)
+
+### Community 15 - "Babu Document Digitization"
+Cohesion: 0.04
+Nodes (45): Adding a new document type, Agentic controller, Arbitrary HTML attributes (`attrs`), Architect Agent (`architect.py`), Architecture, Babu Document Digitization: Technical Documentation, Building one document by hand, Component reference (+37 more)
+
+### Community 16 - "document.py"
+Cohesion: 0.21
+Nodes (9): Document — the root of a renderable page. A ``Document`` holds page geometry…, normalize_html(), Monochrome enforcement for the HTML Document Engine. Project rule: a rendered…, Surfaces go white, ink goes black., Rewrite colours in a complete HTML document. Only ``style="..."`` attributes…, _target_for(), Render a Document class to a full HTML string. The output is a self-contained…, render() (+1 more)
+
+### Community 17 - "ListItem"
 Cohesion: 0.24
-Nodes (7): Table components: Table, TableRow, TableCell. Supports both simple table…, A full ``<table>`` element. Can be built from: - Explicit ``TableRow`` objects…, A single table cell (``<td>`` or ``<th>``). Parameters: content: Cell content —…, A table row (``<tr>``) containing one or more cells. Parameters: cells:…, Table, TableCell, TableRow
+Nodes (4): ListItem, Renders a list item ``<li>``. Parameters: content: String content or nested…, Renders an unordered list ``<ul>``. Parameters: items: List items — can be…, UnorderedList
 
-### Community 15 - "LangGraph controller"
-Cohesion: 0.05
-Nodes (40): Adding a new document type, Arbitrary HTML attributes (`attrs`), Architecture, Babu Document Digitization: Technical Documentation, Component reference, Contenteditable output, Document builders, Future work (+32 more)
-
-### Community 16 - "html_engine/__init__.py"
-Cohesion: 0.05
-Nodes (45): Abstract base class for all HTML Document Engine components. Every renderable…, Image component for the HTML Document Engine., HorizontalRule, Spacer and divider components., Horizontal rule (``<hr>``) divider. Parameters: style: Override styles (color,…, Link, Text components: Text, Heading, Paragraph, Link., Renders an anchor element ``<a>``. Parameters: content: The text content or… (+37 more)
-
-### Community 17 - "list.py"
-Cohesion: 0.20
-Nodes (7): ListItem, OrderedList, List components: ListItem, UnorderedList, OrderedList., Renders a list item ``<li>``. Parameters: content: String content or nested…, Renders an unordered list ``<ul>``. Parameters: items: List items — can be…, Renders an ordered list ``<ol>``. Parameters: items: List items — can be…, UnorderedList
+### Community 18 - "run.py"
+Cohesion: 0.13
+Nodes (23): current_layout_path(), Return the schema the pipeline should actually extract with. Prefers a…, Return the highest-numbered existing layout, or ``layout.py``, or None., resolve_schema_path(), _crop_to_page(), _page_metrics(), Path, render_png() (+15 more)
 
 ### Community 19 - "Image"
 Cohesion: 0.40
 Nodes (3): Image, Renders an ``<img>`` element. Parameters: src: Image source — a URL, file path,…, Resolve the image source, optionally embedding as base64.
 
 ### Community 20 - "rag_engine.py"
-Cohesion: 0.11
-Nodes (34): build_chunks(), build_index(), Chunk, chunk_file(), chunk_json_schema(), chunk_markdown(), chunk_python(), _embed() (+26 more)
+Cohesion: 0.10
+Nodes (37): _tool_query_context(), build_chunks(), build_index(), Chunk, chunk_file(), chunk_json_schema(), chunk_markdown(), chunk_python() (+29 more)
 
-### Community 26 - "Style"
-Cohesion: 0.12
-Nodes (8): Build the HTML attribute string for this element. Combines ``css_class``,…, PageBreak, Renders a page break for print media., Paragraph, Block paragraph element rendered as ``<p>``. Parameters: content: The paragraph…, Immutable-ish style descriptor that maps 1:1 to CSS properties. Any attribute…, Return a copy of this Style with specific fields overridden. Usage:: base =…, Style
+### Community 21 - "verify"
+Cohesion: 0.36
+Nodes (7): image_data_url(), main(), Path, Vision-model comparison of a source document against its rendered replica.…, Compare *source* against *rendered* and return a structured report., Validate a local raster image and encode it for a multimodal model message.…, verify()
+
+### Community 22 - "Salvage record: `controller-old/` → `agentic_controller/`"
+Cohesion: 0.33
+Nodes (5): Behaviour to reproduce in Phase 2/3, Carried across, Deliberately dropped, Not indexed by RAG, Salvage record: `controller-old/` → `agentic_controller/`
+
+### Community 25 - "validate_layout"
+Cohesion: 0.20
+Nodes (20): Check that a generated layout module is safe for the caller to use. Four gates,…, validate_layout(), _layout(), Path, Tests for ``architect.validate_layout`` — the gate that let the reported bug…, Blank probe data is the harsh case. A layout indexing a key the schema does not…, A property outside the known list is a cosmetic gap, not a reason to fail a…, Without a schema the builder is probed with ``{}``. (+12 more)
+
+### Community 26 - "Paragraph"
+Cohesion: 0.18
+Nodes (4): Link, Paragraph, Renders an anchor element ``<a>``. Parameters: content: The text content or…, Block paragraph element rendered as ``<p>``. Parameters: content: The paragraph…
+
+### Community 27 - "test_monochrome.py"
+Cohesion: 0.14
+Nodes (18): normalize_value(), Rewrite every colour token in a single declaration's *value*. Parameters: prop:…, Tests for the monochrome guarantee. Project rule: a rendered document is purely…, Thresholding by luminance would map a dark fill to black and its light text to…, A curated subset leaked ``rebeccapurple``. Any name the regex misses passes…, Alternation is scanned left to right. With "red" ordered before "rebeccapurple"…, Rewriting transparent to white paints over content meant to show through., Corrupting document data is worse than leaking a colour. (+10 more)
+
+### Community 28 - ".to_css"
+Cohesion: 0.14
+Nodes (9): _css_name(), Any, Map a Python keyword to its CSS property name. ``font_size`` -> ``font-size``.…, Record one declaration, warning if the property looks misspelled., Iterate ``(python_name, value)`` for every set property., Set properties in emission order: known first, then unknown. Known properties…, Serialize to an inline CSS declaration string. Colours are normalized to black-…, Return a full ``style="..."`` attribute, or ``""`` if empty. (+1 more)
 
 ### Community 31 - "route"
 Cohesion: 0.67
 Nodes (3): route, index(), process()
 
+### Community 37 - "Style"
+Cohesion: 0.21
+Nodes (4): PageBreak, Renders a page break for print media., An open set of CSS declarations. Any keyword is accepted and emitted as a CSS…, Style
+
 ### Community 39 - "architect.py"
-Cohesion: 0.05
-Nodes (77): analyze_and_repair(), _build_system_prompt(), current_layout_path(), _dispatch_tool(), generate_resources(), _image(), _load_rules(), _log_call() (+69 more)
+Cohesion: 0.16
+Nodes (24): _dispatch_tool(), _log_call(), Any, The Architect Agent — autonomous layout and schema generation. Replaces the…, Check that a written schema is valid JSON with the keys the extractor needs.…, Resolve a model-supplied path against the project root., Gate write_file: inside the writable trees, and never onto an original., Return ``(backend, client, model)``. Prefers Anthropic when its key is present… (+16 more)
 
 ### Community 40 - "models.py"
 Cohesion: 0.14
-Nodes (15): Discrepancy, LayoutPatch, Pydantic models — the structured vocabulary the agent may use. Consolidates the…, The full proposal returned by the analysis step., A single visible difference between the source and the rendered output., Discrepancies the agent must fix — ``major`` and ``critical`` only. ``minor``…, A single change to the extraction JSON schema., A single structural change to the document layout builder. (+7 more)
+Nodes (17): Discrepancy, LayoutPatch, Pydantic models — the structured vocabulary the agent may use. Consolidates the…, The full proposal returned by the analysis step., A single visible difference between the source and the rendered output., Machine-readable result returned by the vision model. This is the contract the…, Discrepancies the agent must fix — ``major`` and ``critical`` only. ``minor``…, A single change to the extraction JSON schema. (+9 more)
 
 ### Community 41 - "1. Document Verification Rules"
 Cohesion: 0.14
 Nodes (13): 1.1 Expected transformations — never flag these, 1.2 What to actually check, 1.3 Severity guide, 1.4 Uncertainty, 1.5 Report shape, 1. Document Verification Rules, 2.1 Allowed schema patch actions, 2.2 Allowed layout patch actions (+5 more)
 
-### Community 47 - "Salvage record: `controller-old/` → `agentic_controller/`"
-Cohesion: 0.33
-Nodes (5): Behaviour to reproduce in Phase 2/3, Carried across, Deliberately dropped, Not indexed by RAG, Salvage record: `controller-old/` → `agentic_controller/`
+### Community 42 - "Document"
+Cohesion: 0.15
+Nodes (10): Document, Path, A single page of output. Parameters: title: ``<title>`` text. page_width: Width…, Append top-level components. Returns self for chaining., Render to a complete, self-contained HTML string., Write the rendered HTML to *path*, creating parent directories. Returns the…, test_document_save_creates_parent_directories(), A component's own ``to_html()`` can hardcode a style the engine never sees as a… (+2 more)
+
+### Community 43 - "find_violations"
+Cohesion: 0.29
+Nodes (7): find_violations(), Report colour tokens that normalization *would* change. Returns a list of…, One document exercising every route at once, audited by find_violations., The guarantee that actually matters: every shipped document type., test_all_bypass_routes_are_closed(), test_find_violations_reports_pairs(), test_registered_layouts_render_monochrome()
+
+### Community 44 - "normalize_declarations"
+Cohesion: 0.40
+Nodes (4): Build the HTML attribute string for this element. Combines ``css_class``,…, normalize_declarations(), Rewrite colours across a CSS fragment. Works both on an inline declaration list…, test_selector_is_not_mistaken_for_a_property()
 
 ## Ambiguous Edges - Review These
 - `@media print Rules (white background, no box-shadow, #444 border, page-break-after, .no-print hidden)` → `Template Instantiation Pattern (one shared markup skeleton re-rendered per person; only field values and district differ)`  [AMBIGUOUS]
@@ -192,9 +260,9 @@ Nodes (5): Behaviour to reproduce in Phase 2/3, Carried across, Deliberately dro
   output/png/output.png · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **72 isolated node(s):** `graphify`, `What is included`, `Setup`, `Run the full pipeline`, `Generate example documents` (+67 more)
+- **78 isolated node(s):** `graphify`, `What is included`, `Setup`, `Run the full pipeline`, `Build one document by hand` (+73 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **17 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

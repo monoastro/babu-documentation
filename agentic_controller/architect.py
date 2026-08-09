@@ -1,7 +1,6 @@
 """The Architect Agent — autonomous layout and schema generation.
 
-Phase 2 of the agentic controller. Replaces the LangGraph state machine with a
-tool-calling agent loop.
+Replaces the LangGraph state machine with a tool-calling agent loop.
 
 WHAT THE AGENT SEES
 -------------------
@@ -69,38 +68,31 @@ if report.overall_match != "pass":
 """
 
 from __future__ import annotations
-
 import argparse
 import ast
 import base64
 import json
 import os
 import subprocess
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
-
 from dotenv import load_dotenv
-
 from agentic_controller.models import VerificationReport
 from agentic_controller.rag_engine import format_context, query_context
 
 load_dotenv()
 
-
-# ── Constants ─────────────────────────────────────────────────────
-
+#Constants
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SCHEMA_DIR = PROJECT_ROOT / "information_extraction" / "schemas"
 BUILDER_DIR = PROJECT_ROOT / "document_builder"
 RULES_PATH = PROJECT_ROOT / "documentation" / "verification-rules.md"
 
 MAX_REPAIR_ITERATIONS = 3
-"""Forced stop on the outer repair loop. Matches ``controller-old`` default."""
-
 MAX_TOOL_CALLS = 24
-"""Budget for the inner tool-use loop of a single agent invocation."""
-
+#Budget for the inner tool-use loop of a single agent invocation
 COMMAND_TIMEOUT = 120
 
 _ALLOWED_COMMAND_PREFIXES = (
@@ -117,8 +109,7 @@ _ALLOWED_COMMAND_PREFIXES = (
     "find",
     "wc",
 )
-"""``execute_command`` allowlist. The agent may inspect and re-run the pipeline;
-it may not install packages, touch git, or reach the network."""
+#execute_command allowlist. The agent may inspect and re-run the pipeline; it may not install packages, touch git, or reach the network
 
 _IMAGE_MEDIA_TYPES = {
     ".png": "image/png",
@@ -129,7 +120,7 @@ _IMAGE_MEDIA_TYPES = {
 }
 
 
-# ── Result model ──────────────────────────────────────────────────
+#  Result model
 
 @dataclass
 class RepairResult:
@@ -150,6 +141,21 @@ class RepairResult:
     iteration: int = 1
     """Which repair iteration produced this result."""
 
+    layout_valid: bool | None = None
+    """
+    Whether the written layout passed :func:`validate_layout`.
+
+    ``None`` means no layout was written, so there was nothing to validate.
+    This is structured rather than prose in ``summary`` because callers have to
+    branch on it: a layout that fails the gate must not be handed to a human as
+    though it were ready to register. It previously existed only as a
+    ``[VALIDATION FAILED]`` string appended to the summary, which nothing read,
+    so a broken layout was announced as a successful generation.
+    """
+
+    validation_message: str = ""
+    """The gate's verdict — the traceback tail when it failed."""
+
     history: list[dict[str, Any]] = field(default_factory=list)
     """Append-only trace: one entry per tool call, in order."""
 
@@ -159,17 +165,18 @@ class RepairResult:
         if self.schema_path:
             lines.append(f"  schema → {self.schema_path}")
         if self.layout_path:
-            lines.append(f"  layout → {self.layout_path}")
+            status = {True: "PASSED", False: "FAILED", None: "not run"}[self.layout_valid]
+            lines.append(f"  layout → {self.layout_path}  (validation: {status})")
+        if self.layout_valid is False:
+            lines.append(f"  validation error: {self.validation_message}")
         lines.append(f"  re-extraction needed: {self.needs_reextraction}")
         lines.append(f"  tool calls: {len(self.history)}")
         return "\n".join(lines)
 
 
-# ── Path resolution (SALVAGE.md behaviour 2) ──────────────────────
-
+# Path resolution
 def resolve_schema_path(document_type: str, *, schema_dir: Path | None = None) -> Path:
     """Return the schema the pipeline should actually extract with.
-
     Prefers a ``<doc>_patched.json`` sidecar over the original. ``controller-old``
     did this inside ``graph.apply_repair``; skipping it makes every schema repair
     look like a no-op, because OCR re-runs against the unpatched base.
@@ -183,7 +190,6 @@ def resolve_schema_path(document_type: str, *, schema_dir: Path | None = None) -
 
 def next_layout_path(document_type: str, *, builder_dir: Path | None = None) -> Path:
     """Return the next unused ``layout_N.py`` for *document_type*.
-
     Originals are never overwritten: ``layout.py`` stays intact for rollback and
     iterations land beside it as ``layout_1.py``, ``layout_2.py``, ...
     """
@@ -209,18 +215,30 @@ def current_layout_path(document_type: str, *, builder_dir: Path | None = None) 
     return base if base.is_file() else None
 
 
-# ── Validation gate ───────────────────────────────────────────────
+# Validation gate
 
-def validate_layout(layout_path: Path, document_type: str) -> tuple[bool, str]:
+def validate_layout(
+    layout_path: Path,
+    document_type: str,
+    schema_path: Path | None = None,
+) -> tuple[bool, str]:
     """Check that a generated layout module is safe for the caller to use.
 
-    Three gates, cheapest first: the file parses as Python, it imports without
-    raising, and it exposes a ``build_<document_type>`` callable with the
-    ``(data: dict) -> Document`` shape the pipeline calls.
+    Four gates, cheapest first: the file parses as Python, it imports without
+    raising, it exposes a ``build_<document_type>`` callable, and that callable
+    actually **runs** — invoked on blank data and rendered to HTML.
 
-    Returns ``(ok, message)``. The agent is told validation happens downstream;
-    this is that downstream check, and Phase 3 runs it before repointing the
-    registry.
+    The last gate is the one that matters. An import-only check passes a layout
+    whose body raises, because a function body does not execute until it is
+    called; the failure then surfaces inside ``build_document()``, well past the
+    point where it reads as a layout problem.
+
+    Parameters:
+        schema_path: Schema whose ``required`` keys seed the blank probe data.
+            Optional — without it the builder is called with ``{}``, which still
+            catches a bad keyword but not an unguarded key lookup.
+
+    Returns ``(ok, message)``. Phase 3 runs this before repointing the registry.
     """
     if not layout_path.is_file():
         return False, f"Layout not found: {layout_path}"
@@ -232,8 +250,16 @@ def validate_layout(layout_path: Path, document_type: str) -> tuple[bool, str]:
         return False, f"SyntaxError at line {e.lineno}: {e.msg}"
 
     builder_name = f"build_{document_type}"
+    # The probe *calls* the builder, it does not merely import it. Importing
+    # only executes module top level, so anything wrong inside the function
+    # body — a bad keyword, a helper that does not exist, an unguarded lookup
+    # on a missing key — passed this gate and then crashed in build_document()
+    # several stages later, where the traceback no longer points at the layout.
+    # Blank data is the harsh case: every value empty, so a lookup that assumes
+    # content fails here rather than on the one scan that happens to omit it.
     probe = (
-        "import importlib.util, sys\n"
+        "import importlib.util, json, sys, warnings\n"
+        "warnings.simplefilter('ignore')\n"
         f"spec = importlib.util.spec_from_file_location('_probe_layout', r'{layout_path}')\n"
         "mod = importlib.util.module_from_spec(spec)\n"
         "sys.modules['_probe_layout'] = mod\n"
@@ -241,10 +267,22 @@ def validate_layout(layout_path: Path, document_type: str) -> tuple[bool, str]:
         f"fn = getattr(mod, {builder_name!r}, None)\n"
         "assert callable(fn), 'missing callable "
         f"{builder_name}'\n"
+        f"schema = {str(schema_path)!r} if {schema_path is not None!r} else None\n"
+        "required = json.loads(open(schema, encoding='utf-8').read()).get('required', []) if schema else []\n"
+        "doc = fn({k: '' for k in required})\n"
+        "html = doc.render()\n"
+        "assert html.strip().startswith('<!DOCTYPE html>'), 'render() did not "
+        "return a full HTML page'\n"
         "print('OK')\n"
     )
+    # ``sys.executable``, not ``"python"``: the probe imports html_engine and
+    # pydantic, so it has to run under the same interpreter as the caller. A
+    # bare ``python`` resolves through PATH, which on a pyenv or conda machine
+    # is a shim pointing somewhere without this project's dependencies — every
+    # layout would then fail the gate with an ImportError that says nothing
+    # about the layout.
     completed = subprocess.run(
-        [os.getenv("PYTHON_EXECUTABLE", "python"), "-c", probe],
+        [os.getenv("PYTHON_EXECUTABLE") or sys.executable, "-c", probe],
         cwd=PROJECT_ROOT,
         capture_output=True,
         text=True,
@@ -253,7 +291,10 @@ def validate_layout(layout_path: Path, document_type: str) -> tuple[bool, str]:
     if completed.returncode != 0:
         detail = (completed.stderr or completed.stdout).strip()
         return False, f"Import failed: {detail[-1200:]}"
-    return True, f"{layout_path.name} compiles, imports, and exposes {builder_name}()."
+    return True, (
+        f"{layout_path.name} compiles, imports, and {builder_name}() renders "
+        f"a full page on blank data."
+    )
 
 
 def validate_schema(schema_path: Path) -> tuple[bool, str]:
@@ -289,8 +330,7 @@ def validate_schema(schema_path: Path) -> tuple[bool, str]:
     return True, f"{schema_path.name}: {len(properties)} properties, {len(required)} required{note}."
 
 
-# ── System prompt ─────────────────────────────────────────────────
-
+# System prompt
 def _load_rules() -> str:
     try:
         return RULES_PATH.read_text(encoding="utf-8")
@@ -412,6 +452,23 @@ html_engine Document -> HTML -> headless-Chrome PNG -> vision verification.
   breaks it.
 - **Guard against None.** OCR returns absent fields as None. Convert to "" before
   rendering — a literal "None" in the output is a critical defect.
+- **Containers take components, not strings.** `Div`, `FlexRow`, `FlexCol`,
+  `AbsoluteBox`, and `Card` take child *components* positionally. To put text in
+  one, wrap it: `Div(Text("(Signed)"))`, never `Div("(Signed)")`. A bare string is
+  coerced to `Text` for you, but a list, dict, or component *class* is a `TypeError`.
+- **Use the placeholder components; do not hand-roll them.** For every seal, photo,
+  crest, QR block, thumb impression, watermark, or signature space, the engine
+  already has the right component — `PlaceholderBox(label, size=..., shape=...)`
+  (`shape` is `"rect"`, `"rounded"`, or `"circle"`; `dashed=True` for something a
+  human still has to sign), `Watermark(text, opacity=...)`,
+  `SignatureBlock(name=..., title=..., signature_label=..., stamp_label=...)`, and
+  `corner_box(label, corner="top-left")`. A bordered `Div` with a flex-centring trio
+  is the pattern these replace; writing one by hand means re-deriving the border
+  weight, the caption size, and the overflow guard, and getting one of them wrong.
+- **Attach fields with `field=`, not by hand.** Every component takes
+  `field="dotted.path"`, which expands to the `contenteditable`/`data-field` pair.
+  Do not redeclare a private `_ea()` helper — `LabelValue(field=...)` puts the
+  attributes on the value, where they belong, not on the label.
 - **Output is black and white.** Use only `#000000` for ink (text, borders, rules)
   and `#ffffff` for surfaces. `html_engine` normalizes every colour on render, so
   anything else you write is silently rewritten — your source would then disagree
@@ -435,8 +492,7 @@ Use null, not a guess, for a file you did not write.
 """
 
 
-# ── Tool schemas ──────────────────────────────────────────────────
-
+# Tool schemas
 TOOLS: list[dict[str, Any]] = [
     {
         "name": "query_context",
@@ -770,7 +826,7 @@ _OPENAI_TOOLS = [
 ]
 
 
-# ── Agent loop ────────────────────────────────────────────────────
+# Agent loop
 
 _BUDGET_NOTICE = (
     "Tool budget exhausted. Do not call any more tools. Reply now with the final "
@@ -1107,8 +1163,16 @@ object. Begin."""
     result = _result_from_contract(_parse_contract(final_text), history, iteration)
 
     if result.layout_path is not None:
-        ok, msg = validate_layout(result.layout_path, document_type)
+        # Prefer a schema the agent just wrote over the one it started from —
+        # a layout is validated against the fields it was written for.
+        ok, msg = validate_layout(
+            result.layout_path,
+            document_type,
+            result.schema_path or current_schema_path,
+        )
         result.history.append({"tool": "(validate_layout)", "input": {}, "result": msg})
+        result.layout_valid = ok
+        result.validation_message = msg
         if verbose:
             print(f"  validate_layout: {'OK' if ok else 'FAILED'} — {msg}")
         if not ok:
@@ -1191,7 +1255,9 @@ schema, then the layout, then return the JSON object. Begin."""
     result.needs_reextraction = True  # nothing has been extracted yet, by definition
 
     if result.layout_path is not None:
-        ok, msg = validate_layout(result.layout_path, document_type)
+        ok, msg = validate_layout(
+            result.layout_path, document_type, result.schema_path
+        )
         result.history.append({"tool": "(validate_layout)", "input": {}, "result": msg})
         if verbose:
             print(f"  validate_layout: {'OK' if ok else 'FAILED'} — {msg}")

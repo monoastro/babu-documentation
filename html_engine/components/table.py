@@ -39,8 +39,9 @@ class TableCell(Component):
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
         attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
     ):
-        super().__init__(style=style, css_class=css_class, attrs=attrs)
+        super().__init__(style=style, css_class=css_class, attrs=attrs, field=field)
         self.content = content
         self.colspan = colspan
         self.rowspan = rowspan

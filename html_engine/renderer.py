@@ -39,7 +39,7 @@ def render(doc: Document) -> str:
         f"border:{doc.border}",
         #"box-shadow:0 0 20px #000000",
     ]
-    if doc.page_height != "auto":
+    if doc.page_height != "auto" and doc.clip:
         page_css_parts.append("overflow:hidden")
     if doc.min_height:
         page_css_parts.append(f"min-height:{doc.min_height}")

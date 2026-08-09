@@ -13,7 +13,15 @@
     },
     "recipient": {
       "type": "string",
-      "description": "Full recipient line in the first address block under the header (including श्री and department/designation)—everything above त्रि–चन्द्र ब–क्याम्पस in the first block."
+      "description": "First recipient line (name and salutation — e.g. श्री ज्योति कुमारी भट्ट जोशी) from the first address block under header."
+    },
+    "recipient_department": {
+      "type": "string",
+      "description": "Second line in recipient block: the department/designation under the recipient name — e.g. समाजशास्त्र विभाग."
+    },
+    "recipient_campus": {
+      "type": "string",
+      "description": "Third line in recipient block: the campus/organization, e.g. त्रि-चन्द्र बहुमुखी क्याम्पस. Extract exactly, including punctuation if present."
     },
     "subject": {
       "type": "string",
@@ -21,7 +29,7 @@
     },
     "body": {
       "type": "string",
-      "description": "Main letter body text after the subject, up to the lists of बोधार्थ. Preserve paragraphing if present; else, as one block. In Nepali."
+      "description": "Main letter body text after the subject, up to the lists of बोधार्थ. Preserve paragraphing if present; else, as one block. In Nepali. Do not duplicate any words."
     },
     "signed_name": {
       "type": "string",
@@ -29,7 +37,7 @@
     },
     "position": {
       "type": "string",
-      "description": "Printed official designation below the name — typically 'क्याम्पस प्रमुख'"
+      "description": "Printed official designation below the name — typically 'क्याम्पस प्रमुख' or 'Campus Chief'."
     },
     "signature_placeholder": {
       "type": "string",
@@ -39,22 +47,59 @@
       "type": "string",
       "description": "Always 'Round Office Seal' exactly. Positioned over stamp impression right of header."
     },
+    "logo_placeholder": {
+      "type": "string",
+      "description": "Always 'Tribhuvan University Crest'. Shows where the university's coat of arms/logo appears at the upper left."
+    },
+    "qr_placeholder": {
+      "type": "string",
+      "description": "Always 'QR Code'. Placeholder for QR code in the upper right header."
+    },
+    "watermark_placeholder": {
+      "type": "string",
+      "description": "Always 'Clock Tower Watermark'. Placed behind body as a faint placeholder at page center."
+    },
     "bodharth_list": {
       "type": "array",
       "description": "List of all Nepali बोधार्थ:/CC list/notification recipients, one string per item, as printed in the bottom section with enumeration.",
       "items": { "type": "string" }
+    },
+    "email_address": {
+      "type": "string",
+      "description": "Footer email address as printed at bottom left, e.g. info@trc.tu.edu.np."
+    },
+    "website_url": {
+      "type": "string",
+      "description": "Footer website URL as printed at bottom right, e.g. https://trc.tu.edu.np"
+    },
+    "footer_line": {
+      "type": "string",
+      "description": "Always a single horizontal line from left to right before footer contact. Leave as '---' in JSON to signal layout." 
+    },
+    "signature_seal_placeholder": {
+      "type": "string",
+      "description": "Always 'Office Stamp/Seal'. Placeholder under signatory position in signature area."
     }
   },
   "required": [
     "ref_no",
     "date",
     "recipient",
+    "recipient_department",
+    "recipient_campus",
     "subject",
     "body",
     "signed_name",
     "position",
     "signature_placeholder",
     "seal_placeholder",
-    "bodharth_list"
+    "logo_placeholder",
+    "qr_placeholder",
+    "watermark_placeholder",
+    "bodharth_list",
+    "email_address",
+    "website_url",
+    "footer_line",
+    "signature_seal_placeholder"
   ]
 }

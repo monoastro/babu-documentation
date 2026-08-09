@@ -1438,21 +1438,33 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "agentic_controller_rendering",
-      "community": 39,
-      "community_name": "architect.py",
+      "community": 1,
+      "community_name": "render_png",
       "norm_label": "rendering.py"
     },
     {
-      "label": "render_png()",
+      "label": "_page_metrics()",
       "file_type": "code",
       "source_file": "agentic_controller/rendering.py",
-      "source_location": "L11",
+      "source_location": "L25",
       "_callable": true,
       "_origin": "ast",
-      "id": "agentic_controller_rendering_render_png",
-      "community": 39,
-      "community_name": "architect.py",
-      "norm_label": "render_png()"
+      "id": "agentic_controller_rendering_page_metrics",
+      "community": 1,
+      "community_name": "render_png",
+      "norm_label": "_page_metrics()"
+    },
+    {
+      "label": "_crop_to_page()",
+      "file_type": "code",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L51",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "agentic_controller_rendering_crop_to_page",
+      "community": 1,
+      "community_name": "render_png",
+      "norm_label": "_crop_to_page()"
     },
     {
       "label": "Path",
@@ -1461,9 +1473,54 @@
       "source_location": "",
       "_origin": "ast",
       "id": "agentic_controller_rendering_py_path",
-      "community": 39,
-      "community_name": "architect.py",
+      "community": 1,
+      "community_name": "render_png",
       "norm_label": "path"
+    },
+    {
+      "label": "render_png()",
+      "file_type": "code",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L86",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "agentic_controller_rendering_render_png",
+      "community": 1,
+      "community_name": "render_png",
+      "norm_label": "render_png()"
+    },
+    {
+      "label": "Read the declared ``.page`` width and height out of rendered HTML. Returns\u2026",
+      "file_type": "rationale",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "agentic_controller_rendering_rationale_26",
+      "community": 1,
+      "community_name": "render_png",
+      "norm_label": "read the declared ``.page`` width and height out of rendered html. returns..."
+    },
+    {
+      "label": "Crop a rendered PNG down to the page itself. The ``.page`` wrapper carries a\u2026",
+      "file_type": "rationale",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L52",
+      "_origin": "ast",
+      "id": "agentic_controller_rendering_rationale_52",
+      "community": 1,
+      "community_name": "render_png",
+      "norm_label": "crop a rendered png down to the page itself. the ``.page`` wrapper carries a..."
+    },
+    {
+      "label": "Render *html_path* to ``output_dir/save_as``. Parameters: size: Explicit\u2026",
+      "file_type": "rationale",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L92",
+      "_origin": "ast",
+      "id": "agentic_controller_rendering_rationale_92",
+      "community": 1,
+      "community_name": "render_png",
+      "norm_label": "render *html_path* to ``output_dir/save_as``. parameters: size: explicit..."
     },
     {
       "label": "run.py",
@@ -1803,7 +1860,7 @@
       "_origin": "ast",
       "id": "document_builder_citizenship_layout",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "citizenship/layout.py"
     },
     {
@@ -1815,7 +1872,7 @@
       "_origin": "ast",
       "id": "document_builder_citizenship_layout_ea",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "_ea()"
     },
     {
@@ -1827,7 +1884,7 @@
       "_origin": "ast",
       "id": "document_builder_citizenship_layout_field_row",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "field_row()"
     },
     {
@@ -1839,7 +1896,7 @@
       "_origin": "ast",
       "id": "document_builder_citizenship_layout_multi_row",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "multi_row()"
     },
     {
@@ -1851,7 +1908,7 @@
       "_origin": "ast",
       "id": "document_builder_citizenship_layout_address_block",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "_address_block()"
     },
     {
@@ -1863,7 +1920,7 @@
       "_origin": "ast",
       "id": "document_builder_citizenship_layout_build_citizenship",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "build_citizenship()"
     },
     {
@@ -1874,7 +1931,7 @@
       "_origin": "ast",
       "id": "document_builder_citizenship_layout_py_any",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "any"
     },
     {
@@ -1885,7 +1942,7 @@
       "_origin": "ast",
       "id": "document_builder_citizenship_test_generate_citzenship",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "test-generate-citzenship.py"
     },
     {
@@ -1897,7 +1954,7 @@
       "_origin": "ast",
       "id": "document_builder_citizenship_test_generate_citzenship_main",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "main()"
     },
     {
@@ -1907,8 +1964,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "document_builder_laalpurja_layout",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "laalpurja/layout.py"
     },
     {
@@ -1919,8 +1976,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "document_builder_laalpurja_layout_to_float",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "_to_float()"
     },
     {
@@ -1931,8 +1988,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "document_builder_laalpurja_layout_ea",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "_ea()"
     },
     {
@@ -1943,8 +2000,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "document_builder_laalpurja_layout_lv",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "_lv()"
     },
     {
@@ -1955,8 +2012,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "document_builder_laalpurja_layout_th",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "_th()"
     },
     {
@@ -1967,8 +2024,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "document_builder_laalpurja_layout_td",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "_td()"
     },
     {
@@ -1979,8 +2036,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "document_builder_laalpurja_layout_build_laalpurja",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "build_laalpurja()"
     },
     {
@@ -1990,8 +2047,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "document_builder_laalpurja_layout_py_any",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "any"
     },
     {
@@ -2001,8 +2058,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "document_builder_laalpurja_layout_rationale_1",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "land ownership registration certificate (laal purja) \u2014 layout definition,..."
     },
     {
@@ -2012,8 +2069,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "document_builder_laalpurja_test_generate_laalpurja",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "test-generate-laalpurja.py"
     },
     {
@@ -2024,8 +2081,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "document_builder_laalpurja_test_generate_laalpurja_main",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "main()"
     },
     {
@@ -2035,8 +2092,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "document_builder_laalpurja_test_generate_laalpurja_rationale_1",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "laalpurja generator \u2014 builds the land ownership registration certificate. run..."
     },
     {
@@ -2047,7 +2104,7 @@
       "_origin": "ast",
       "id": "document_builder_letter_layout",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "letter/layout.py"
     },
     {
@@ -2059,7 +2116,7 @@
       "_origin": "ast",
       "id": "document_builder_letter_layout_ea",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "_ea()"
     },
     {
@@ -2071,7 +2128,7 @@
       "_origin": "ast",
       "id": "document_builder_letter_layout_build_letter",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "build_letter()"
     },
     {
@@ -2082,7 +2139,7 @@
       "_origin": "ast",
       "id": "document_builder_letter_layout_py_any",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "any"
     },
     {
@@ -2093,7 +2150,7 @@
       "_origin": "ast",
       "id": "document_builder_registry",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "registry.py"
     },
     {
@@ -2103,7 +2160,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_init",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "html_engine/__init__.py"
     },
@@ -2114,8 +2171,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_init",
-      "community": 7,
-      "community_name": "html_engine/__init__.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "components/__init__.py"
     },
     {
@@ -2125,8 +2182,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_init_rationale_1",
-      "community": 7,
-      "community_name": "html_engine/__init__.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "html_engine.components \u2014 all renderable component types."
     },
     {
@@ -2136,7 +2193,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_base",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "base.py"
     },
@@ -2150,7 +2207,7 @@
       "_origin": "ast",
       "id": "html_engine_components_base_component",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": "component"
     },
     {
@@ -2161,7 +2218,7 @@
       "_origin": "ast",
       "id": "abc",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": "abc"
     },
     {
@@ -2172,7 +2229,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_base_component_init",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": ".__init__()"
     },
@@ -2184,8 +2241,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_base_component_add",
-      "community": 10,
-      "community_name": ".add",
+      "community": 3,
+      "community_name": "Component",
       "norm_label": ".add()"
     },
     {
@@ -2208,8 +2265,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_base_component_build_attrs",
-      "community": 16,
-      "community_name": "Document",
+      "community": 26,
+      "community_name": "Style",
       "norm_label": "._build_attrs()"
     },
     {
@@ -2231,7 +2288,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_base_rationale_1",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "abstract base class for all html document engine components. every renderable..."
     },
@@ -2243,7 +2300,7 @@
       "_origin": "ast",
       "id": "html_engine_components_base_rationale_18",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": "base class for all renderable document components. parameters: style: optional..."
     },
     {
@@ -2253,8 +2310,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "html_engine_components_base_rationale_43",
-      "community": 10,
-      "community_name": ".add",
+      "community": 3,
+      "community_name": "Component",
       "norm_label": "append one or more child components. returns self for chaining."
     },
     {
@@ -2275,8 +2332,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "html_engine_components_base_rationale_52",
-      "community": 16,
-      "community_name": "Document",
+      "community": 26,
+      "community_name": "Style",
       "norm_label": "build the html attribute string for this element. combines ``css_class``,..."
     },
     {
@@ -2297,8 +2354,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_field",
-      "community": 7,
-      "community_name": "html_engine/__init__.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "field.py"
     },
     {
@@ -2310,8 +2367,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "html_engine_components_field_labelvalue",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "labelvalue"
     },
     {
@@ -2322,7 +2379,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_field_labelvalue_init",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": ".__init__()"
     },
@@ -2334,8 +2391,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_field_labelvalue_to_html",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": ".to_html()"
     },
     {
@@ -2347,8 +2404,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "html_engine_components_field_fieldgroup",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "fieldgroup"
     },
     {
@@ -2359,7 +2416,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_field_fieldgroup_init",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": ".__init__()"
     },
@@ -2371,8 +2428,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_field_fieldgroup_to_html",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": ".to_html()"
     },
     {
@@ -2384,8 +2441,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "html_engine_components_field_multifieldrow",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "multifieldrow"
     },
     {
@@ -2396,7 +2453,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_field_multifieldrow_init",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": ".__init__()"
     },
@@ -2408,8 +2465,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_field_multifieldrow_to_html",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": ".to_html()"
     },
     {
@@ -2419,8 +2476,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_field_rationale_1",
-      "community": 7,
-      "community_name": "html_engine/__init__.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "field components: labelvalue pairs and fieldgroups. these are the workhorses..."
     },
     {
@@ -2430,8 +2487,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "html_engine_components_field_rationale_19",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "a single label\u2013value row rendered as a flex container. the label is displayed..."
     },
     {
@@ -2441,8 +2498,8 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "html_engine_components_field_rationale_119",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "a vertical stack of labelvalue rows or other components. renders as a ``<div>``..."
     },
     {
@@ -2452,8 +2509,8 @@
       "source_location": "L155",
       "_origin": "ast",
       "id": "html_engine_components_field_rationale_155",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "a horizontal row containing multiple label\u2013value pairs. useful for rows like:..."
     },
     {
@@ -2463,8 +2520,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_grid",
-      "community": 7,
-      "community_name": "html_engine/__init__.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "grid.py"
     },
     {
@@ -2476,8 +2533,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "html_engine_components_grid_div",
-      "community": 6,
-      "community_name": "Div",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "div"
     },
     {
@@ -2489,7 +2546,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_div_init",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": ".__init__()"
     },
     {
@@ -2500,8 +2557,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_grid_div_to_html",
-      "community": 6,
-      "community_name": "Div",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": ".to_html()"
     },
     {
@@ -2514,7 +2571,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_flexrow",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "flexrow"
     },
     {
@@ -2526,7 +2583,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_flexrow_init",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": ".__init__()"
     },
     {
@@ -2538,7 +2595,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_flexrow_to_html",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": ".to_html()"
     },
     {
@@ -2551,7 +2608,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_flexcol",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "flexcol"
     },
     {
@@ -2563,7 +2620,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_flexcol_init",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": ".__init__()"
     },
     {
@@ -2575,7 +2632,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_flexcol_to_html",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": ".to_html()"
     },
     {
@@ -2588,7 +2645,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_absolutebox",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "absolutebox"
     },
     {
@@ -2600,7 +2657,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_absolutebox_init",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": ".__init__()"
     },
     {
@@ -2612,7 +2669,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_absolutebox_to_html",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": ".to_html()"
     },
     {
@@ -2625,7 +2682,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_grid",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": "grid"
     },
     {
@@ -2637,7 +2694,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_grid_init",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": ".__init__()"
     },
     {
@@ -2649,7 +2706,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_grid_to_html",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": ".to_html()"
     },
     {
@@ -2662,7 +2719,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_griditem",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": "griditem"
     },
     {
@@ -2674,7 +2731,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_griditem_init",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": ".__init__()"
     },
     {
@@ -2686,7 +2743,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_griditem_to_html",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": ".to_html()"
     },
     {
@@ -2699,7 +2756,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_card",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": "card"
     },
     {
@@ -2711,7 +2768,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_card_init",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": ".__init__()"
     },
     {
@@ -2723,7 +2780,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_card_to_html",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": ".to_html()"
     },
     {
@@ -2733,8 +2790,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_grid_rationale_1",
-      "community": 7,
-      "community_name": "html_engine/__init__.py",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "layout components: flexrow, flexcol, absolutebox, div. these are generic..."
     },
     {
@@ -2744,8 +2801,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "html_engine_components_grid_rationale_17",
-      "community": 6,
-      "community_name": "Div",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "generic block container rendered as a ``<div>``. the simplest building block \u2014..."
     },
     {
@@ -2756,7 +2813,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_rationale_45",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "horizontal flex container (``flex-direction: row``). parameters: children:..."
     },
     {
@@ -2767,7 +2824,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_rationale_77",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "vertical flex container (``flex-direction: column``). parameters: children:..."
     },
     {
@@ -2778,7 +2835,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_rationale_109",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "absolutely positioned container. use for elements that need precise pixel..."
     },
     {
@@ -2789,7 +2846,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_rationale_150",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": "css grid container. parameters: columns: grid template columns (e.g. 12 or..."
     },
     {
@@ -2800,7 +2857,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_rationale_186",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": "css grid item. parameters: column_span: number of columns this item spans (e.g...."
     },
     {
@@ -2811,7 +2868,7 @@
       "_origin": "ast",
       "id": "html_engine_components_grid_rationale_221",
       "community": 3,
-      "community_name": "Style",
+      "community_name": "Component",
       "norm_label": "a styled container mimicking a paper card. includes preset styles: background..."
     },
     {
@@ -2821,7 +2878,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_image",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "image.py"
     },
@@ -2881,7 +2938,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_image_rationale_1",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "image component for the html document engine."
     },
@@ -2914,8 +2971,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_list",
-      "community": 7,
-      "community_name": "html_engine/__init__.py",
+      "community": 17,
+      "community_name": "list.py",
       "norm_label": "list.py"
     },
     {
@@ -2928,7 +2985,7 @@
       "_origin": "ast",
       "id": "html_engine_components_list_listitem",
       "community": 17,
-      "community_name": "ListItem",
+      "community_name": "list.py",
       "norm_label": "listitem"
     },
     {
@@ -2940,7 +2997,7 @@
       "_origin": "ast",
       "id": "html_engine_components_list_listitem_init",
       "community": 17,
-      "community_name": "ListItem",
+      "community_name": "list.py",
       "norm_label": ".__init__()"
     },
     {
@@ -2952,7 +3009,7 @@
       "_origin": "ast",
       "id": "html_engine_components_list_listitem_to_html",
       "community": 17,
-      "community_name": "ListItem",
+      "community_name": "list.py",
       "norm_label": ".to_html()"
     },
     {
@@ -2965,7 +3022,7 @@
       "_origin": "ast",
       "id": "html_engine_components_list_unorderedlist",
       "community": 17,
-      "community_name": "ListItem",
+      "community_name": "list.py",
       "norm_label": "unorderedlist"
     },
     {
@@ -2977,7 +3034,7 @@
       "_origin": "ast",
       "id": "html_engine_components_list_unorderedlist_init",
       "community": 17,
-      "community_name": "ListItem",
+      "community_name": "list.py",
       "norm_label": ".__init__()"
     },
     {
@@ -2989,7 +3046,7 @@
       "_origin": "ast",
       "id": "html_engine_components_list_unorderedlist_to_html",
       "community": 17,
-      "community_name": "ListItem",
+      "community_name": "list.py",
       "norm_label": ".to_html()"
     },
     {
@@ -3002,7 +3059,7 @@
       "_origin": "ast",
       "id": "html_engine_components_list_orderedlist",
       "community": 17,
-      "community_name": "ListItem",
+      "community_name": "list.py",
       "norm_label": "orderedlist"
     },
     {
@@ -3014,7 +3071,7 @@
       "_origin": "ast",
       "id": "html_engine_components_list_orderedlist_init",
       "community": 17,
-      "community_name": "ListItem",
+      "community_name": "list.py",
       "norm_label": ".__init__()"
     },
     {
@@ -3026,7 +3083,7 @@
       "_origin": "ast",
       "id": "html_engine_components_list_orderedlist_to_html",
       "community": 17,
-      "community_name": "ListItem",
+      "community_name": "list.py",
       "norm_label": ".to_html()"
     },
     {
@@ -3036,8 +3093,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_list_rationale_1",
-      "community": 7,
-      "community_name": "html_engine/__init__.py",
+      "community": 17,
+      "community_name": "list.py",
       "norm_label": "list components: listitem, unorderedlist, orderedlist."
     },
     {
@@ -3048,7 +3105,7 @@
       "_origin": "ast",
       "id": "html_engine_components_list_rationale_15",
       "community": 17,
-      "community_name": "ListItem",
+      "community_name": "list.py",
       "norm_label": "renders a list item ``<li>``. parameters: content: string content or nested..."
     },
     {
@@ -3059,7 +3116,7 @@
       "_origin": "ast",
       "id": "html_engine_components_list_rationale_47",
       "community": 17,
-      "community_name": "ListItem",
+      "community_name": "list.py",
       "norm_label": "renders an unordered list ``<ul>``. parameters: items: list items \u2014 can be..."
     },
     {
@@ -3070,7 +3127,7 @@
       "_origin": "ast",
       "id": "html_engine_components_list_rationale_82",
       "community": 17,
-      "community_name": "ListItem",
+      "community_name": "list.py",
       "norm_label": "renders an ordered list ``<ol>``. parameters: items: list items \u2014 can be..."
     },
     {
@@ -3080,7 +3137,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_spacer",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "spacer.py"
     },
@@ -3093,8 +3150,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "html_engine_components_spacer_spacer",
-      "community": 26,
-      "community_name": "Spacer",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "spacer"
     },
     {
@@ -3106,7 +3163,7 @@
       "_origin": "ast",
       "id": "html_engine_components_spacer_spacer_init",
       "community": 26,
-      "community_name": "Spacer",
+      "community_name": "Style",
       "norm_label": ".__init__()"
     },
     {
@@ -3117,8 +3174,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_spacer_spacer_to_html",
-      "community": 26,
-      "community_name": "Spacer",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": ".to_html()"
     },
     {
@@ -3130,7 +3187,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "html_engine_components_spacer_horizontalrule",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "horizontalrule"
     },
@@ -3143,7 +3200,7 @@
       "_origin": "ast",
       "id": "html_engine_components_spacer_horizontalrule_init",
       "community": 26,
-      "community_name": "Spacer",
+      "community_name": "Style",
       "norm_label": ".__init__()"
     },
     {
@@ -3154,7 +3211,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_spacer_horizontalrule_to_html",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": ".to_html()"
     },
@@ -3168,7 +3225,7 @@
       "_origin": "ast",
       "id": "html_engine_components_spacer_pagebreak",
       "community": 26,
-      "community_name": "Spacer",
+      "community_name": "Style",
       "norm_label": "pagebreak"
     },
     {
@@ -3180,7 +3237,7 @@
       "_origin": "ast",
       "id": "html_engine_components_spacer_pagebreak_init",
       "community": 26,
-      "community_name": "Spacer",
+      "community_name": "Style",
       "norm_label": ".__init__()"
     },
     {
@@ -3192,7 +3249,7 @@
       "_origin": "ast",
       "id": "html_engine_components_spacer_pagebreak_to_html",
       "community": 26,
-      "community_name": "Spacer",
+      "community_name": "Style",
       "norm_label": ".to_html()"
     },
     {
@@ -3202,7 +3259,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_spacer_rationale_1",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "spacer and divider components."
     },
@@ -3213,8 +3270,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "html_engine_components_spacer_rationale_14",
-      "community": 26,
-      "community_name": "Spacer",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "empty vertical space with a fixed height. parameters: height: css height value..."
     },
     {
@@ -3224,7 +3281,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "html_engine_components_spacer_rationale_30",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "horizontal rule (``<hr>``) divider. parameters: style: override styles (color,..."
     },
@@ -3236,7 +3293,7 @@
       "_origin": "ast",
       "id": "html_engine_components_spacer_rationale_53",
       "community": 26,
-      "community_name": "Spacer",
+      "community_name": "Style",
       "norm_label": "renders a page break for print media."
     },
     {
@@ -3246,8 +3303,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_table",
-      "community": 7,
-      "community_name": "html_engine/__init__.py",
+      "community": 14,
+      "community_name": "TableCell",
       "norm_label": "table.py"
     },
     {
@@ -3333,8 +3390,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "html_engine_components_table_table",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 14,
+      "community_name": "TableCell",
       "norm_label": "table"
     },
     {
@@ -3368,8 +3425,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_table_rationale_1",
-      "community": 7,
-      "community_name": "html_engine/__init__.py",
+      "community": 14,
+      "community_name": "TableCell",
       "norm_label": "table components: table, tablerow, tablecell. supports both simple table..."
     },
     {
@@ -3401,8 +3458,8 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "html_engine_components_table_rationale_100",
-      "community": 1,
-      "community_name": "laalpurja/layout.py",
+      "community": 14,
+      "community_name": "TableCell",
       "norm_label": "a full ``<table>`` element. can be built from: - explicit ``tablerow`` objects..."
     },
     {
@@ -3412,7 +3469,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_text",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "text.py"
     },
@@ -3426,7 +3483,7 @@
       "_origin": "ast",
       "id": "html_engine_components_text_text",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "text"
     },
     {
@@ -3437,7 +3494,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_text_text_init",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": ".__init__()"
     },
@@ -3450,7 +3507,7 @@
       "_origin": "ast",
       "id": "html_engine_components_text_text_to_html",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": ".to_html()"
     },
     {
@@ -3463,7 +3520,7 @@
       "_origin": "ast",
       "id": "html_engine_components_text_heading",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "heading"
     },
     {
@@ -3474,7 +3531,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_text_heading_init",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": ".__init__()"
     },
@@ -3487,7 +3544,7 @@
       "_origin": "ast",
       "id": "html_engine_components_text_heading_to_html",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": ".to_html()"
     },
     {
@@ -3499,7 +3556,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "html_engine_components_text_paragraph",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": "paragraph"
     },
@@ -3511,7 +3568,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_text_paragraph_init",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": ".__init__()"
     },
@@ -3523,7 +3580,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_text_paragraph_to_html",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": ".to_html()"
     },
@@ -3537,7 +3594,7 @@
       "_origin": "ast",
       "id": "html_engine_components_text_rawhtml",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "rawhtml"
     },
     {
@@ -3549,7 +3606,7 @@
       "_origin": "ast",
       "id": "html_engine_components_text_rawhtml_init",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": ".__init__()"
     },
     {
@@ -3561,7 +3618,7 @@
       "_origin": "ast",
       "id": "html_engine_components_text_rawhtml_to_html",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": ".to_html()"
     },
     {
@@ -3573,8 +3630,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "html_engine_components_text_link",
-      "community": 3,
-      "community_name": "Style",
+      "community": 16,
+      "community_name": "html_engine/__init__.py",
       "norm_label": "link"
     },
     {
@@ -3585,7 +3642,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_text_link_init",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": ".__init__()"
     },
@@ -3597,8 +3654,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_components_text_link_to_html",
-      "community": 3,
-      "community_name": "Style",
+      "community": 16,
+      "community_name": "html_engine/__init__.py",
       "norm_label": ".to_html()"
     },
     {
@@ -3608,7 +3665,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_components_text_rationale_1",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "text components: text, heading, paragraph, link."
     },
@@ -3620,7 +3677,7 @@
       "_origin": "ast",
       "id": "html_engine_components_text_rationale_15",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "inline text element rendered as a ``<span>``. parameters: content: the text..."
     },
     {
@@ -3631,7 +3688,7 @@
       "_origin": "ast",
       "id": "html_engine_components_text_rationale_46",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "block heading element rendered as ``<h1>`` through ``<h6>``. parameters:..."
     },
     {
@@ -3641,7 +3698,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "html_engine_components_text_rationale_81",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": "block paragraph element rendered as ``<p>``. parameters: content: the paragraph..."
     },
@@ -3653,7 +3710,7 @@
       "_origin": "ast",
       "id": "html_engine_components_text_rationale_112",
       "community": 5,
-      "community_name": "citizenship/layout.py",
+      "community_name": "components/__init__.py",
       "norm_label": "escape hatch: renders arbitrary html verbatim. use sparingly \u2014 this bypasses..."
     },
     {
@@ -3663,8 +3720,8 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "html_engine_components_text_rationale_127",
-      "community": 3,
-      "community_name": "Style",
+      "community": 16,
+      "community_name": "html_engine/__init__.py",
       "norm_label": "renders an anchor element ``<a>``. parameters: content: the text content or..."
     },
     {
@@ -3675,7 +3732,7 @@
       "_origin": "ast",
       "id": "html_engine_document",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "document.py"
     },
     {
@@ -3687,8 +3744,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "html_engine_document_document",
-      "community": 16,
-      "community_name": "Document",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "document"
     },
     {
@@ -3699,8 +3756,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_document_document_init",
-      "community": 16,
-      "community_name": "Document",
+      "community": 26,
+      "community_name": "Style",
       "norm_label": ".__init__()"
     },
     {
@@ -3711,8 +3768,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_document_document_add",
-      "community": 16,
-      "community_name": "Document",
+      "community": 3,
+      "community_name": "Component",
       "norm_label": ".add()"
     },
     {
@@ -3723,8 +3780,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_document_document_render",
-      "community": 16,
-      "community_name": "Document",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": ".render()"
     },
     {
@@ -3735,8 +3792,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_document_document_save",
-      "community": 16,
-      "community_name": "Document",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": ".save()"
     },
     {
@@ -3747,7 +3804,7 @@
       "_origin": "ast",
       "id": "html_engine_monochrome",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "monochrome.py"
     },
     {
@@ -3759,7 +3816,7 @@
       "_origin": "ast",
       "id": "html_engine_monochrome_target_for",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "_target_for()"
     },
     {
@@ -3771,7 +3828,7 @@
       "_origin": "ast",
       "id": "html_engine_monochrome_normalize_value",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "normalize_value()"
     },
     {
@@ -3783,7 +3840,7 @@
       "_origin": "ast",
       "id": "html_engine_monochrome_normalize_declarations",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "normalize_declarations()"
     },
     {
@@ -3795,7 +3852,7 @@
       "_origin": "ast",
       "id": "html_engine_monochrome_normalize_html",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "normalize_html()"
     },
     {
@@ -3807,7 +3864,7 @@
       "_origin": "ast",
       "id": "html_engine_monochrome_find_violations",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "find_violations()"
     },
     {
@@ -3818,7 +3875,7 @@
       "_origin": "ast",
       "id": "html_engine_monochrome_rationale_1",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "monochrome enforcement for the html document engine. project rule: a rendered..."
     },
     {
@@ -3829,7 +3886,7 @@
       "_origin": "ast",
       "id": "html_engine_monochrome_rationale_81",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "surfaces go white, ink goes black."
     },
     {
@@ -3840,7 +3897,7 @@
       "_origin": "ast",
       "id": "html_engine_monochrome_rationale_86",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "rewrite every colour token in a single declaration's *value*. parameters: prop:..."
     },
     {
@@ -3851,7 +3908,7 @@
       "_origin": "ast",
       "id": "html_engine_monochrome_rationale_124",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "rewrite colours across a css fragment. works both on an inline declaration list..."
     },
     {
@@ -3862,7 +3919,7 @@
       "_origin": "ast",
       "id": "html_engine_monochrome_rationale_139",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "rewrite colours in a complete html document. only ``style=\"...\"`` attributes..."
     },
     {
@@ -3873,7 +3930,7 @@
       "_origin": "ast",
       "id": "html_engine_monochrome_rationale_164",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "report colour tokens that normalization *would* change. returns a list of..."
     },
     {
@@ -3884,7 +3941,7 @@
       "_origin": "ast",
       "id": "html_engine_renderer",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "renderer.py"
     },
     {
@@ -3896,7 +3953,7 @@
       "_origin": "ast",
       "id": "html_engine_renderer_render",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "render()"
     },
     {
@@ -3907,7 +3964,7 @@
       "_origin": "ast",
       "id": "html_engine_renderer_rationale_12",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "render a document class to a full html string. the output is a self-contained..."
     },
     {
@@ -3917,7 +3974,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_styles",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "styles.py"
     },
@@ -3930,7 +3987,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "html_engine_styles_style",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": "style"
     },
@@ -3943,7 +4000,7 @@
       "_origin": "ast",
       "id": "html_engine_styles_style_attr_to_css_property",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "._attr_to_css_property()"
     },
     {
@@ -3955,7 +4012,7 @@
       "_origin": "ast",
       "id": "html_engine_styles_style_to_css",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": ".to_css()"
     },
     {
@@ -3967,7 +4024,7 @@
       "_origin": "ast",
       "id": "html_engine_styles_style_to_attr",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": ".to_attr()"
     },
     {
@@ -3990,8 +4047,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_styles_style_clone",
-      "community": 11,
-      "community_name": ".clone",
+      "community": 26,
+      "community_name": "Style",
       "norm_label": ".clone()"
     },
     {
@@ -4014,7 +4071,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_styles_px",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "px()"
     },
@@ -4026,7 +4083,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_styles_pct",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "pct()"
     },
@@ -4038,7 +4095,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_styles_em",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "em()"
     },
@@ -4050,7 +4107,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_styles_rem",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "rem()"
     },
@@ -4062,7 +4119,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "html_engine_styles_pt",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "pt()"
     },
@@ -4073,7 +4130,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "html_engine_styles_rationale_1",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "style dataclass for the html document engine. captures all css properties..."
     },
@@ -4084,7 +4141,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "html_engine_styles_rationale_15",
-      "community": 3,
+      "community": 26,
       "community_name": "Style",
       "norm_label": "immutable-ish style descriptor that maps 1:1 to css properties. any attribute..."
     },
@@ -4096,7 +4153,7 @@
       "_origin": "ast",
       "id": "html_engine_styles_rationale_139",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "convert a python attribute name to its css property equivalent."
     },
     {
@@ -4107,7 +4164,7 @@
       "_origin": "ast",
       "id": "html_engine_styles_rationale_143",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "serialize all non-none attributes into a css inline style string. colours are..."
     },
     {
@@ -4118,7 +4175,7 @@
       "_origin": "ast",
       "id": "html_engine_styles_rationale_170",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "return a full ``style=\"...\"`` html attribute string, or an empty string if..."
     },
     {
@@ -4139,8 +4196,8 @@
       "source_location": "L194",
       "_origin": "ast",
       "id": "html_engine_styles_rationale_194",
-      "community": 11,
-      "community_name": ".clone",
+      "community": 26,
+      "community_name": "Style",
       "norm_label": "return a copy of this style with specific fields overridden. usage:: base =..."
     },
     {
@@ -4161,7 +4218,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "html_engine_styles_rationale_213",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "return value as css pixel string."
     },
@@ -4172,7 +4229,7 @@
       "source_location": "L218",
       "_origin": "ast",
       "id": "html_engine_styles_rationale_218",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "return value as css percentage string."
     },
@@ -4183,7 +4240,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "html_engine_styles_rationale_223",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "return value as css em string."
     },
@@ -4194,7 +4251,7 @@
       "source_location": "L228",
       "_origin": "ast",
       "id": "html_engine_styles_rationale_228",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "return value as css rem string."
     },
@@ -4205,7 +4262,7 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "html_engine_styles_rationale_233",
-      "community": 7,
+      "community": 16,
       "community_name": "html_engine/__init__.py",
       "norm_label": "return value as css pt string."
     },
@@ -4332,7 +4389,7 @@
       "_origin": "ast",
       "id": "tests_test_monochrome",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "test_monochrome.py"
     },
     {
@@ -4344,7 +4401,7 @@
       "_origin": "ast",
       "id": "tests_test_monochrome_test_ink_goes_black_surfaces_go_white",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "test_ink_goes_black_surfaces_go_white()"
     },
     {
@@ -4356,7 +4413,7 @@
       "_origin": "ast",
       "id": "tests_test_monochrome_test_non_colour_values_are_untouched",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "test_non_colour_values_are_untouched()"
     },
     {
@@ -4368,7 +4425,7 @@
       "_origin": "ast",
       "id": "tests_test_monochrome_test_transparent_is_preserved",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "test_transparent_is_preserved()"
     },
     {
@@ -4380,7 +4437,7 @@
       "_origin": "ast",
       "id": "tests_test_monochrome_test_document_text_is_never_corrupted",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "test_document_text_is_never_corrupted()"
     },
     {
@@ -4392,7 +4449,7 @@
       "_origin": "ast",
       "id": "tests_test_monochrome_test_url_fragments_survive",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "test_url_fragments_survive()"
     },
     {
@@ -4404,7 +4461,7 @@
       "_origin": "ast",
       "id": "tests_test_monochrome_test_every_registered_layout_renders_monochrome",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "test_every_registered_layout_renders_monochrome()"
     },
     {
@@ -4415,8 +4472,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_test_monochrome_test_all_bypass_routes_are_closed",
-      "community": 16,
-      "community_name": "Document",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "test_all_bypass_routes_are_closed()"
     },
     {
@@ -4427,7 +4484,7 @@
       "_origin": "ast",
       "id": "tests_test_monochrome_rationale_1",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "regression tests for the black-and-white output rule. the rule is only worth..."
     },
     {
@@ -4438,7 +4495,7 @@
       "_origin": "ast",
       "id": "tests_test_monochrome_rationale_39",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "sizes must survive \u2014 a border-radius is not a colour."
     },
     {
@@ -4449,7 +4506,7 @@
       "_origin": "ast",
       "id": "tests_test_monochrome_rationale_48",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "rewriting transparent to white would paint over content."
     },
     {
@@ -4460,7 +4517,7 @@
       "_origin": "ast",
       "id": "tests_test_monochrome_rationale_55",
       "community": 16,
-      "community_name": "Document",
+      "community_name": "html_engine/__init__.py",
       "norm_label": "a '#333' inside author text is data, not a colour."
     },
     {
@@ -4470,8 +4527,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "tests_test_monochrome_rationale_82",
-      "community": 16,
-      "community_name": "Document",
+      "community": 5,
+      "community_name": "components/__init__.py",
       "norm_label": "style.raw, attrs['style'], extra_css, and document(background=...)."
     },
     {
@@ -9842,7 +9899,29 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agentic_controller/rendering.py",
-      "source_location": "L11",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agentic_controller_rendering",
+      "target": "agentic_controller_rendering_crop_to_page",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agentic_controller_rendering",
+      "target": "agentic_controller_rendering_page_metrics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast",
       "source": "agentic_controller_rendering",
@@ -9862,15 +9941,84 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agentic_controller_rendering_rationale_26",
+      "target": "agentic_controller_rendering_page_metrics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L113",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agentic_controller_rendering_render_png",
+      "target": "agentic_controller_rendering_page_metrics",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "agentic_controller/rendering.py",
-      "source_location": "L11",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agentic_controller_rendering_crop_to_page",
+      "target": "agentic_controller_rendering_py_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agentic_controller_rendering_rationale_52",
+      "target": "agentic_controller_rendering_crop_to_page",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L144",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agentic_controller_rendering_render_png",
+      "target": "agentic_controller_rendering_crop_to_page",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast",
       "source": "agentic_controller_rendering_render_png",
       "target": "agentic_controller_rendering_py_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "agentic_controller/rendering.py",
+      "source_location": "L92",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agentic_controller_rendering_rationale_92",
+      "target": "agentic_controller_rendering_render_png",
       "confidence_score": 1.0
     },
     {

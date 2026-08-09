@@ -49,15 +49,47 @@ _KEEP = frozenset(
     }
 )
 
-# Named CSS colours worth recognising. Not the full 148-entry list — just the
-# ones that realistically appear in hand-written or model-written layouts.
-_NAMED = (
-    "black|white|red|green|blue|yellow|orange|purple|pink|brown|gray|grey|"
-    "silver|gold|navy|teal|olive|maroon|lime|aqua|cyan|magenta|fuchsia|indigo|"
-    "violet|beige|ivory|khaki|salmon|coral|crimson|tan|plum|orchid|tomato|"
-    "darkgray|darkgrey|lightgray|lightgrey|darkblue|lightblue|darkgreen|"
-    "lightgreen|darkred|whitesmoke|gainsboro|dimgray|dimgrey|slategray|"
-    "slategrey|steelblue|royalblue|midnightblue|firebrick|goldenrod"
+# Every CSS named colour. A curated subset was tried first and leaked:
+# ``rebeccapurple`` is not an exotic choice for a model writing a layout, and
+# any name missing from the list passes through as real colour. The list is
+# closed and standardised, so completeness costs one constant and removes the
+# entire class of near-miss.
+#
+# Longest-first ordering matters: the alternation is scanned left to right, so
+# with "red" before "rebeccapurple" the regex would match "red" and leave
+# "beccapurple" behind as stray text.
+_NAMED = "|".join(
+    sorted(
+        (
+            "aliceblue antiquewhite aqua aquamarine azure beige bisque black"
+            " blanchedalmond blue blueviolet brown burlywood cadetblue"
+            " chartreuse chocolate coral cornflowerblue cornsilk crimson cyan"
+            " darkblue darkcyan darkgoldenrod darkgray darkgrey darkgreen"
+            " darkkhaki darkmagenta darkolivegreen darkorange darkorchid"
+            " darkred darksalmon darkseagreen darkslateblue darkslategray"
+            " darkslategrey darkturquoise darkviolet deeppink deepskyblue"
+            " dimgray dimgrey dodgerblue firebrick floralwhite forestgreen"
+            " fuchsia gainsboro ghostwhite gold goldenrod gray grey green"
+            " greenyellow honeydew hotpink indianred indigo ivory khaki"
+            " lavender lavenderblush lawngreen lemonchiffon lightblue"
+            " lightcoral lightcyan lightgoldenrodyellow lightgray lightgrey"
+            " lightgreen lightpink lightsalmon lightseagreen lightskyblue"
+            " lightslategray lightslategrey lightsteelblue lightyellow lime"
+            " limegreen linen magenta maroon mediumaquamarine mediumblue"
+            " mediumorchid mediumpurple mediumseagreen mediumslateblue"
+            " mediumspringgreen mediumturquoise mediumvioletred midnightblue"
+            " mintcream mistyrose moccasin navajowhite navy oldlace olive"
+            " olivedrab orange orangered orchid palegoldenrod palegreen"
+            " paleturquoise palevioletred papayawhip peachpuff peru pink plum"
+            " powderblue purple rebeccapurple red rosybrown royalblue"
+            " saddlebrown salmon sandybrown seagreen seashell sienna silver"
+            " skyblue slateblue slategray slategrey snow springgreen steelblue"
+            " tan teal thistle tomato turquoise violet wheat white whitesmoke"
+            " yellow yellowgreen"
+        ).split(),
+        key=len,
+        reverse=True,
+    )
 )
 
 _COLOR_TOKEN = re.compile(

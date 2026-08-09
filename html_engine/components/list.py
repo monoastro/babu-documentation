@@ -29,8 +29,10 @@ class ListItem(Component):
         escape: bool = True,
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
+        attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
     ):
-        super().__init__(style=style, css_class=css_class)
+        super().__init__(style=style, css_class=css_class, attrs=attrs, field=field)
         self.content = content
         self.escape = escape
 

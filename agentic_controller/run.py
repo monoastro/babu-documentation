@@ -1,7 +1,5 @@
-"""Integrated autonomous document digitization pipeline.
-
-Phase 3 deliverable: the CLI that implements the user's end-to-end flow.
-
+"""
+Integrated autonomous document digitization pipeline.
 Flow:
   1. Check whether layout and schema exist for the document type.
   2. If absent: generate_resources() to create them from the source image.
@@ -258,6 +256,25 @@ def digitize(
         if gen.layout_path is None and gen.schema_path is None:
             print("\n✗ The agent produced no usable resources. Stopping.", file=sys.stderr)
             return {"status": "generation_empty", "history": history}
+
+        if gen.layout_valid is False:
+            # The gate already built this layout and it raised. Registering it
+            # would only move the same traceback from here to the next run's
+            # build stage, where it reads as a pipeline bug rather than a
+            # generation one.
+            print(f"\n✗ The generated layout does not build:", file=sys.stderr)
+            print(f"    {gen.validation_message}", file=sys.stderr)
+            print(f"\n  Layout kept for inspection: {gen.layout_path}", file=sys.stderr)
+            print("  Do not register it until it builds — re-run to regenerate,")
+            print("  or fix the layout by hand and verify with:")
+            print(f"    python main.py --type {document_type} --blank")
+            return {
+                "status": "generated_invalid_layout",
+                "error": gen.validation_message,
+                "schema_path": str(gen.schema_path) if gen.schema_path else None,
+                "layout_path": str(gen.layout_path) if gen.layout_path else None,
+                "history": history,
+            }
 
         print("\n⚠ Generated resources are not yet wired into the registry.")
         print("  Review them, then register the builder before re-running:")

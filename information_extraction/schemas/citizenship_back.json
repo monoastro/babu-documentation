@@ -1,0 +1,44 @@
+{
+  "type": "object",
+  "title": "CitizenshipBackExtractionSchema",
+  "description": "Schema for structured data extraction from the back of a Nepali Citizenship Certificate, including thumb impressions and issuing authority block.",
+  "properties": {
+    "citizenship_type": {
+      "type": "string",
+      "description": "Type of citizenship as specified in the section labelled citizenship type/kisim (e.g. 'वंशज'). Extract exactly as printed in Devanagari."
+    },
+    "right_thumb_impression": {
+      "type": "string",
+      "description": "Location or presence of the applicant's right thumb impression. Set to 'present' if a thumbprint is visually present or the placeholder is occupied, 'absent' if blank."
+    },
+    "left_thumb_impression": {
+      "type": "string",
+      "description": "Location or presence of the applicant's left thumb impression. Set to 'present' if a thumbprint is visually present or the placeholder is occupied, 'absent' if blank."
+    },
+    "issuing_officer_signature": {
+      "type": "string",
+      "description": "Signature field: return the officer's handwritten signature exactly as printed if legible, else return 'unreadable signature' or 'present' if the signature is only visually present."
+    },
+    "issuing_officer_name": {
+      "type": "string",
+      "description": "Name of the issuing officer (नाम थर) exactly as printed next to the signature field, in Devanagari."
+    },
+    "issuing_officer_designation": {
+      "type": "string",
+      "description": "Designation (दर्जा) of the issuing officer exactly as printed (e.g. प्रशासनिक अधिकृत)."
+    },
+    "issue_date_bs": {
+      "type": "string",
+      "description": "Official issue date of the certificate as printed in the bottom-right section (in BS, e.g. २०६८-०९-२६). Preserve all digits, dashes, and formatting."
+    }
+  },
+  "required": [
+    "citizenship_type",
+    "right_thumb_impression",
+    "left_thumb_impression",
+    "issuing_officer_signature",
+    "issuing_officer_name",
+    "issuing_officer_designation",
+    "issue_date_bs"
+  ]
+}

@@ -6,29 +6,26 @@ import os
 import re
 from pathlib import Path
 
-#: Fallback viewport, used only when the page geometry cannot be determined.
+# fallback viewport, used only when the page geometry cannot be determined
 DEFAULT_SIZE: tuple[int, int] = (1300, 1100)
 
-#: ``renderer.render()`` lays the page out with ``margin:30px auto``.
+#renderer.render() lays the page out with margin:30px auto
 PAGE_MARGIN = 30
 
-#: Tall probe viewport for ``height:auto`` pages, whose real height is known
-#: only after the browser has laid the content out. The image is cropped back
-#: to the page afterwards, so an oversized probe costs a little memory, never
-#: correctness.
+#Tall probe viewport for ``height:auto`` pages, whose real height is known only after the browser has laid the content out. The image is cropped back to the page afterwards, so an oversized probe costs a little memory, never correctness.
 PROBE_HEIGHT = 4000
 
 _PAGE_RULE = re.compile(r"\.page\s*\{([^}]*)\}", re.IGNORECASE)
 _PX = re.compile(r"^\s*(\d+(?:\.\d+)?)px\s*$", re.IGNORECASE)
 
 
-def _page_metrics(html: str) -> tuple[int | None, int | None]:
-    """
-    Read the declared ``.page`` width and height out of rendered HTML.
+"""
+Read the declared ``.page`` width and height out of rendered HTML.
 
-    Returns ``(width, height)`` in pixels, either of which may be ``None``
-    when the value is ``auto`` or otherwise not a plain px length.
-    """
+Returns ``(width, height)`` in pixels, either of which may be ``None``
+when the value is ``auto`` or otherwise not a plain px length.
+"""
+def _page_metrics(html: str) -> tuple[int | None, int | None]:
     match = _PAGE_RULE.search(html)
     if not match:
         return None, None
@@ -48,19 +45,19 @@ def _page_metrics(html: str) -> tuple[int | None, int | None]:
     return as_px(declared.get("width")), as_px(declared.get("height"))
 
 
+"""
+Crop a rendered PNG down to the page itself.
+
+The .page wrapper carries a border, so the ink bounding box is exactly
+the page rectangle. Cropping to it gives every document the same framing
+regardless of viewport, which matters because the verifier compares the
+source scan against this image — inconsistent margins read as layout
+discrepancies that no layout change can fix.
+
+Returns the cropped size, or ``None`` if Pillow is unavailable or the page
+is blank (in which case the file is left untouched).
+"""
 def _crop_to_page(path: Path, pad: int = PAGE_MARGIN) -> tuple[int, int] | None:
-    """
-    Crop a rendered PNG down to the page itself.
-
-    The ``.page`` wrapper carries a border, so the ink bounding box is exactly
-    the page rectangle. Cropping to it gives every document the same framing
-    regardless of viewport, which matters because the verifier compares the
-    source scan against this image — inconsistent margins read as layout
-    discrepancies that no layout change can fix.
-
-    Returns the cropped size, or ``None`` if Pillow is unavailable or the page
-    is blank (in which case the file is left untouched).
-    """
     try:
         from PIL import Image, ImageChops
     except ImportError:
@@ -82,26 +79,21 @@ def _crop_to_page(path: Path, pad: int = PAGE_MARGIN) -> tuple[int, int] | None:
         cropped.save(path)
         return cropped.size
 
+"""
+Render *html_path* to ``output_dir/save_as``.
 
-def render_png(
-    html_path: Path,
-    output_dir: Path,
-    save_as: str,
-    size: tuple[int, int] | None = None,
-) -> bool:
-    """
-    Render *html_path* to ``output_dir/save_as``.
+Parameters:
+    size: Explicit viewport. Left as ``None`` (the default) the viewport is
+        derived from the page's own geometry, which is what keeps tall
+        documents from being silently cut off — a fixed viewport shorter
+        than the page crops it, and the verifier then reports the missing
+        content as a layout defect.
 
-    Parameters:
-        size: Explicit viewport. Left as ``None`` (the default) the viewport is
-            derived from the page's own geometry, which is what keeps tall
-            documents from being silently cut off — a fixed viewport shorter
-            than the page crops it, and the verifier then reports the missing
-            content as a layout defect.
+Returns:
+    ``True`` when the PNG landed on disk.
+"""
 
-    Returns:
-        ``True`` when the PNG landed on disk.
-    """
+def render_png( html_path: Path, output_dir: Path, save_as: str, size: tuple[int, int] | None = None,) -> bool:
     try:
         from html2image import Html2Image
 
@@ -117,8 +109,7 @@ def render_png(
                 page_w = page_h = None
 
             width = (page_w + PAGE_MARGIN * 2) if page_w else DEFAULT_SIZE[0]
-            # An auto-height page needs a probe tall enough to hold whatever
-            # the content turns out to be; the crop restores the real size.
+            # An auto-height page needs a probe tall enough to hold whatever the content turns out to be; the crop restores the real size.
             height = (page_h + PAGE_MARGIN * 2) if page_h else PROBE_HEIGHT
             size = (width, height)
 
@@ -142,12 +133,11 @@ def render_png(
             return False
 
         cropped = _crop_to_page(out_path)
+
+        # if the page rendered shorter than declared: content is missing, not merely cropped. Worth saying out loud, it looks identical to a layout bug in the verification report
         if cropped and page_h and cropped[1] < page_h:
-            # The page rendered shorter than declared: content is missing, not
-            # merely cropped. Worth saying out loud — it looks identical to a
-            # layout bug in the verification report.
             print(
-                f"  ⚠ Rendered page is {cropped[1]}px tall but the layout "
+                f"Rendered page is {cropped[1]}px tall but the layout "
                 f"declares {page_h}px."
             )
         return True
@@ -160,7 +150,7 @@ def render_png(
     except FileNotFoundError as exc:
         print(
             f"PNG render skipped — Chrome/Chromium not found.\n"
-            f"Install chromium or set CHROME_EXECUTABLE=/path/to/chrome\n"
+            f"Install chromium or set CHROME_EXECUTABLE=/usr/bin/chrome\n"
             f"({exc})"
         )
         return False

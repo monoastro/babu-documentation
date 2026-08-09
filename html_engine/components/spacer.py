@@ -12,18 +12,40 @@ from html_engine.styles import Style
 
 class Spacer(Component):
     """
-    Empty vertical space with a fixed height.
+    Empty space of a fixed size.
+
+    Vertical by default. A ``width`` makes it a horizontal gutter instead,
+    which is what a flex row needs to push two groups apart::
+
+        FlexRow(left, Spacer(width="40px"), right)
 
     Parameters:
-        height: CSS height value (e.g. "20px", "1em").
+        height: CSS height (e.g. "20px", "1em"). Defaults to "20px".
+        width: CSS width. Omitted when not given, so the spacer stays a
+            full-width block.
+        style: Additional inline styles, merged over the size.
     """
 
-    def __init__(self, height: str = "20px"):
-        super().__init__()
+    def __init__(
+        self,
+        height: str = "20px",
+        *,
+        width: Optional[str] = None,
+        style: Optional[Style] = None,
+        css_class: Optional[str] = None,
+    ):
+        base = Style(height=height, width=width)
+        # ``flex-shrink:0`` keeps a horizontal spacer from being squeezed to
+        # nothing by a tight flex row — a gutter that collapses under pressure
+        # is not a gutter.
+        if width:
+            base = base.clone(flex_shrink="0")
+        super().__init__(style=base.merge(style), css_class=css_class)
         self.height = height
+        self.width = width
 
     def to_html(self) -> str:
-        return f'<div style="height:{self.height}"></div>'
+        return f"<div{self._build_attrs()}></div>"
 
 
 class HorizontalRule(Component):

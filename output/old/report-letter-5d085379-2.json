@@ -1,0 +1,112 @@
+{
+  "overall_match": "fail",
+  "summary": "The rendered output captures some core letter text and key metadata, but it has several major fidelity problems: missing logo and QR placeholders, misplaced/misrepresented seal, missing recipient campus line, likely duplicated body wording, missing signature-area stamp placeholder, and missing footer contact information. The overall structure is recognizable but not sufficiently faithful to the source.",
+  "matches_well": [
+    "Main campus name is present in Nepali and English.",
+    "Phone number is captured correctly.",
+    "Reference number is captured essentially correctly.",
+    "Date value is captured, though formatted with slashes rather than the source separators.",
+    "Subject content is mostly captured.",
+    "The signatory name “प्रा. डा. नीलम श्रेष्ठ प्रधान” and designation “क्याम्पस प्रमुख” are present.",
+    "The copied-to section includes the three intended recipients."
+  ],
+  "discrepancies": [
+    {
+      "category": "image",
+      "location": "top-left header",
+      "source_observation": "A triangular logo/emblem appears at the upper left of the letterhead.",
+      "rendered_observation": "No placeholder is shown for the triangular Tribhuvan University/campus logo.",
+      "severity": "major",
+      "confidence": 0.98
+    },
+    {
+      "category": "image",
+      "location": "top-right header",
+      "source_observation": "A QR code appears near the phone number at the upper right.",
+      "rendered_observation": "No placeholder is shown for the QR code.",
+      "severity": "major",
+      "confidence": 0.98
+    },
+    {
+      "category": "image",
+      "location": "upper center seal area",
+      "source_observation": "The round office seal appears lower, around the area below the establishment line and above the body, not covering the main campus title.",
+      "rendered_observation": "A large circular placeholder labeled “Office Seal” is placed over/near the main title.",
+      "severity": "major",
+      "confidence": 0.9
+    },
+    {
+      "category": "layout",
+      "location": "header",
+      "source_observation": "This text is centered above the main campus name in the letterhead.",
+      "rendered_observation": "The “त्रिभुवन विश्वविद्यालय / Tribhuvan University” text is placed at the far upper left.",
+      "severity": "minor",
+      "confidence": 0.95
+    },
+    {
+      "category": "text",
+      "location": "establishment line under campus name",
+      "source_observation": "The source reads “स्थापित १९७५ वि.सं./Estd. 1918 A.D.”",
+      "rendered_observation": "The rendered establishment text appears different from the source wording.",
+      "severity": "major",
+      "confidence": 0.86
+    },
+    {
+      "category": "missing_content",
+      "location": "recipient block",
+      "source_observation": "The recipient block includes three lines: “श्री यसोदा कुमारी भट्ट जोशी”, “समाजशास्त्र विभाग”, and “त्रि-चन्द्र बहुमुखी क्याम्पस ।”",
+      "rendered_observation": "The recipient block includes “श्री यसोदा कुमारी भट्ट जोशी समाजशास्त्र विभाग” but omits the campus line.",
+      "severity": "major",
+      "confidence": 0.98
+    },
+    {
+      "category": "text",
+      "location": "main body paragraph",
+      "source_observation": "The source states “आंशिक शिक्षकमा नियुक्त गरिएको छ ।” without duplicated “गरिएको”.",
+      "rendered_observation": "The body text appears to contain duplicated wording around “नियुक्त गरिएको गरिएको छ”.",
+      "severity": "major",
+      "confidence": 0.85
+    },
+    {
+      "category": "image",
+      "location": "signature/authority area at right",
+      "source_observation": "The source has a signature plus an official stamp below/near the designation reading as the campus chief stamp for Tri-Chandra Multiple Campus.",
+      "rendered_observation": "Only a signature placeholder and typed name/designation are present; no separate placeholder for the office stamp near the signature is shown.",
+      "severity": "major",
+      "confidence": 0.95
+    },
+    {
+      "category": "extra_content",
+      "location": "बोधार्थ list",
+      "source_observation": "The source uses only Nepali numbering: “१)”, “२)”, “३)”.",
+      "rendered_observation": "Each list item has duplicate numbering, e.g. “1) १)”, “2) २)”, “3) ३)”.",
+      "severity": "minor",
+      "confidence": 0.95
+    },
+    {
+      "category": "layout",
+      "location": "बोधार्थ list",
+      "source_observation": "The source formats the copied-to section with line breaks under each numbered item.",
+      "rendered_observation": "The addressee lines in the copied-to section are flattened into single lines.",
+      "severity": "minor",
+      "confidence": 0.9
+    },
+    {
+      "category": "missing_content",
+      "location": "footer",
+      "source_observation": "The source footer includes a horizontal line plus “Email: info@trc.tu.edu.np” and “Website: https://trc.tu.edu.np”.",
+      "rendered_observation": "The footer line, email address, and website are missing.",
+      "severity": "major",
+      "confidence": 0.99
+    },
+    {
+      "category": "image",
+      "location": "page background",
+      "source_observation": "A faint clock-tower watermark appears in the center of the source page.",
+      "rendered_observation": "The central clock-tower watermark/background image is not represented.",
+      "severity": "minor",
+      "confidence": 0.9
+    }
+  ],
+  "needs_human_review": false
+}

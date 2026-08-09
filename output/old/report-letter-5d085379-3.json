@@ -1,0 +1,89 @@
+{
+  "overall_match": "fail",
+  "summary": "The rendered output captures much of the main letter text and key reference/date information, but it misses several important source elements: the top-left logo placeholder, top-right QR placeholder, central watermark, footer contact details, the recipient campus line, and the office stamp near the signature. It also places the round seal placeholder incorrectly over the title and duplicates numbering in the बोधार्थ section. These are significant completeness and structural issues.",
+  "matches_well": [
+    "Main campus name is present in Nepali and English.",
+    "Phone number appears to match the source.",
+    "Reference number “२९६ / ०८१-०८२” appears to match the source.",
+    "Date “२०८१/०८/२६” appears to match the source.",
+    "Subject text is captured correctly.",
+    "Main body paragraph is largely captured correctly.",
+    "Principal/chief name “प्रा. डा. नीलम श्रेष्ठ प्रधान” and title “क्याम्पस प्रमुख” are present.",
+    "The three बोधार्थ recipient entries are present in substance, aside from duplicated numbering and layout simplification."
+  ],
+  "discrepancies": [
+    {
+      "category": "image",
+      "location": "top-left header",
+      "source_observation": "The source contains a prominent triangular university/campus logo at the upper left.",
+      "rendered_observation": "The rendered output shows only typed university text and no placeholder for the Tri-Chandra/Tribhuvan University triangular logo.",
+      "severity": "major",
+      "confidence": 0.98
+    },
+    {
+      "category": "image",
+      "location": "top-right header",
+      "source_observation": "The source contains a QR code at the upper right below the phone number.",
+      "rendered_observation": "The rendered output omits the QR code placeholder.",
+      "severity": "major",
+      "confidence": 0.98
+    },
+    {
+      "category": "image",
+      "location": "center page background",
+      "source_observation": "The source contains a faint large clock-tower watermark in the center of the page behind the body text.",
+      "rendered_observation": "The rendered output does not include a watermark/placeholder for the large clock-tower background image.",
+      "severity": "major",
+      "confidence": 0.95
+    },
+    {
+      "category": "layout",
+      "location": "top center seal/header area",
+      "source_observation": "The source has a round office seal below the main title area, around the upper middle of the page, not obscuring the main title.",
+      "rendered_observation": "A large circular placeholder labeled “Round Office Seal” is placed over and intersects the main campus title.",
+      "severity": "major",
+      "confidence": 0.92
+    },
+    {
+      "category": "text",
+      "location": "recipient address block, upper left body",
+      "source_observation": "The source recipient block includes “श्री यसोदा कुमारी भट्ट जोशी”, “समाजशास्त्र विभाग”, and “त्रि-चन्द्र बहुमुखी क्याम्पस ।”",
+      "rendered_observation": "The rendered recipient block reads only “श्री यसोदा कुमारी भट्ट जोशी समाजशास्त्र विभाग” and omits the following campus line.",
+      "severity": "major",
+      "confidence": 0.94
+    },
+    {
+      "category": "missing_content",
+      "location": "signature/authorization area, right middle",
+      "source_observation": "The source includes a signature, the name “प्रा. डा. नीलम श्रेष्ठ प्रधान”, “क्याम्पस प्रमुख”, and a purple office stamp reading “क्याम्पस प्रमुख त्रि-चन्द्र बहुमुखी क्याम्पस”.",
+      "rendered_observation": "The rendered output includes a signature placeholder and the name/title, but omits the office stamp text/placeholder below it.",
+      "severity": "major",
+      "confidence": 0.96
+    },
+    {
+      "category": "extra_content",
+      "location": "बोधार्थ section",
+      "source_observation": "The source lists the items only with Nepali numbering: “१)”, “२)”, and “३)”.",
+      "rendered_observation": "Each copied-to item has duplicated numbering, such as “1) १)”, “2) २)”, and “3) ३)”.",
+      "severity": "major",
+      "confidence": 0.99
+    },
+    {
+      "category": "missing_content",
+      "location": "bottom footer",
+      "source_observation": "The source footer contains “Email: info@trc.tu.edu.np” at bottom left and “Website: https://trc.tu.edu.np” at bottom right.",
+      "rendered_observation": "The rendered output omits the footer contact details.",
+      "severity": "major",
+      "confidence": 0.98
+    },
+    {
+      "category": "layout",
+      "location": "overall header layout",
+      "source_observation": "The source header has the university name centered above the main campus name, with the logo on the left, phone and QR code on the right, and office/address blocks beneath.",
+      "rendered_observation": "The university name is placed at the upper left and the main header is simplified, with several source header elements not in their original logical positions.",
+      "severity": "minor",
+      "confidence": 0.9
+    }
+  ],
+  "needs_human_review": false
+}

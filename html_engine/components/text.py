@@ -18,9 +18,15 @@ class Text(Component):
     Parameters:
         content: The text string to display.
         escape: If True, content will be HTML-escaped. Defaults to True.
+        multiline: If True, newlines in *content* are preserved via
+            ``white-space: pre-line``. OCR routinely returns two-line values
+            (an address, a bilingual caption); without this the newline
+            collapses to a space and the render loses a line break the source
+            scan clearly has.
         style: Optional inline styles.
         css_class: Optional CSS class name(s).
         attrs: Optional dict of arbitrary HTML attributes.
+        field: Dotted data-field path; makes this value editable.
     """
 
     def __init__(
@@ -28,13 +34,18 @@ class Text(Component):
         content: str = "",
         *,
         escape: bool = True,
+        multiline: bool = False,
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
         attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
     ):
-        super().__init__(style=style, css_class=css_class, attrs=attrs)
+        if multiline:
+            style = Style(white_space="pre-line").merge(style)
+        super().__init__(style=style, css_class=css_class, attrs=attrs, field=field)
         self.content = content
         self.escape = escape
+        self.multiline = multiline
 
     def to_html(self) -> str:
         attrs = self._build_attrs()
@@ -53,6 +64,7 @@ class Heading(Component):
         style: Optional inline styles.
         css_class: Optional CSS class name(s).
         attrs: Optional dict of arbitrary HTML attributes.
+        field: Dotted data-field path; makes this heading editable.
     """
 
     def __init__(
@@ -64,8 +76,9 @@ class Heading(Component):
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
         attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
     ):
-        super().__init__(style=style, css_class=css_class, attrs=attrs)
+        super().__init__(style=style, css_class=css_class, attrs=attrs, field=field)
         self.content = content
         self.level = max(1, min(6, level))
         self.escape = escape
@@ -84,9 +97,11 @@ class Paragraph(Component):
     Parameters:
         content: The paragraph text.
         escape: If True, content will be HTML-escaped. Defaults to True.
+        multiline: If True, newlines are preserved via ``white-space: pre-line``.
         style: Optional inline styles.
         css_class: Optional CSS class name(s).
         attrs: Optional dict of arbitrary HTML attributes.
+        field: Dotted data-field path; makes this paragraph editable.
     """
 
     def __init__(
@@ -94,13 +109,18 @@ class Paragraph(Component):
         content: str = "",
         *,
         escape: bool = True,
+        multiline: bool = False,
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
         attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
     ):
-        super().__init__(style=style, css_class=css_class, attrs=attrs)
+        if multiline:
+            style = Style(white_space="pre-line").merge(style)
+        super().__init__(style=style, css_class=css_class, attrs=attrs, field=field)
         self.content = content
         self.escape = escape
+        self.multiline = multiline
 
     def to_html(self) -> str:
         attrs = self._build_attrs()

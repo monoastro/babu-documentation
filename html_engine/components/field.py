@@ -9,9 +9,9 @@ label–value rows.
 from __future__ import annotations
 
 import html
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
-from html_engine.components.base import Component
+from html_engine.components.base import Component, editable_attrs
 from html_engine.styles import Style
 
 
@@ -31,6 +31,11 @@ class LabelValue(Component):
         value_style: Override styles for the value element.
         style: Styles for the outer container.
         label_width: CSS width for the label. Defaults to "240px".
+        field: Dotted data-field path for the *value* — the label is fixed
+            document chrome, the value is the extracted data. Shorthand for
+            passing ``value_attrs=editable_attrs(...)``.
+        multiline: Preserve newlines in a string value via
+            ``white-space: pre-line``.
     """
 
     _default_container_style = Style(
@@ -61,6 +66,8 @@ class LabelValue(Component):
         attrs: Optional[dict[str, str]] = None,
         value_attrs: Optional[dict[str, str]] = None,
         label_attrs: Optional[dict[str, str]] = None,
+        field: Optional[str] = None,
+        multiline: bool = False,
     ):
         merged_container = self._default_container_style.merge(style)
         super().__init__(style=merged_container, css_class=css_class, attrs=attrs)
@@ -68,14 +75,19 @@ class LabelValue(Component):
         self.value = value
         self.escape = escape
         self.label_width = label_width
-        self.value_attrs: dict[str, str] = value_attrs or {}
+        self.value_attrs: dict[str, str] = dict(value_attrs or {})
         self.label_attrs: dict[str, str] = label_attrs or {}
+        if field:
+            for key, val in editable_attrs(field).items():
+                self.value_attrs.setdefault(key, val)
 
         self.label_style = self._default_label_style.clone(
             width=label_width
         ).merge(label_style)
 
         self.value_style = self._default_value_style.merge(value_style)
+        if multiline:
+            self.value_style = Style(white_space="pre-line").merge(self.value_style)
 
     def to_html(self) -> str:
         attrs = self._build_attrs()
@@ -130,7 +142,7 @@ class FieldGroup(Component):
 
     def __init__(
         self,
-        *children: Component,
+        *children: Any,
         spacing: str = "18px",
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
@@ -170,7 +182,7 @@ class MultiFieldRow(Component):
 
     def __init__(
         self,
-        *children: Component,
+        *children: Any,
         style: Optional[Style] = None,
         css_class: Optional[str] = None,
     ):
