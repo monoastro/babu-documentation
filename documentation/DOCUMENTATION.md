@@ -206,6 +206,30 @@ LabelValue("Name", d["owner_name"], value_attrs={"contenteditable": "true", "dat
 `LabelValue` accepts a separate `value_attrs` dict targeting the inner value
 `<div>` rather than the outer container.
 
+### What a container accepts as a child
+
+Containers (`Div`, `FlexRow`, `FlexCol`, grid and table cells, `Document.add()`)
+take components, but a bare `str`, `int`, or `float` is coerced to a `Text`
+node, and `None` is dropped. Anything else — a list, a dict, an arbitrary object
+— raises `TypeError` naming the container, the child's position, and its type:
+
+```python
+Div("(Signed)")                 # → Div(Text("(Signed)"))
+FlexCol(Text("a"), None)        # → the None is skipped
+FlexRow(Text("a"), ["b", "c"])  # TypeError: FlexRow child at position 1 is list, …
+```
+
+The split is deliberate. A string child is unambiguous — there is exactly one
+sensible reading — while a list child means the caller forgot to splat it, and
+silently rendering `['b', 'c']` onto an official document is worse than
+stopping. Before coercion existed, a generated layout containing `Div("")` was
+accepted at construction and then failed deep in rendering with `'str' object
+has no attribute 'to_html'`, a message naming neither the layout file, the
+container, nor the offending string.
+
+`bool` is rejected even though it is an `int` subclass: `Div(True)` is never a
+request to print "True".
+
 ### Rendering
 
 `Document.render()` traverses the component tree and returns a complete HTML
@@ -321,7 +345,7 @@ python main.py --type laalpurja --blank --png                         # layout c
 | Flag | Default | Description |
 |---|---|---|
 | `image` | — | Source scan to OCR. Omit when using `--data` or `--blank` |
-| `-t`, `--type` | `laalpurja` | Any key in `DOCUMENTS` |
+| `-t`, `--type` | `laalpurja` | Any discovered type; `--help` lists the current set |
 | `-o`, `--output` | `output/<type>.html` | Output HTML path |
 | `--data` | — | Build from this JSON instead of running OCR |
 | `--save-data` | — | Write the extracted JSON for later `--data` runs |
@@ -343,18 +367,106 @@ a spacing problem belongs to the layout or to the extracted values.
 ## Document builders
 
 `document_builder/registry.py` maps document type strings to a builder function
-and its extraction schema path.
+and its extraction schema path. It resolves both on demand from the filesystem;
+`document_builder/resolver.py` holds the rules.
 
 | Document type | Builder | Page geometry | Layout approach |
 |---|---|---|---|
 | `citizenship` | `citizenship/layout.py` | 1200 × 780 | Coordinate/absolute positioning for rigid single-page certificates. |
+| `citizenship_back` | `citizenship_back/layout.py` | 1200 × 800 | Absolute positioning; thumb impressions and the officer signature are placeholders. |
 | `laalpurja` | `laalpurja/layout.py` | 1200 × **auto** | Flow and table layout for variable-row land records with Devanagari numerals. |
-| `letter` | `letter/layout_2.py` | 900 × 1320 | Flow layout for official correspondence, with placeholder furniture. |
+| `letter` | `letter/layout.py` | 900 × 1320 | Flow layout for official correspondence, with placeholder furniture. |
+| `income_certificate` | `income_certificate/layout.py` | agent-generated | Header block, income-source table, computed summary, signature footer. |
+| `relationship_certificate` | `relationship_certificate/layout.py` | agent-generated | Reference header, body prose, family-member rows, certifying official. |
+| `see_certificate` | `see_certificate/layout.py` | agent-generated | Examination board certificate; emblem, seal, and signature placeholders. |
+| `tax_clearance` | `tax_clearance/layout.py` | agent-generated | Recipient block, income-items table, remarks, signature footer. |
+| `transfer_certificate` | `transfer_certificate/layout.py` | agent-generated | School transfer record; student details and authentication block. |
 
-The `letter` entry points at `layout_2.py` against the patched schema
-(`letter_patched.json`) — the Architect Agent's output from an earlier repair
-run. `letter/layout.py` and `letter/layout_1.py` are earlier revisions, kept but
-unregistered.
+The last five were written by the Architect Agent from a scan alone and reached
+the registry with no code edit at all. `validate_layout` proves a layout
+*builds*; it does not prove the layout resembles the scan, so treat generated
+ones as drafts until the vision verifier has been over them.
+
+Note that a generated type's first files are `layout.py` and `<type>.json` —
+base names, not `layout_1.py` and `<type>_patched.json`. Generation used to write
+the sidecar names, which read as consistent with the repair loop but inverted the
+meaning: an unseen type has no original to protect, so the first layout written
+*is* the rollback original. The result was five types standing on a sidecar with
+no base underneath, and therefore no rollback floor — a later dangling `ACTIVE`
+resolved to nothing and dropped the type out of discovery entirely instead of
+degrading to a working layout. `_write_allowed()` protects `layout.py` and base
+schemas that *exist*; a path that has never been written has no rollback value to
+destroy.
+
+### Which layout is live: the `ACTIVE` pointer
+
+A repair never edits a layout in place. It writes the next free
+`layout_<N>.py` beside the untouched `layout.py`, and promotion is a one-line
+`ACTIVE` file naming the winner:
+
+```
+document_builder/citizenship_back/
+    layout.py       # the rollback original — never written to
+    layout_1.py     # a repair
+    ACTIVE          # contains: layout_1.py
+```
+
+Absent, blank, or unreadable `ACTIVE` means `layout.py`, so a directory that has
+never been patched carries no bookkeeping at all. That fallback is why every
+type — hand-written or generated — keeps a `layout.py`: it is the floor a stale
+pointer lands on, so a dangling `ACTIVE` costs a stale render rather than a
+missing document type.
+
+This replaced four hard-coded `from .<type>.layout import build_<type>`
+statements at the top of `registry.py`, which had to be hand-edited after every
+patch. Three distinct failures came out of that arrangement, and they share one
+cause — resolving layouts at import time:
+
+- **The pointer went dangling.** Promoting by hand meant copying the patch over
+  `layout.py`, deleting `layout_N.py`, and editing `registry.py` to match. Do
+  those in the wrong order and the import names a module that no longer exists.
+  Because the imports were eager and top-level, `ModuleNotFoundError` on one
+  layout made `DOCUMENTS` unimportable, which took out every document type and
+  four of the six test suites with it.
+- **The repair loop could not see its own repairs.** `run.py` builds through the
+  registry while the agent writes `layout_N.py`. With the import fixed at
+  startup, iteration 2 rebuilt iteration 1's *input*. Multi-iteration repair was
+  a no-op unless a human edited `registry.py` mid-run — and the run printed that
+  as though it were intended behaviour.
+- **Schema repairs were invisible.** The registry hard-coded `<doc>.json` while
+  `resolve_schema_path()` prefers `<doc>_patched.json`. A patched schema was
+  written, reported, and then ignored by both `main.py` and the extraction
+  pipeline.
+
+Promotion is automatic but gated: `promote_layout()` is called only after
+`validate_layout` has built the new layout on blank data. A layout that raises
+stays on disk for inspection and does not become live, so the previous good one
+keeps serving. Rolling back is editing one line; `git log` on `ACTIVE` is the
+promotion history, and `layout.py` is byte-identical to what it always was.
+
+Three details in `resolver.py` are load-bearing:
+
+- **`ACTIVE` is agent-writable, so its contents are untrusted input.** The name
+  is matched against `^layout(_\d+)?\.py$` before use — slashes, backslashes,
+  `..`, and absolute paths never reach the filesystem.
+- **Loading goes through `importlib.util.spec_from_file_location`, not
+  `import_module`.** Two reasons, either sufficient: layout filenames are
+  arbitrary, and a module-name import caches in `sys.modules`, which would serve
+  the first-loaded layout for the life of the process. Mid-run promotion is the
+  entire point, so the stale cache would defeat it. Each load gets a unique
+  module name (`_babu_layout_<type>_<stem>`), registered before `exec_module` so
+  `from __future__` imports resolve, and popped again if execution raises.
+- **`DOCUMENTS` resolves per entry, lazily, and is not cached.** One broken
+  layout breaks only its own type. Iterating `.items()` reads schema paths
+  without executing any layout — `tests/test_registry_resolution.py` asserts
+  that no `_babu_layout_*` module appears in `sys.modules` after a full sweep.
+  Skipping the cache is deliberate: a promotion or generation must be visible to
+  the process that performed it.
+
+Each entry's schema path must name a file that exists on disk. Pointing an entry
+at a generated-but-never-written schema (`letter_patched.json` did this) turns
+every run of that type into a `FileNotFoundError` at extraction time, well away
+from the registry line that caused it.
 
 ### Contenteditable output
 
@@ -372,9 +484,13 @@ silently breaks human editing** even though it renders correctly.
 
 1. Create `document_builder/<type>/layout.py` with `build_<type>(data: dict) -> Document`.
 2. Add a JSON extraction schema at `information_extraction/schemas/<type>.json`.
-3. Register both in `document_builder/registry.py`.
 
-Or skip all three and let the Architect Agent generate them — see
+There is no third step. Any directory holding both is discovered automatically,
+so the type is a valid `--type` on the next run with no code edit. `<type>` must
+be a Python identifier, because it becomes part of `build_<type>` — a scan named
+`tax-clearance.png` produces the document type `tax_clearance`.
+
+Or skip both and let the Architect Agent generate them — see
 `generate_resources` below.
 
 ---
@@ -610,6 +726,32 @@ An unrecognized CSS property does **not** fail the gate — the engine warns and
 renders. A cosmetic gap in a layout the agent just wrote is not worth discarding
 the layout over.
 
+**The verdict has to reach the caller.** `RepairResult` carries the gate's
+outcome in two structured fields:
+
+```python
+layout_valid: bool | None     # None = the gate never ran
+validation_message: str
+promoted: Path | None         # the ACTIVE pointer, if this layout became live
+```
+
+Both `analyze_and_repair()` and `generate_resources()` set them, and
+`describe()` prints `(validation: PASSED / FAILED / not run)`. This used to be a
+`[VALIDATION FAILED]` prefix appended to the `summary` string, which nothing
+parsed — so `run.py` printed "resources generated, review and register them"
+over a layout the gate had already rejected, and the user found out on the next
+run when `build_document()` raised. `run.py` now stops on
+`gen.layout_valid is False`, returns `status="generated_invalid_layout"`, and
+keeps the file for inspection.
+
+`generate_resources()` was the more dangerous of the two, because it computed
+`ok` and printed it but never assigned `result.layout_valid`. The guard in
+`run.py` therefore read `None`, `is False` was never true, and the stop it
+describes never fired for a generated layout. Harmless while promotion was
+manual — a human read the traceback before wiring anything up — and not harmless
+once passing the gate is what makes a layout live. `promoted` is set from the
+same branch, so the two can never disagree: no promotion without a pass.
+
 Five behaviours are load-bearing and easy to break:
 
 1. **Re-extraction ordering** — the schema lands before OCR re-runs; callers
@@ -624,8 +766,51 @@ Five behaviours are load-bearing and easy to break:
    the `data-field` contract the layout must preserve.
 
 Originals are never overwritten: `layout.py` stays intact for rollback and
-iterations land beside it as `layout_1.py`, `layout_2.py`, … .
-`current_layout_path()` returns the highest-numbered one.
+iterations land beside it as `layout_1.py`, `layout_2.py`, … . Promotion writes
+the one-line `ACTIVE` pointer and nothing else, so `layout.py` stays
+byte-identical no matter how many repairs run — the manual process it replaced
+copied the patch over `layout.py` and destroyed the rollback original the
+invariant exists to protect. `current_layout_path()` returns whatever `ACTIVE`
+names, which is not necessarily the newest file: an unpromoted `layout_3.py` sits
+on disk while `ACTIVE` still names `layout_1.py`, and that is exactly what a
+failed gate leaves behind. Use `latest_layout_path()` when you want the newest
+one written rather than the one that builds. Base schemas are likewise off
+limits; repairs land as `<doc>_patched.json`, which `resolve_schema_path()`
+already prefers, so overwriting the base buys nothing and destroys the rollback
+point.
+
+**The command sandbox.** `execute_command` is the agent's read-only inspection
+tool, and it was not read-only. Two independent holes let one agent run delete
+`document_builder/citizenship_back/layout.py` and truncate
+`information_extraction/schemas/citizenship_back.json` to zero bytes — both
+writes `_write_allowed()` refuses through `write_file`. The promise above was
+documented and unenforced.
+
+The first hole was the allowlist itself: `python -c` was on it. That is arbitrary
+code execution, and an allowlist containing a general-purpose interpreter is not
+an allowlist. It is gone, and `python -m py_compile` covers the legitimate use.
+
+The second was the shape of the check. The command string went to
+`subprocess.run(..., shell=True)` behind a prefix match, and a prefix only ever
+describes the first word. `cat README.md > schemas/citizenship_back.json` passes
+as a `cat`; `ls; rm -rf document_builder` passes as an `ls`. Same for `&&`, `|`,
+`$( )`, backticks, and an embedded newline. There is now no shell at all:
+metacharacters are refused with the offending character named, the string is
+split with `shlex.split()`, and `argv` is executed directly. A bare `python`
+argv[0] is rewritten to `sys.executable` for the same pyenv/conda reason the gate
+probe uses it.
+
+Defence in depth on top of that: every command is bracketed by a snapshot of the
+protected originals — each `layout.py` under `document_builder/` and every schema
+that is not a `_patched` sidecar. If a command changes or deletes one, the bytes
+are put back and the restore is reported into the tool result, so the agent is
+told what it did instead of silently succeeding. `_protected_originals()`
+deliberately excludes `layout_N.py` and `_patched.json`: those are the agent's
+workspace, not originals.
+
+`tests/test_command_sandbox.py` has one test per route that previously reached
+the filesystem, including an assertion that a redirection attempt leaves the
+schema's bytes untouched.
 
 ```bash
 python -m agentic_controller.architect repair <type> source.png rendered.png [--report r.json] [--concerns "..."]
@@ -697,7 +882,7 @@ python -m agentic_controller.architect generate <type> source.png --notes "..."
 python -m agentic_controller.rag_engine query "how do I center a heading"
 python -m agentic_controller.rag_engine stats
 
-# Tests — all 5 suites, 65 tests, no pytest needed
+# Tests — all 7 suites, 117 tests, no pytest needed
 python tests/run_all.py
 python tests/test_styles.py        # or one suite directly
 ```
@@ -706,9 +891,11 @@ python tests/test_styles.py        # or one suite directly
 |---|---|
 | `test_styles.py` | Open `Style`: any property renders, typos warn, shorthand orders before longhand |
 | `test_monochrome.py` | All four CSS routes to the page, plus every registered layout |
-| `test_components.py` | Placeholders, watermark inertness, signature block, the `field=` contract |
+| `test_components.py` | Placeholders, watermark inertness, signature block, the `field=` contract, child coercion |
 | `test_layout_gate.py` | `validate_layout` catches errors inside a builder body, not just at import |
 | `test_main_cli.py` | `--blank` / `--data` never reach OCR; argument validation |
+| `test_command_sandbox.py` | Every route `execute_command` used to leave open: `python -c`, redirection, chaining, substitution, newlines; the originals guard; and `_write_allowed()` refusing an *existing* `layout.py` or base schema while permitting a brand-new type to create its own |
+| `test_registry_resolution.py` | `ACTIVE` selects the live layout and degrades to `layout.py` rather than raising; traversal in `ACTIVE` is rejected; discovery finds new types and skips incomplete ones; promotion round-trips and takes effect inside one process; iteration imports no layouts |
 
 There is no pytest dependency. Each suite is an ordinary script that asserts and
 prints; `run_all.py` is the `&&` chain, written once, and exits non-zero if any

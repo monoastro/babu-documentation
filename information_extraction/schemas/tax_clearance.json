@@ -1,0 +1,111 @@
+{
+  "title": "Tax Clearance Certificate Extraction Schema",
+  "type": "object",
+  "description": "Schema for extracting all structured and visible data from a Nepali tax clearance certificate.",
+  "properties": {
+    "emblem_present": {
+      "type": "boolean",
+      "description": "True if the Coat of Arms of Nepal is visible at the top left; always set true unless the image is cropped."
+    },
+    "office_name": {
+      "type": "string",
+      "description": "Full office name/heading (in Nepali or English, as present) at top center, starting with 'नेपाल सरकार' and including department/ministry/sub-office names. Keep line breaks as single spaces. Extract exactly as printed."
+    },
+    "letter_no": {
+      "type": "string",
+      "description": "The printed letter number (पत्र संख्या) in the information header near the upper left, exactly as shown."
+    },
+    "registration_no": {
+      "type": "string",
+      "description": "The registration or reference number (चलानी नं) in the upper header block. Extract exactly as printed."
+    },
+    "tax_notice_no": {
+      "type": "string",
+      "description": "Tax Notice Number (कर सूचना नं) in the header, upper left."
+    },
+    "issue_date_nepali": {
+      "type": "string",
+      "description": "The Nepali-issued date (in Bs) (यो पत्र मिति ... मा तयार गरिएको छ) at the top right. Extract exactly as printed."
+    },
+    "print_date_nepali": {
+      "type": "string",
+      "description": "The print date in Nepali (प्रिन्ट मिति ... ) at upper right. Extract exactly as printed."
+    },
+    "qr_present": {
+      "type": "boolean",
+      "description": "True if QR code box is present in the header right area. Always true unless document is cropped."
+    },
+    "subject": {
+      "type": "string",
+      "description": "The subject line (विषय:) below the info block. Should always be 'कर चुक्ता प्रमाण पत्र' for this type."
+    },
+    "recipient_name": {
+      "type": "string",
+      "description": "The recipient's full name (श्री ...) below the subject, in Devanagari. Extract exactly as shown."
+    },
+    "recipient_address": {
+      "type": "string",
+      "description": "Recipient's address block — the lines after the name, e.g., 'का.म.न.पा. १९, बागमती', plus any visible phone number. Collapse into a single line with commas if multi-line."
+    },
+    "recipient_pan": {
+      "type": "string",
+      "description": "Personal PAN number of the recipient, as printed below the address block."
+    },
+    "main_text": {
+      "type": "string",
+      "description": "Full body text of the certificate explaining the clearance, extracted exactly as printed, including dates and numbers. Do not edit or summarize."
+    },
+    "income_items": {
+      "type": "array",
+      "description": "Structured rows from the 'आयका शिर्षकहरू' table, one per row with column headers and amounts as printed.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": {"type": "string", "description": "Income item title, exactly as shown in the left column."},
+          "amount": {"type": "string", "description": "Amount in NPR, as printed in the right column. Keep exact punctuation and formatting."}
+        },
+        "required": ["item", "amount"]
+      }
+    },
+    "total_income": {
+      "type": "string",
+      "description": "Total income as printed in the final row (अन्तिम समयमा कट्टी तथा कर सूचिमा भएको आय), right cell."
+    },
+    "signature_label": {
+      "type": "string",
+      "description": "Text immediately above or beside the officer signature (e.g. (कर अधिकृत), or handwritten text: usually (Signed)). If handwritten, transcribe it exactly as shown."
+    },
+    "certifying_officer_name": {
+      "type": "string",
+      "description": "Printed or handwritten name of certifying officer if present. Extract exactly as it appears below the signature line."
+    },
+    "certifying_officer_title": {
+      "type": "string",
+      "description": "Title of certifying officer or official designation next to signature: (कर अधिकृत) etc."
+    },
+    "remarks": {
+      "type": "string",
+      "description": "Footer notes (पुनश्च:), containing all visible legal/instructional notes at the bottom, below the signature area. Extract all visible lines, separated by double space or semicolons if multiline."
+    }
+  },
+  "required": [
+    "emblem_present",
+    "office_name",
+    "letter_no",
+    "registration_no",
+    "tax_notice_no",
+    "issue_date_nepali",
+    "print_date_nepali",
+    "qr_present",
+    "subject",
+    "recipient_name",
+    "recipient_address",
+    "recipient_pan",
+    "main_text",
+    "income_items",
+    "total_income",
+    "signature_label",
+    "certifying_officer_title",
+    "remarks"
+  ]
+}

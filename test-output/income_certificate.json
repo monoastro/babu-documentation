@@ -1,0 +1,209 @@
+{
+  "letter_no": "2082/83",
+  "ref_no": "303",
+  "date": "2025-11-04",
+  "office_name": "Nagarjun Municipality 10 No. Ward Office",
+  "municipality": "Nagarjun Municipality",
+  "ward_no": "10",
+  "district": "Kathmandu",
+  "province": "Bagmati Province",
+  "subject": "Annual Income Certificate",
+  "certificate_holder": "Mr. Aaditya Joshi",
+  "certificate_holder_father": "Mr. Devkant Joshi",
+  "certificate_holder_mother": "Mrs. Yashoda Kumari Bhatta Joshi",
+  "certificate_holder_grandfather": "Mr. Pitambar Joshi",
+  "holder_local_address": "Nagarjun Municipality, Ward No. 10, Syuchatar Kathmandu District, Bagmati Province, Nepal",
+  "income_sources": [
+    {
+      "sn": "1",
+      "sn_citations": [
+        "/page/0/Table/12"
+      ],
+      "sn_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Serial number '1' is printed in block /page/0/Table/12 on page 1.\nConclusion: 1, which agrees with the extraction."
+        }
+      },
+      "owner_name": "Mrs. Yashoda Kumari Bhatta Joshi",
+      "owner_name_citations": [
+        "/page/0/Table/12"
+      ],
+      "owner_name_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Owner name 'Mrs. Yashoda Kumari Bhatta Joshi' is printed in block /page/0/Table/12 on page 1.\nConclusion: Mrs. Yashoda Kumari Bhatta Joshi, which agrees with the extraction."
+        }
+      },
+      "relation": "mother of Mr. Aaditya Joshi",
+      "relation_citations": [
+        "/page/0/Table/12"
+      ],
+      "relation_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Relation 'mother of Mr. Aaditya Joshi' is printed in block /page/0/Table/12 on page 1.\nConclusion: mother of Mr. Aaditya Joshi, which agrees with the extraction."
+        }
+      },
+      "source_of_income": "Income from salary",
+      "source_of_income_citations": [
+        "/page/0/Table/12"
+      ],
+      "source_of_income_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Source of income 'Income from salary' is printed in block /page/0/Table/12 on page 1.\nConclusion: Income from salary, which agrees with the extraction."
+        }
+      },
+      "annual_income": "420000",
+      "annual_income_citations": [
+        "/page/0/Table/12"
+      ],
+      "annual_income_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Annual income '420000' is printed in block /page/0/Table/12 on page 1.\nConclusion: 420000, which agrees with the extraction."
+        }
+      },
+      "remarks": "As per the Letter of Ganeshman Singh Multiple Campus, Kathmandu.",
+      "remarks_citations": [
+        "/page/0/Table/12"
+      ],
+      "remarks_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Remarks text 'As per the Letter of Ganeshman Singh Multiple Campus, Kathmandu.' is printed in block /page/0/Table/12 on page 1.\nConclusion: As per the Letter of Ganeshman Singh Multiple Campus, Kathmandu., which agrees with the extraction."
+        }
+      }
+    },
+    {
+      "sn": "2",
+      "sn_citations": [
+        "/page/0/Table/12"
+      ],
+      "sn_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Serial number '2' is printed in block /page/0/Table/12 on page 1.\nConclusion: 2, which agrees with the extraction."
+        }
+      },
+      "owner_name": "Mr. Devkant Joshi",
+      "owner_name_citations": [
+        "/page/0/Table/12"
+      ],
+      "owner_name_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Owner name 'Mr. Devkant Joshi' is printed in block /page/0/Table/12 on page 1.\nConclusion: Mr. Devkant Joshi, which agrees with the extraction."
+        }
+      },
+      "relation": "father of Mr. Aaditya Joshi",
+      "relation_citations": [
+        "/page/0/Table/12"
+      ],
+      "relation_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Relation 'father of Mr. Aaditya Joshi' is printed in block /page/0/Table/12 on page 1.\nConclusion: father of Mr. Aaditya Joshi, which agrees with the extraction."
+        }
+      },
+      "source_of_income": "Income from salary",
+      "source_of_income_citations": [
+        "/page/0/Table/12"
+      ],
+      "source_of_income_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Source of income 'Income from salary' is printed in block /page/0/Table/12 on page 1.\nConclusion: Income from salary, which agrees with the extraction."
+        }
+      },
+      "annual_income": "4020000",
+      "annual_income_citations": [
+        "/page/0/Table/12"
+      ],
+      "annual_income_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Annual income '4020000' is printed in block /page/0/Table/12 on page 1.\nConclusion: 4020000, which agrees with the extraction."
+        }
+      },
+      "remarks": "As per the letter of Leaening Realm Int's School, Kathmandu .",
+      "remarks_citations": [
+        "/page/0/Table/12"
+      ],
+      "remarks_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Remarks text 'As per the letter of Leaening Realm Int's School, Kathmandu .' is printed verbatim in block /page/0/Table/12 on page 1.\nConclusion: As per the letter of Leaening Realm Int's School, Kathmandu ., which agrees with the extraction."
+        }
+      }
+    }
+  ],
+  "total_income_nrs": "4440000.00",
+  "total_income_aud": "47824.21 $",
+  "total_income_nrs_words": "Fourty Four Lakh Fourty Thousand Only",
+  "todays_aud_rate": "92.84",
+  "total_income_aud_words": "Fourty Seven Thousand Eight Hundred Twenty Four and 21/100",
+  "ward_chairperson_name": "Sundar Bahadur K.C.",
+  "ward_chairperson_title": "Ward Chairperson"
+}

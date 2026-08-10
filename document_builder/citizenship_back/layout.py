@@ -12,6 +12,7 @@ _EDITABLE_CSS = """
 [contenteditable]:focus { outline: 2px solid #000000; background: #ffffff; }
 """
 
+
 def build_citizenship_back(data: dict[str, Any]) -> Document:
     d = {
         "citizenship_type": "",
@@ -20,7 +21,7 @@ def build_citizenship_back(data: dict[str, Any]) -> Document:
         "issuing_officer_signature": "",
         "issuing_officer_name": "",
         "issuing_officer_designation": "",
-        "issue_date_bs": ""
+        "issue_date_bs": "",
     }
     d.update(data or {})
     # OCR returns absent fields as None; a literal "None" on the page is a defect.
@@ -66,20 +67,26 @@ def build_citizenship_back(data: dict[str, Any]) -> Document:
         )
     )
 
-    # Issuing authority and date section (bottom-right)
+    # Issuing authority (bottom-right). The wet signature cannot be reproduced,
+    # so SignatureBlock draws the signing space while the officer's name and
+    # designation stay editable extracted values.
     doc.add(
         AbsoluteBox(
             FlexCol(
-                Text("Issuing Officer Signature:", style=LABEL_STYLE),
-                Div("(Signed)", style=Style(width="160px", height="55px", border="2px solid #000000", display="flex", align_items="center", justify_content="center", font_size="18px", text_align="center")),
-                Text(d["issuing_officer_signature"], style=VALUE_STYLE, attrs=_ea("issuing_officer_signature")),
+                SignatureBlock(
+                    name=d["issuing_officer_name"],
+                    title=d["issuing_officer_designation"],
+                    signature_label=d["issuing_officer_signature"] or "(Signed)",
+                    align="left",
+                    name_field="issuing_officer_name",
+                    title_field="issuing_officer_designation",
+                    signature_field="issuing_officer_signature",
+                ),
                 Spacer(height="10px"),
-                Text("Issuing Officer Name:", style=LABEL_STYLE),
-                Text(d["issuing_officer_name"], style=VALUE_STYLE, attrs=_ea("issuing_officer_name")),
-                Text("Designation:", style=LABEL_STYLE),
-                Text(d["issuing_officer_designation"], style=VALUE_STYLE, attrs=_ea("issuing_officer_designation")),
-                Text("Issue Date (BS):", style=LABEL_STYLE),
-                Text(d["issue_date_bs"], style=VALUE_STYLE, attrs=_ea("issue_date_bs")),
+                FlexRow(
+                    Text("Issue Date (BS):", style=LABEL_STYLE),
+                    Text(d["issue_date_bs"], style=VALUE_STYLE, field="issue_date_bs"),
+                ),
             ),
             left="820px", top="350px", style=Style(width="350px")
         )

@@ -1,0 +1,119 @@
+{
+  "type": "object",
+  "title": "SEECertificateExtractionSchema",
+  "description": "Schema for structured data extraction for the Secondary Education Examination (SEE) Certificate. Labels presented in English, all field values verbatim from the printed source (original script if printed in Devanagari).",
+  "properties": {
+    "sr_no": {
+      "type": "string",
+      "description": "Serial Number (SR NO) at the upper right; exactly as printed."
+    },
+    "emblem_placeholder": {
+      "type": "string",
+      "description": "Always 'Coat of Arms of Nepal'. Placeholder for top-left national emblem."
+    },
+    "board_logo_placeholder": {
+      "type": "string",
+      "description": "Always 'NEB Board Logo'. Placeholder for top-right NEB logo."
+    },
+    "certificate_title_np": {
+      "type": "string",
+      "description": "Certificate heading in Nepali (प्रमाण–पत्र), center top."
+    },
+    "certificate_title_en": {
+      "type": "string",
+      "description": "Certificate heading in English (Certificate), center top below Nepali title."
+    },
+    "student_name": {
+      "type": "string",
+      "description": "Full name of the student, as printed after 'This is to certify that'."
+    },
+    "school_name": {
+      "type": "string",
+      "description": "School name following 'a student of'. Extract in full."
+    },
+    "roll_no": {
+      "type": "string",
+      "description": "Roll number, as printed after 'Roll'."
+    },
+    "examination_year_bs": {
+      "type": "string",
+      "description": "Examination completion year in Bikram Samvat (e.g., 2079 BS)."
+    },
+    "examination_year_ad": {
+      "type": "string",
+      "description": "Examination completion year in AD (e.g., 2023 AD)."
+    },
+    "gpa": {
+      "type": "string",
+      "description": "Grade Point Average (GPA), extracted as printed (decimal value)."
+    },
+    "date_of_birth_bs": {
+      "type": "string",
+      "description": "Student's date of birth in Bikram Samvat (BS), as printed."
+    },
+    "date_of_birth_ad": {
+      "type": "string",
+      "description": "Student's date of birth in AD, as printed."
+    },
+    "symbol_no": {
+      "type": "string",
+      "description": "Symbol Number, as printed near certificate bottom left above date of issue."
+    },
+    "date_of_issue": {
+      "type": "string",
+      "description": "Date of issue, as printed in English, e.g. 24-July-2023."
+    },
+    "checked_by": {
+      "type": "string",
+      "description": "Office and location that performed the check (footer left)."
+    },
+    "controller_label": {
+      "type": "string",
+      "description": "Always 'CONTROLLER OF EXAMINATIONS' (footer right)."
+    },
+    "footer_line": {
+      "type": "string",
+      "description": "Bottom border line before footer. Use '---' to signal layout line."
+    },
+    "signature_name": {
+      "type": "string",
+      "description": "Printed signatory name below signature placeholder, e.g. Bishnu Narayan Shrestha."
+    },
+    "signature_title": {
+      "type": "string",
+      "description": "Signature block title, e.g. CONTROLLER OF EXAMINATIONS."
+    },
+    "signature_placeholder": {
+      "type": "string",
+      "description": "Always '(Signed)'. Placeholder for handwritten signature."
+    },
+    "seal_placeholder": {
+      "type": "string",
+      "description": "Always 'Round Office Seal'. Placeholder for the round black/red official stamp/seal."
+    }
+  },
+  "required": [
+    "sr_no",
+    "emblem_placeholder",
+    "board_logo_placeholder",
+    "certificate_title_np",
+    "certificate_title_en",
+    "student_name",
+    "school_name",
+    "roll_no",
+    "examination_year_bs",
+    "examination_year_ad",
+    "gpa",
+    "date_of_birth_bs",
+    "date_of_birth_ad",
+    "symbol_no",
+    "date_of_issue",
+    "checked_by",
+    "controller_label",
+    "footer_line",
+    "signature_name",
+    "signature_title",
+    "signature_placeholder",
+    "seal_placeholder"
+  ]
+}

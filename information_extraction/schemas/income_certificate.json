@@ -1,0 +1,156 @@
+{
+  "type": "object",
+  "title": "IncomeCertificateExtractionSchema",
+  "description": "Schema for structured data extraction from annual income certificate issued by Nepal ward office.",
+  "properties": {
+    "letter_no": {
+      "type": "string",
+      "description": "Letter number exactly as printed near the top left (e.g. '2082/83'). Extract all digits and slashes verbatim. Return an empty string if absent."
+    },
+    "ref_no": {
+      "type": "string",
+      "description": "Reference number exactly as printed (e.g. '303'), top-left below the letter number. Return an empty string if absent."
+    },
+    "date": {
+      "type": "string",
+      "description": "Certificate issuance date, formatted exactly as printed in the top right (e.g. '2025-11-04'). Return in that exact form."
+    },
+    "office_name": {
+      "type": "string",
+      "description": "Full English office title as printed at the top center, e.g. 'Nagarjun Municipality 10 No. Ward Office'. Include municipality and ward designation exactly as in the source."
+    },
+    "municipality": {
+      "type": "string",
+      "description": "Municipality name as printed in the header, e.g. 'Nagarjun Municipality'."
+    },
+    "ward_no": {
+      "type": "string",
+      "description": "Ward number as printed in the header, e.g. '10'."
+    },
+    "district": {
+      "type": "string",
+      "description": "District name as printed in the office title or subject section, e.g. 'Kathmandu'."
+    },
+    "province": {
+      "type": "string",
+      "description": "Province name as found in the header description: e.g. 'Bagmati Province'. Return as printed."
+    },
+    "subject": {
+      "type": "string",
+      "description": "Certificate subject heading as printed, e.g. 'Annual Income Certificate'."
+    },
+    "certificate_holder": {
+      "type": "string",
+      "description": "Full name of the certificate holder (i.e., for whom the income is being certified), as printed in the body after 'This is to certify that ...'."
+    },
+    "certificate_holder_father": {
+      "type": "string",
+      "description": "Full name of the certificate holder's father, as printed in the body after 'son of'. Return as printed."
+    },
+    "certificate_holder_mother": {
+      "type": "string",
+      "description": "Full name of the certificate holder's mother, as printed in the body after 'and'. Return as printed."
+    },
+    "certificate_holder_grandfather": {
+      "type": "string",
+      "description": "Full name of the certificate holder's grandfather, as printed in the body after 'grandson of'. Return as printed."
+    },
+    "holder_local_address": {
+      "type": "string",
+      "description": "Local address of the certificate holder (usually municipality, ward, district, province) as described after 'a permanent resident of ...'."
+    },
+    "income_sources": {
+      "type": "array",
+      "description": "List of income sources and family members as tabular records in the certificate table. Each array entry corresponds to a table row.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sn": {
+            "type": "string",
+            "description": "Serial number as printed in the S.N. column (e.g. '1', '2')."
+          },
+          "owner_name": {
+            "type": "string",
+            "description": "Owner's name as printed in the Owner's Name column."
+          },
+          "relation": {
+            "type": "string",
+            "description": "Relation to the certificate holder as printed (e.g. 'mother of Mr. Aaditya Joshi')."
+          },
+          "source_of_income": {
+            "type": "string",
+            "description": "Text from the Sources of Income column (e.g. 'Income from salary')."
+          },
+          "annual_income": {
+            "type": "string",
+            "description": "Numeric value of annual income, exactly as printed (e.g. '420000')."
+          },
+          "remarks": {
+            "type": "string",
+            "description": "Remarks column text as printed. Return all content verbatim."
+          }
+        },
+        "required": [
+          "sn",
+          "owner_name",
+          "relation",
+          "source_of_income",
+          "annual_income",
+          "remarks"
+        ]
+      }
+    },
+    "total_income_nrs": {
+      "type": "string",
+      "description": "The total annual income in NPR, as printed, from the 'Total Income in NRs' row."
+    },
+    "total_income_aud": {
+      "type": "string",
+      "description": "The total income in AUD as printed in the 'Total Income in AUD' row."
+    },
+    "total_income_nrs_words": {
+      "type": "string",
+      "description": "Total annual income in NRs written out in words, as printed under the table in the summary section (e.g. 'Fourty Four Lakh Fourty Thousand Only')."
+    },
+    "todays_aud_rate": {
+      "type": "string",
+      "description": "Today's buying rate as printed: 'Today's Buying Rate 1 AUD = NRs. ...', just the numeric rate to two decimals."
+    },
+    "total_income_aud_words": {
+      "type": "string",
+      "description": "Equivalent AUD total written in words, as in the summary portion (e.g. 'Fourty Seven Thousand Eight Hundred Twenty Four and 21/100')."
+    },
+    "ward_chairperson_name": {
+      "type": "string",
+      "description": "Name of the ward chairperson or signing authority, as printed or handwritten at the bottom, above title."
+    },
+    "ward_chairperson_title": {
+      "type": "string",
+      "description": "Title of ward chairperson, usually 'Ward Chairperson', as printed under the signature at the bottom."
+    }
+  },
+  "required": [
+    "letter_no",
+    "ref_no",
+    "date",
+    "office_name",
+    "municipality",
+    "ward_no",
+    "district",
+    "province",
+    "subject",
+    "certificate_holder",
+    "certificate_holder_father",
+    "certificate_holder_mother",
+    "certificate_holder_grandfather",
+    "holder_local_address",
+    "income_sources",
+    "total_income_nrs",
+    "total_income_aud",
+    "total_income_nrs_words",
+    "todays_aud_rate",
+    "total_income_aud_words",
+    "ward_chairperson_name",
+    "ward_chairperson_title"
+  ]
+}

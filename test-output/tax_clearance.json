@@ -1,0 +1,181 @@
+{
+  "emblem_present": true,
+  "office_name": "नेपाल सरकार अर्थ मन्त्रालय आन्तरिक राजस्व विभाग आन्तरिक राजस्व कार्यालय कालीमाटी ( आयकर नियमावली, २०५९ को नियम २६ संग सम्बन्धित )",
+  "letter_no": "२०८१/०८२",
+  "registration_no": "६४४६",
+  "tax_notice_no": "८१५०८४५०१",
+  "issue_date_nepali": "२०८१.१२.२२",
+  "print_date_nepali": "२०८१.१२.२२",
+  "qr_present": true,
+  "subject": "कर चुक्ता प्रमाण पत्र ।",
+  "recipient_name": "श्री देवकान्त जोशी",
+  "recipient_address": "का.म.न.पा. - १४, काठमाडौं",
+  "recipient_pan": "१००४४३८२६",
+  "main_text": "तपाईंले आय वर्ष २०८०.०८१ को लागि रोजगारी, लगानी, गैर व्यवसायिक करयोग्य सम्पत्ति, व्यवसाय संचालनमा संलग्न नरहेको वासिन्दा प्राकृतिक व्यक्तिको आय र अन्तिम रुपमा कर कट्टी तथा कर सुविधा भएका आय रकम समावेश भएको आय विवरण मिति २०८१.१२.२२ मा यस कार्यालयमा पेश गरी सो अनुसार देहाय बमोजिमको आय र सो आय बमोजिमको आयकर रु १३६,५३१.७६ ( एक लाख छत्तीस हजार पाँच सय एकतीस रुपैयाँ छहत्तर पैसा ) दाखिला गरेकोले यो कर चुक्ताको प्रमाणपत्र प्रदान गरिएको छ ।",
+  "income_items": [
+    {
+      "item": "रोजगारीबाट भएको आय",
+      "item_citations": [
+        "/page/0/Table/14"
+      ],
+      "item_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/14"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "The item title in the first row of /page/0/Table/14 is \"रोजगारीबाट भएको आय\".\nConclusion: रोजगारीबाट भएको आय, which agrees with the extraction."
+        }
+      },
+      "amount": "१२६८४३९.२०",
+      "amount_citations": [
+        "/page/0/Table/14"
+      ],
+      "amount_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/14"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "The amount in the first row of /page/0/Table/14 is \"१२६८४३९.२०\".\nConclusion: १२६८४३९.२०, which agrees with the extraction."
+        }
+      }
+    },
+    {
+      "item": "लगानीबाट भएको आय",
+      "item_citations": [
+        "/page/0/Table/14"
+      ],
+      "item_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/14"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "The item title in the second row of /page/0/Table/14 is \"लगानीबाट भएको आय\".\nConclusion: लगानीबाट भएको आय, which agrees with the extraction."
+        }
+      },
+      "amount": "०.००",
+      "amount_citations": [
+        "/page/0/Table/14"
+      ],
+      "amount_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/14"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "The amount in the second row of /page/0/Table/14 is \"०.००\".\nConclusion: ०.००, which agrees with the extraction."
+        }
+      }
+    },
+    {
+      "item": "गैर व्यवसायिक करयोग्य सम्पत्तिको निःसर्गबाट प्राप्त लाभ",
+      "item_citations": [
+        "/page/0/Table/14"
+      ],
+      "item_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/14"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "The item title in the third row of /page/0/Table/14 is \"गैर व्यवसायिक करयोग्य सम्पत्तिको निःसर्गबाट प्राप्त लाभ\".\nConclusion: गैर व्यवसायिक करयोग्य सम्पत्तिको निःसर्गबाट प्राप्त लाभ, which agrees with the extraction."
+        }
+      },
+      "amount": "०.००",
+      "amount_citations": [
+        "/page/0/Table/14"
+      ],
+      "amount_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/14"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "The amount in the third row of /page/0/Table/14 is \"०.००\".\nConclusion: ०.००, which agrees with the extraction."
+        }
+      }
+    },
+    {
+      "item": "व्यवसाय संचालनमा संलग्न नरहेको वासिन्दा प्राकृतिक व्यक्तिको आय",
+      "item_citations": [
+        "/page/0/Table/14"
+      ],
+      "item_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/14"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "The item title in the fourth row of /page/0/Table/14 is \"व्यवसाय संचालनमा संलग्न नरहेको वासिन्दा प्राकृतिक व्यक्तिको आय\".\nConclusion: व्यवसाय संचालनमा संलग्न नरहेको वासिन्दा प्राकृतिक व्यक्तिको आय, which agrees with the extraction."
+        }
+      },
+      "amount": "०.००",
+      "amount_citations": [
+        "/page/0/Table/14"
+      ],
+      "amount_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/14"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "The amount in the fourth row of /page/0/Table/14 is \"०.००\".\nConclusion: ०.००, which agrees with the extraction."
+        }
+      }
+    },
+    {
+      "item": "अन्तिम रुपमा कर कट्टी तथा कर सुविधा भएका आय",
+      "item_citations": [
+        "/page/0/Table/14"
+      ],
+      "item_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/14"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "The item title in the fifth row of /page/0/Table/14 is \"अन्तिम रुपमा कर कट्टी तथा कर सुविधा भएका आय\".\nConclusion: अन्तिम रुपमा कर कट्टी तथा कर सुविधा भएका आय, which agrees with the extraction."
+        }
+      },
+      "amount": "३३०१७७५.२९",
+      "amount_citations": [
+        "/page/0/Table/14"
+      ],
+      "amount_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/14"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "The amount in the fifth row of /page/0/Table/14 is \"३३०१७७५.२९\".\nConclusion: ३३०१७७५.२९, which agrees with the extraction."
+        }
+      }
+    }
+  ],
+  "total_income": null,
+  "signature_label": "(कर अधिकृत)",
+  "certifying_officer_title": "कर अधिकृत",
+  "remarks": "१. यो प्रमाणपत्र प्राकृतिक व्यक्ति (व्यवसायको आय विवरण पेश गर्ने बाहेक) ले पेश गरेको विवरणको आधारमा जारी गरिएको छ । पेश भएको आय विवरण छानविनमा परेमा आयकर ऐन, २०५८ को दफा १०१ बमोजिम संशोधित कर निर्धारण हुन सक्ने जानकारी गराइन्छ ।  २. यो कर चुक्ताको प्रमाण पत्र विभागको वेबसाईट www.ird.gov.np मा कर चुक्ता खोजी वा Tax Clear Search गएर रुजु गरि यकिन गर्न सकिने छ ।"
+}

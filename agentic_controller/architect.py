@@ -73,6 +73,7 @@ import ast
 import base64
 import json
 import os
+import shlex
 import subprocess
 import sys
 from dataclasses import dataclass, field
@@ -98,7 +99,6 @@ COMMAND_TIMEOUT = 120
 _ALLOWED_COMMAND_PREFIXES = (
     "python -m agentic_controller",
     "python -m information_extraction",
-    "python -c",
     "python -m py_compile",
     "ls",
     "cat",
@@ -109,7 +109,72 @@ _ALLOWED_COMMAND_PREFIXES = (
     "find",
     "wc",
 )
-#execute_command allowlist. The agent may inspect and re-run the pipeline; it may not install packages, touch git, or reach the network
+# execute_command allowlist. The agent may inspect and re-run the pipeline; it
+# may not install packages, touch git, or reach the network.
+#
+# `python -c` is deliberately absent. It was on this list, and it is arbitrary
+# code execution: one run deleted document_builder/citizenship_back/layout.py and
+# truncated information_extraction/schemas/citizenship_back.json to zero bytes —
+# both writes that _write_allowed() refuses through the write_file tool. An
+# allowlist that contains a general-purpose interpreter is not an allowlist. Use
+# `python -m py_compile` to check syntax; validate_layout() already build-probes a
+# layout in a subprocess, which is what `python -c` was really being used for.
+
+# Characters that turn a single allowlisted command into something else:
+# redirection truncates a file, and the separators chain a second command that
+# never sees the prefix check. `cat x > schema.json` passed the old check as a
+# "cat" command while destroying the target.
+_SHELL_METACHARACTERS = (">", "<", "|", ";", "&", "$(", "`", "\n", "\r")
+
+# Files the agent must never modify, whatever route it takes. These are the
+# rollback originals promised in the docs; the guard below verifies the promise
+# instead of trusting it.
+def _protected_originals() -> list[Path]:
+    roots = (BUILDER_DIR.resolve(), SCHEMA_DIR.resolve())
+    out: list[Path] = []
+    for root in roots:
+        if not root.is_dir():
+            continue
+        out.extend(p for p in root.rglob("layout.py") if p.is_file())
+        out.extend(
+            p for p in root.rglob("*.json")
+            if p.is_file() and not p.stem.endswith("_patched")
+        )
+    return sorted(out)
+
+
+def _snapshot(paths: list[Path]) -> dict[Path, bytes | None]:
+    """Content of each protected file, or None if it does not exist."""
+    snap: dict[Path, bytes | None] = {}
+    for p in paths:
+        try:
+            snap[p] = p.read_bytes()
+        except OSError:
+            snap[p] = None
+    return snap
+
+
+def _restore_changed(before: dict[Path, bytes | None]) -> list[str]:
+    """Undo any modification to a protected original. Returns what was restored."""
+    restored: list[str] = []
+    for p, original in before.items():
+        try:
+            current = p.read_bytes() if p.exists() else None
+        except OSError:
+            continue
+        if current == original:
+            continue
+        try:
+            if original is None:
+                p.unlink(missing_ok=True)
+            else:
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_bytes(original)
+        except OSError:
+            continue
+        verb = "deleted" if current is None else "modified"
+        restored.append(f"{p.relative_to(PROJECT_ROOT)} ({verb})")
+    return restored
 
 _IMAGE_MEDIA_TYPES = {
     ".png": "image/png",
@@ -156,6 +221,15 @@ class RepairResult:
     validation_message: str = ""
     """The gate's verdict — the traceback tail when it failed."""
 
+    promoted: Path | None = None
+    """
+    The ``ACTIVE`` pointer, if this layout became the live one.
+
+    Promotion happens only when :attr:`layout_valid` is True, so a layout that
+    fails the gate leaves the previous good one live. ``None`` means nothing was
+    promoted — either no layout was written, or the one written did not build.
+    """
+
     history: list[dict[str, Any]] = field(default_factory=list)
     """Append-only trace: one entry per tool call, in order."""
 
@@ -167,6 +241,10 @@ class RepairResult:
         if self.layout_path:
             status = {True: "PASSED", False: "FAILED", None: "not run"}[self.layout_valid]
             lines.append(f"  layout → {self.layout_path}  (validation: {status})")
+        if self.promoted:
+            lines.append(f"  promoted → {self.layout_path.name} is now live")
+        elif self.layout_valid is False:
+            lines.append("  not promoted — previous layout stays live")
         if self.layout_valid is False:
             lines.append(f"  validation error: {self.validation_message}")
         lines.append(f"  re-extraction needed: {self.needs_reextraction}")
@@ -175,44 +253,30 @@ class RepairResult:
 
 
 # Path resolution
-def resolve_schema_path(document_type: str, *, schema_dir: Path | None = None) -> Path:
-    """Return the schema the pipeline should actually extract with.
-    Prefers a ``<doc>_patched.json`` sidecar over the original. ``controller-old``
-    did this inside ``graph.apply_repair``; skipping it makes every schema repair
-    look like a no-op, because OCR re-runs against the unpatched base.
-    """
-    directory = schema_dir or SCHEMA_DIR
-    patched = directory / f"{document_type}_patched.json"
-    if patched.is_file():
-        return patched
-    return directory / f"{document_type}.json"
-
-
-def next_layout_path(document_type: str, *, builder_dir: Path | None = None) -> Path:
-    """Return the next unused ``layout_N.py`` for *document_type*.
-    Originals are never overwritten: ``layout.py`` stays intact for rollback and
-    iterations land beside it as ``layout_1.py``, ``layout_2.py``, ...
-    """
-    directory = (builder_dir or BUILDER_DIR) / document_type
-    n = 1
-    while (directory / f"layout_{n}.py").exists():
-        n += 1
-    return directory / f"layout_{n}.py"
+#
+# These live in ``document_builder/resolver.py`` so the registry and the agent
+# cannot disagree about which layout is live. They were duplicated here, and the
+# copies drifted: the registry hard-coded ``<doc>.json`` while this module
+# preferred ``<doc>_patched.json``, so every schema repair was invisible to
+# ``main.py`` and the extraction pipeline. Re-exported under their original
+# names because ``run.py`` imports them from here.
+from document_builder.resolver import (  # noqa: E402
+    active_layout_path,
+    latest_layout_path,
+    next_layout_path,
+    promote_layout,
+    resolve_schema_path,
+)
 
 
 def current_layout_path(document_type: str, *, builder_dir: Path | None = None) -> Path | None:
-    """Return the highest-numbered existing layout, or ``layout.py``, or None."""
-    directory = (builder_dir or BUILDER_DIR) / document_type
-    if not directory.is_dir():
-        return None
-    versioned = sorted(
-        (p for p in directory.glob("layout_*.py") if p.stem.split("_")[-1].isdigit()),
-        key=lambda p: int(p.stem.split("_")[-1]),
-    )
-    if versioned:
-        return versioned[-1]
-    base = directory / "layout.py"
-    return base if base.is_file() else None
+    """The layout that will actually be built — whatever ``ACTIVE`` names.
+
+    This used to return the highest-numbered ``layout_N.py``: the newest file
+    written, not the one in use. The agent was therefore shown, and asked to
+    repair, a layout the pipeline was not building.
+    """
+    return active_layout_path(document_type, builder_dir=builder_dir)
 
 
 # Validation gate
@@ -432,7 +496,11 @@ html_engine Document -> HTML -> headless-Chrome PNG -> vision verification.
 - **write_file(path, content)** — write a file. Only paths inside the project's
   `document_builder/` and `information_extraction/schemas/` trees are accepted.
 - **execute_command(cmd)** — read-only inspection and pipeline re-runs only.
-  Package installs, git, and network access are rejected.
+  Package installs, git, and network access are rejected. There is no shell, so
+  no redirection, pipes, or chaining, and one call runs one command. `python -c`
+  is unavailable: change files with `write_file` and check them with
+  `python -m py_compile`. `layout.py` and the base schemas are restored
+  automatically if a command modifies them.
 
 {workflow}
 
@@ -560,8 +628,11 @@ TOOLS: list[dict[str, Any]] = [
         "description": (
             "Run a read-only inspection command or re-run the pipeline. Allowed: "
             "python -m agentic_controller..., python -m information_extraction..., "
-            "python -c, python -m py_compile, ls, cat, head, tail, grep, rg, find, wc. "
-            "Anything else is rejected."
+            "python -m py_compile, ls, cat, head, tail, grep, rg, find, wc. "
+            "Anything else is rejected. There is no shell: redirection (>), pipes, "
+            "and chaining (;, &&) are refused, and one call runs exactly one "
+            "command. `python -c` is not available — use write_file to change a "
+            "file and python -m py_compile to check that it parses."
         ),
         "input_schema": {
             "type": "object",
@@ -585,18 +656,26 @@ def _resolve(path_str: str) -> Path:
 
 
 def _write_allowed(path: Path) -> tuple[bool, str]:
-    """Gate write_file: inside the writable trees, and never onto an original."""
+    """Gate write_file: inside the writable trees, and never *onto* an original.
+
+    "Original" means a file that already exists. A `layout.py` or base schema
+    that has never been written has no rollback value to destroy, and refusing
+    it would leave a generated document type with no original at all — which is
+    how the generated types ended up as a bare `layout_1.py` with nothing to
+    fall back to. Once the file exists, it is protected for good.
+    """
     writable = (BUILDER_DIR.resolve(), SCHEMA_DIR.resolve())
     if not any(path == root or root in path.parents for root in writable):
         return False, (
             f"Refused: {path} is outside the writable trees "
             f"(document_builder/, information_extraction/schemas/)."
         )
-    if path.suffix == ".py" and path.name == "layout.py":
+    if path.suffix == ".py" and path.name == "layout.py" and path.exists():
         return False, (
             "Refused: layout.py is the rollback original. Write layout_N.py instead."
         )
-    if path.suffix == ".json" and not path.stem.endswith("_patched"):
+    if (path.suffix == ".json" and not path.stem.endswith("_patched")
+            and path.exists()):
         return False, (
             f"Refused: {path.name} is the base schema. Write {path.stem}_patched.json instead."
         )
@@ -672,23 +751,60 @@ def _tool_execute_command(cmd: str) -> str:
             f"Refused: {stripped.split()[0] if stripped else '(empty)'} is not on the "
             f"allowlist. Allowed prefixes: {', '.join(_ALLOWED_COMMAND_PREFIXES)}."
         )
+
+    # The prefix check only describes the first word. Without this, redirection
+    # and chaining smuggle a second, unchecked command past it.
+    found = [m for m in _SHELL_METACHARACTERS if m in stripped]
+    if found:
+        return (
+            f"Refused: shell metacharacter(s) {' '.join(repr(m) for m in found)} are not "
+            f"allowed. Commands run as a single argument list, so redirection, pipes, "
+            f"and chaining are unavailable. Run one command at a time."
+        )
+
+    try:
+        argv = shlex.split(stripped)
+    except ValueError as e:  # unbalanced quotes
+        return f"Refused: could not parse command ({e})."
+    if not argv:
+        return "Refused: empty command."
+
+    # `python` must mean this interpreter, not whatever a PATH shim resolves to.
+    if argv[0] == "python":
+        argv[0] = sys.executable
+
+    before = _snapshot(_protected_originals())
     try:
         completed = subprocess.run(
-            stripped,
-            shell=True,
+            argv,
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
             timeout=COMMAND_TIMEOUT,
         )
     except subprocess.TimeoutExpired:
+        _restore_changed(before)
         return f"Error: command exceeded {COMMAND_TIMEOUT}s and was killed."
-    except OSError as e:
+    except (OSError, ValueError) as e:
+        _restore_changed(before)
         return f"Error executing command: {e}"
+
     out = (completed.stdout + completed.stderr).strip()
     if len(out) > 20_000:
         out = out[:20_000] + "\n... [truncated]"
-    return out or f"(exit code {completed.returncode}, no output)"
+    result = out or f"(exit code {completed.returncode}, no output)"
+
+    # Defence in depth: an allowlisted command that still managed to touch a
+    # rollback original gets undone, and the agent is told so rather than
+    # silently succeeding.
+    restored = _restore_changed(before)
+    if restored:
+        result += (
+            "\n\n[GUARD] This command modified protected originals, which has been "
+            "undone: " + ", ".join(restored) + ". Never write to layout.py or a base "
+            "schema — use layout_N.py and <schema>_patched.json via write_file."
+        )
+    return result
 
 
 def _dispatch_tool(name: str, args: dict[str, Any]) -> str:
@@ -1175,7 +1291,18 @@ object. Begin."""
         result.validation_message = msg
         if verbose:
             print(f"  validate_layout: {'OK' if ok else 'FAILED'} — {msg}")
-        if not ok:
+        if ok:
+            # The gate passed, so this layout becomes live. Nothing else has to
+            # happen for the next iteration to build from it — that is the
+            # point. Before ``ACTIVE`` existed, the registry kept importing the
+            # layout the run started with, so a repair loop rebuilt its own
+            # input every iteration and could never converge.
+            result.promoted = promote_layout(document_type, result.layout_path)
+            if verbose:
+                print(f"  promoted: {result.layout_path.name} is now the live layout")
+        else:
+            # Deliberately leave ``ACTIVE`` alone. A layout that does not build
+            # must not replace one that does.
             result.summary += f"\n\n[VALIDATION FAILED] {msg}"
     return result
 
@@ -1195,14 +1322,25 @@ def generate_resources(
     This is the feature that ``controller-old/graph.py`` left as a
     ``NotImplementedError`` stub. The agent sees only the source scan — no render
     exists yet — and must infer the structure, write
-    ``information_extraction/schemas/<doc_type>_patched.json`` and
-    ``document_builder/<doc_type>/layout_1.py``, imitating an existing builder.
+    ``information_extraction/schemas/<doc_type>.json`` and
+    ``document_builder/<doc_type>/layout.py``, imitating an existing builder.
 
     The returned ``needs_reextraction`` is always True: nothing has been
     extracted yet.
     """
-    schema_target = SCHEMA_DIR / f"{document_type}_patched.json"
-    layout_target = BUILDER_DIR / document_type / "layout_1.py"
+    # Base names on both sides, for the same reason: an unseen type has no
+    # original to protect, so the first schema written is the base schema and the
+    # first layout written is the rollback original. Generating into
+    # ``_patched.json`` / ``layout_1.py`` left the type standing on a sidecar with
+    # no base underneath it.
+    schema_target = SCHEMA_DIR / f"{document_type}.json"
+    # ``layout.py``, not ``layout_1.py``: for an unseen type there is no original
+    # yet, and the first layout written is it. Generating straight to
+    # ``layout_1.py`` left the directory with no ``layout.py`` at all, so the type
+    # had no rollback floor — a later dangling ``ACTIVE`` would resolve to nothing
+    # and drop the type out of discovery entirely instead of degrading to a
+    # working layout. Repairs still write ``layout_N.py`` beside this one.
+    layout_target = BUILDER_DIR / document_type / "layout.py"
     notes_block = (
         f"\n## Notes from the user\n\n{user_notes.strip()}\n" if user_notes and user_notes.strip() else ""
     )
@@ -1259,9 +1397,19 @@ schema, then the layout, then return the JSON object. Begin."""
             result.layout_path, document_type, result.schema_path
         )
         result.history.append({"tool": "(validate_layout)", "input": {}, "result": msg})
+        # Recording the verdict, not just printing it: ``run.py`` branches on
+        # ``layout_valid`` to decide whether a generated type is ready. This
+        # branch never set it, so the guard read None and a layout that failed
+        # the gate was still announced as ready to use.
+        result.layout_valid = ok
+        result.validation_message = msg
         if verbose:
             print(f"  validate_layout: {'OK' if ok else 'FAILED'} — {msg}")
-        if not ok:
+        if ok:
+            result.promoted = promote_layout(document_type, result.layout_path)
+            if verbose:
+                print(f"  promoted: {result.layout_path.name} is now the live layout")
+        else:
             result.summary += f"\n\n[VALIDATION FAILED] {msg}"
     if result.schema_path is None:
         result.summary += "\n\n[WARNING] No schema was written — extraction cannot run."

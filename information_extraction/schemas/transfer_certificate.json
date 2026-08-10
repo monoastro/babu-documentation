@@ -1,0 +1,124 @@
+{
+  "type": "object",
+  "title": "TransferCertificateExtractionSchema",
+  "description": "Schema for extracting structured data from a Nepali School Transfer Certificate including all visible header, student, academic, and authentication fields.",
+  "required": [
+    "school_name",
+    "school_address",
+    "school_contact",
+    "school_logo_label",
+    "certificate_title",
+    "student_full_name",
+    "father_name",
+    "grade",
+    "academic_session",
+    "exam_name",
+    "exam_year",
+    "gpa",
+    "symbol_no",
+    "registration_no",
+    "dob_bs",
+    "dob_ad",
+    "character_statement",
+    "co_curricular_statement",
+    "date_of_issue",
+    "principal_name",
+    "principal_title",
+    "principal_signature_label",
+    "school_seal_label"
+  ],
+  "properties": {
+    "school_name": {
+      "type": "string",
+      "description": "School name in uppercase as present at top heading (e.g. 'LEARNING REALM INTERNATIONAL (L.R.I.) SCHOOL')."
+    },
+    "school_address": {
+      "type": "string",
+      "description": "Full school address block below the name, including city, country and postal details as printed."
+    },
+    "school_contact": {
+      "type": "string",
+      "description": "Full contact block for the school: phone, GPO, email, and URL (as one block, all lines, as printed)."
+    },
+    "school_logo_label": {
+      "type": "string",
+      "description": "Label for the top school logo (above the school name header). Always set as 'School Logo'."
+    },
+    "certificate_title": {
+      "type": "string",
+      "description": "The bold, underlined heading in the middle (e.g. 'CHARACTER-CUM-TRANSFER CERTIFICATE')."
+    },
+    "student_full_name": {
+      "type": "string",
+      "description": "Full name of the student as printed in the certificate text (e.g. 'Master Aaditya Joshi')."
+    },
+    "father_name": {
+      "type": "string",
+      "description": "Full name and title of the student's father as printed (e.g. 'Dr. Devkant Joshi')."
+    },
+    "grade": {
+      "type": "string",
+      "description": "Student's grade-level with both numeral and words as printed (e.g. 'Grade-10 (Ten)')."
+    },
+    "academic_session": {
+      "type": "string",
+      "description": "Academic session string (both BS and AD if present), e.g. '2022/23 (2079)'."
+    },
+    "exam_name": {
+      "type": "string",
+      "description": "Board exam name as printed (e.g. 'Secondary Education Examination (S.E.E.)')."
+    },
+    "exam_year": {
+      "type": "string",
+      "description": "Year in which exam was passed, as printed after 'year', e.g. '2023'."
+    },
+    "gpa": {
+      "type": "string",
+      "description": "Grade Point Average (GPA) as printed (e.g. '3.80')."
+    },
+    "symbol_no": {
+      "type": "string",
+      "description": "Symbol number for board exam (e.g., '02905947 E')."
+    },
+    "registration_no": {
+      "type": "string",
+      "description": "Registration number as printed, e.g. '793291100002'."
+    },
+    "dob_bs": {
+      "type": "string",
+      "description": "Date of birth in BS calendar, as per records (e.g. '2064/02/17 BS')."
+    },
+    "dob_ad": {
+      "type": "string",
+      "description": "Date of birth in AD calendar (e.g. '31/05/2007 AD')."
+    },
+    "character_statement": {
+      "type": "string",
+      "description": "Sentence describing moral character, e.g. 'To the best of our knowledge and belief, he bears a good moral character.'"
+    },
+    "co_curricular_statement": {
+      "type": "string",
+      "description": "Sentence describing extra-curricular involvement and achievements, as printed."
+    },
+    "date_of_issue": {
+      "type": "string",
+      "description": "Date as printed below 'Dated:', e.g. '24-July-2023'."
+    },
+    "principal_name": {
+      "type": "string",
+      "description": "Name of principal as signed and printed (e.g. 'Dr. Devkant Joshi')."
+    },
+    "principal_title": {
+      "type": "string",
+      "description": "Principal's title/role as printed below signature (e.g. 'PRINCIPAL')."
+    },
+    "principal_signature_label": {
+      "type": "string",
+      "description": "Signature placeholder label below principal's signature (always '(Signed)')."
+    },
+    "school_seal_label": {
+      "type": "string",
+      "description": "Label for circular school seal/stamp (always 'School Seal')."
+    }
+  }
+}

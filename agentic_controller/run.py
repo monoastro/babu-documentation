@@ -276,22 +276,28 @@ def digitize(
                 "history": history,
             }
 
-        print("\n⚠ Generated resources are not yet wired into the registry.")
-        print("  Review them, then register the builder before re-running:")
+        print("\n✓ Generated resources are live:")
         if gen.layout_path:
-            print(f"    layout: {gen.layout_path}")
+            print(f"    layout: {gen.layout_path}"
+                  f"{'  (ACTIVE)' if gen.promoted else ''}")
         if gen.schema_path:
             print(f"    schema: {gen.schema_path}")
 
-        # A brand-new document type has no registry entry, so build_document()
-        # cannot dispatch to it yet. That wiring is a deliberate human step.
+        # The registry discovers types from the filesystem, so a generated type
+        # is usually usable immediately. It can still be undiscoverable: a
+        # layout with no schema beside it is not a document type, because
+        # extraction has nothing to extract with.
         try:
             from document_builder.registry import DOCUMENTS
 
             if document_type not in DOCUMENTS:
-                print("\n  Registry has no entry for this type — stopping after generation.")
+                print(f"\n✗ The registry cannot see '{document_type}'.", file=sys.stderr)
+                print("  A type needs both a layout and a schema; one is missing:",
+                      file=sys.stderr)
+                print(f"    layout: {gen.layout_path or '(none written)'}", file=sys.stderr)
+                print(f"    schema: {gen.schema_path or '(none written)'}", file=sys.stderr)
                 return {
-                    "status": "generated_needs_registration",
+                    "status": "generated_not_discoverable",
                     "schema_path": str(gen.schema_path) if gen.schema_path else None,
                     "layout_path": str(gen.layout_path) if gen.layout_path else None,
                     "history": history,
@@ -434,6 +440,7 @@ def digitize(
                 "needs_reextraction": repair.needs_reextraction,
                 "schema": str(repair.schema_path) if repair.schema_path else None,
                 "layout": str(repair.layout_path) if repair.layout_path else None,
+                "promoted": str(repair.promoted) if repair.promoted else None,
             }
         )
         history.extend(repair.history)
@@ -443,10 +450,15 @@ def digitize(
             break
 
         if repair.layout_path is not None:
-            print(f"\n⚠ New layout written: {repair.layout_path.name}")
-            print("  The registry still points at the original layout, so the next")
-            print("  run will NOT pick it up until you repoint it. Promotion is a")
-            print("  deliberate human step — review the diff first.")
+            if repair.promoted:
+                print(f"\n✓ Promoted: {repair.layout_path.name} is now the live layout.")
+                print("  The next iteration builds from it. Roll back by editing")
+                print(f"  {repair.promoted} — layout.py is untouched.")
+            else:
+                print(f"\n⚠ New layout written but NOT promoted: {repair.layout_path.name}")
+                print(f"  It does not build: {repair.validation_message}")
+                print("  The previous layout stays live, so the next iteration is")
+                print("  unaffected. Kept for inspection.")
 
         iteration += 1
 

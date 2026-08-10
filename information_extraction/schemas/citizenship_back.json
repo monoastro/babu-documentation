@@ -1,44 +1,129 @@
 {
   "type": "object",
   "title": "CitizenshipBackExtractionSchema",
-  "description": "Schema for structured data extraction from the back of a Nepali Citizenship Certificate, including thumb impressions and issuing authority block.",
+  "description": "Patched schema for structured data extraction from the back of a Nepali Citizenship Certificate, including certificate details, thumb impressions, and all required text blocks.",
+  "required": [
+    "citizenship_no",
+    "sex",
+    "full_name",
+    "dob_year",
+    "dob_month",
+    "dob_day",
+    "birth_district",
+    "birth_rm_mn",
+    "birth_ward_no",
+    "perm_district",
+    "perm_municipality",
+    "perm_ward_no",
+    "nepal_citizenship_act_sentence",
+    "citizenship_type",
+    "certificate_holder_signature_label",
+    "right_thumb_impression",
+    "left_thumb_impression",
+    "right_thumb_label",
+    "left_thumb_label",
+    "issuing_officer_signature",
+    "issuing_officer_name",
+    "issuing_officer_designation",
+    "issue_date_bs",
+    "remarks"
+  ],
   "properties": {
+    "citizenship_no": {
+      "type": "string",
+      "description": "Certificate number exactly as printed in the top certificate details section; all digits and hyphens included."
+    },
+    "sex": {
+      "type": "string",
+      "description": "Sex of the certificate holder as printed (e.g. 'Male', 'Female')."
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Full legal name of certificate holder as printed in the English/Devanagari block."
+    },
+    "dob_year": {
+      "type": "string",
+      "description": "Year of birth (AD) from the joined label-value row."
+    },
+    "dob_month": {
+      "type": "string",
+      "description": "Month of birth (AD) as printed."
+    },
+    "dob_day": {
+      "type": "string",
+      "description": "Day of birth (AD) as printed."
+    },
+    "birth_district": {
+      "type": "string",
+      "description": "District of birth as printed in the Birth Place label."
+    },
+    "birth_rm_mn": {
+      "type": "string",
+      "description": "Rural Municipality (R.M.) or Municipality (M.N.) of birth as printed."
+    },
+    "birth_ward_no": {
+      "type": "string",
+      "description": "Birth place ward number as printed."
+    },
+    "perm_district": {
+      "type": "string",
+      "description": "Permanent address district as printed."
+    },
+    "perm_municipality": {
+      "type": "string",
+      "description": "Permanent address municipality as printed (English or Nepali, don't guess, transcribe)."
+    },
+    "perm_ward_no": {
+      "type": "string",
+      "description": "Permanent address ward number as printed."
+    },
+    "nepal_citizenship_act_sentence": {
+      "type": "string",
+      "description": "The Nepali legal statement below the top bordered box: 'नेपाल नागरिकता ऐन २०६३ बमोजिम यो नागरिकताको प्रमाणपत्र दिइएको छ ।' Extract in full as printed."
+    },
     "citizenship_type": {
       "type": "string",
       "description": "Type of citizenship as specified in the section labelled citizenship type/kisim (e.g. 'वंशज'). Extract exactly as printed in Devanagari."
     },
+    "certificate_holder_signature_label": {
+      "type": "string",
+      "description": "The full label text above the left thumb area: 'प्रमाण पत्र वाहकको दस्तखत:' or its variant."
+    },
     "right_thumb_impression": {
       "type": "string",
-      "description": "Location or presence of the applicant's right thumb impression. Set to 'present' if a thumbprint is visually present or the placeholder is occupied, 'absent' if blank."
+      "description": "If thumb impression mark is present in the right box, set to 'present', otherwise 'absent'."
     },
     "left_thumb_impression": {
       "type": "string",
-      "description": "Location or presence of the applicant's left thumb impression. Set to 'present' if a thumbprint is visually present or the placeholder is occupied, 'absent' if blank."
+      "description": "If thumb impression mark is present in the left box, set to 'present', otherwise 'absent'."
+    },
+    "right_thumb_label": {
+      "type": "string",
+      "description": "Label text for right thumbbox e.g. '(दायाँ) औंठाको छाप'."
+    },
+    "left_thumb_label": {
+      "type": "string",
+      "description": "Label text for left thumbbox e.g. '(बायाँ) औंठाको छाप'."
     },
     "issuing_officer_signature": {
       "type": "string",
-      "description": "Signature field: return the officer's handwritten signature exactly as printed if legible, else return 'unreadable signature' or 'present' if the signature is only visually present."
+      "description": "Signature field: return the officer's handwritten signature as printed if legible, otherwise 'unreadable signature' or 'present'."
     },
     "issuing_officer_name": {
       "type": "string",
-      "description": "Name of the issuing officer (नाम थर) exactly as printed next to the signature field, in Devanagari."
+      "description": "Name of the issuing officer (नाम थर) as printed to the right of the signature."
     },
     "issuing_officer_designation": {
       "type": "string",
-      "description": "Designation (दर्जा) of the issuing officer exactly as printed (e.g. प्रशासनिक अधिकृत)."
+      "description": "Designation (दर्जा) of the issuing officer as printed below the name."
     },
     "issue_date_bs": {
       "type": "string",
-      "description": "Official issue date of the certificate as printed in the bottom-right section (in BS, e.g. २०६८-०९-२६). Preserve all digits, dashes, and formatting."
+      "description": "Official issue date as it appears in the lower right issuing authority box (in BS). Include all numerals and dashes."
+    },
+    "remarks": {
+      "type": "string",
+      "description": "Bottom-of-page instruction: 'यो प्रमाणपत्र कसैले भेट्टा पर्नु भएमा नजिकको जिल्ला प्रशासन कार्यालयमा वा प्रहरी कार्यालयमा बुझाइदिनुहोला ।' Extract as printed."
     }
-  },
-  "required": [
-    "citizenship_type",
-    "right_thumb_impression",
-    "left_thumb_impression",
-    "issuing_officer_signature",
-    "issuing_officer_name",
-    "issuing_officer_designation",
-    "issue_date_bs"
-  ]
+  }
 }

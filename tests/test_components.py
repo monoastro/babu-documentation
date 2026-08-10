@@ -24,6 +24,7 @@ from html_engine import (  # noqa: E402
     Div,
     Document,
     FlexRow,
+    FlexCol,
     Heading,
     LabelValue,
     ListItem,
@@ -204,6 +205,82 @@ def test_document_save_creates_parent_directories(tmp_name="output/_test_nested"
         assert written.read_text(encoding="utf-8").startswith("<!DOCTYPE html>")
     finally:
         shutil.rmtree(Path(tmp_name), ignore_errors=True)
+
+
+def test_container_coerces_a_bare_string_to_text():
+    # A generated layout wrote Div("(Signed)"). The string used to be stored
+    # unchanged and then blew up during rendering with
+    # "'str' object has no attribute 'to_html'", naming neither the layout nor
+    # the container. A bare string is unambiguous, so coerce it.
+    html = Div("(Signed)").to_html()
+    assert "(Signed)" in html, html
+
+
+def test_container_coerces_numbers():
+    assert "7" in FlexRow(7).to_html()
+    assert "1.5" in FlexRow(1.5).to_html()
+
+
+def test_container_skips_none_children():
+    html = FlexCol(Text("a"), None, Text("b")).to_html()
+    assert "a" in html and "b" in html
+    assert "None" not in html, html
+
+
+def test_container_rejects_a_list_with_position_and_type():
+    # A list is a real mistake — the caller meant to splat it — so it raises
+    # instead of coercing, and the message has to say where and what.
+    try:
+        FlexRow(Text("a"), ["b", "c"])
+    except TypeError as exc:
+        message = str(exc)
+        assert "FlexRow" in message, message
+        assert "position 1" in message, message
+        assert "list" in message, message
+    else:
+        raise AssertionError("a list child should raise TypeError")
+
+
+def test_container_rejects_a_dict_child():
+    try:
+        Div({"text": "hi"})
+    except TypeError as exc:
+        assert "dict" in str(exc), str(exc)
+    else:
+        raise AssertionError("a dict child should raise TypeError")
+
+
+def test_container_rejects_a_bool_child():
+    # bool is an int subclass, but rendering "True" onto an official document
+    # is never what the caller meant.
+    try:
+        Div(True)
+    except TypeError as exc:
+        assert "bool" in str(exc), str(exc)
+    else:
+        raise AssertionError("a bool child should raise TypeError")
+
+
+def test_add_coerces_like_the_constructor():
+    assert "late" in Div().add("late").to_html()
+
+    try:
+        Div().add(object())
+    except TypeError as exc:
+        assert "Div" in str(exc), str(exc)
+    else:
+        raise AssertionError("add() should coerce with the same rules")
+
+
+def test_document_add_coerces_and_names_itself():
+    assert "heading text" in Document().add("heading text").render()
+
+    try:
+        Document().add(set())
+    except TypeError as exc:
+        assert "Document" in str(exc), str(exc)
+    else:
+        raise AssertionError("Document.add() should reject an unrenderable child")
 
 
 def _run() -> int:

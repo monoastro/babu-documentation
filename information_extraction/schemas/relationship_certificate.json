@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Relationship Certificate Schema",
+  "type": "object",
+  "properties": {
+    "letter_no": {
+      "type": "string",
+      "description": "The letter number as printed near the top left, e.g. '2082/83'."
+    },
+    "ref_no": {
+      "type": "string",
+      "description": "The reference number as printed below Letter No. at upper left."
+    },
+    "office_name": {
+      "type": "string",
+      "description": "Office full name, usually topmost, e.g. 'Nagarjun Municipality 10 No. Ward Office'."
+    },
+    "municipality": {
+      "type": "string",
+      "description": "Municipality name, as part of header (e.g. Nagarjun Municipality)."
+    },
+    "ward_no": {
+      "type": "string",
+      "description": "Ward number printed in header (e.g. 10)."
+    },
+    "district": {
+      "type": "string",
+      "description": "District name in header (e.g. Kathmandu)."
+    },
+    "province": {
+      "type": "string",
+      "description": "Province name in header (e.g. Bagmati Province)."
+    },
+    "date": {
+      "type": "string",
+      "description": "Issued date in YYYY-MM-DD or B.S. as on the right (e.g. 2025-10-19)."
+    },
+    "subject": {
+      "type": "string",
+      "description": "Subject printed at start of main body, e.g. 'RELATIONSHIP VERIFICATION' or translated."
+    },
+    "main_text": {
+      "type": "string",
+      "description": "The main certification statement confirming family relationship, up to but not including the member table/photos. Preserve all named individuals verbatim."
+    },
+    "family_members": {
+      "type": "array",
+      "description": "List of family members with relationship, name, and role shown with photograph (left to right in the row below). Push all visible: Applicant, Father, Mother, Sister.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Family member's full name as printed below photo." },
+          "relation": { "type": "string", "description": "Relationship to applicant, as label below name (e.g. Applicant, Father, Mother, Sister)." }
+        },
+        "required": ["name", "relation"]
+      }
+    },
+    "ward_chairperson_name": {
+      "type": "string",
+      "description": "Name of certifying official (Ward Chairperson) with signature at lower right (e.g. Sundar Bahadur K.C)."
+    },
+    "ward_chairperson_title": {
+      "type": "string",
+      "description": "Title of certifying officer, typically 'Ward Chairperson'."
+    }
+  },
+  "required": [
+    "letter_no",
+    "ref_no",
+    "office_name",
+    "municipality",
+    "ward_no",
+    "district",
+    "province",
+    "date",
+    "subject",
+    "main_text",
+    "family_members",
+    "ward_chairperson_name",
+    "ward_chairperson_title"
+  ]
+}

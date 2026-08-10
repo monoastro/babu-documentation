@@ -22,15 +22,21 @@ source image
   API (any CSS property, not a closed allowlist). Output is enforced monochrome
   (see below). Includes placeholders for document furniture that cannot be
   rendered: `PlaceholderBox`, `Watermark`, `SignatureBlock`, `corner_box`.
-- `document_builder/` — layouts for `citizenship`, `laalpurja` (land ownership),
-  and `letter`. All rendered value fields carry `contenteditable="true"` and
-  `data-field` attributes for direct browser editing.
+- `document_builder/` — layouts for `citizenship`, `citizenship_back`,
+  `laalpurja` (land ownership), `letter`, and five agent-generated types
+  (`income_certificate`, `relationship_certificate`, `see_certificate`,
+  `tax_clearance`, `transfer_certificate`), plus the registry that discovers
+  them. Document types are found on disk, not listed in code; an `ACTIVE` file
+  in each layout directory names the live layout (see below). All rendered value
+  fields carry `contenteditable="true"` and `data-field` attributes for direct
+  browser editing.
 - `information_extraction/` — extraction helpers, JSON schemas, and the
   digitization entry point powered by Datalab OCR.
 - `agentic_controller/` — the autonomous pipeline: RAG index over the codebase,
   a vision verifier, and an Architect Agent that writes layout and schema fixes.
-- `tests/` — 65 tests across 5 suites covering the open `Style`, the monochrome
-  guarantee, placeholder components, the layout validation gate, and `main.py`.
+- `tests/` — 117 tests across 7 suites covering the open `Style`, the monochrome
+  guarantee, placeholder components, the layout validation gate, `main.py`, the
+  Architect Agent's command sandbox, and layout/schema resolution.
 - `output/` — generated HTML, PNG, and verification reports.
 
 ## Setup
@@ -74,7 +80,7 @@ python -m agentic_controller.run path/to/document.png --document-type laalpurja
 | Flag | Default | Description |
 |---|---|---|
 | `image` | *(required)* | Path to source document image (PNG or JPEG) |
-| `-t`, `--document-type` | `laalpurja` | `laalpurja`, `citizenship`, `letter`, or a new type |
+| `-t`, `--document-type` | `laalpurja` | Any discovered type, or a new one to generate |
 | `--max-iterations` | `3` | Maximum repair cycles before only *approve* is offered |
 | `--output-dir` | `output/` | Where HTML, PNG, and reports are written |
 | `--auto-approve` | off | Unattended: auto-fix while blocking issues remain, then accept |
@@ -91,6 +97,30 @@ checkpoint** per iteration:
 
 If the document type has no registered layout and schema, the run generates
 both from the source image before the first build.
+
+### Which layout is live
+
+Layouts are never edited in place. A repair writes `layout_1.py`, `layout_2.py`,
+… beside the original `layout.py`, and a one-line `ACTIVE` file in the same
+directory names the one that actually builds:
+
+```
+document_builder/citizenship_back/
+    layout.py       # the original, never written to — roll back to it any time
+    layout_1.py     # a repair
+    ACTIVE          # contains: layout_1.py
+```
+
+No `ACTIVE` file means `layout.py`, so a directory that has never been patched
+needs no bookkeeping. The Architect Agent writes `ACTIVE` itself, but only after
+`validate_layout` builds the new layout on blank data — a layout that raises
+cannot become live, and the previous good one stays up. Rolling back is editing
+one line, and `git log` on `ACTIVE` is the promotion history.
+
+Document types themselves are discovered the same way: any directory under
+`document_builder/` with a resolvable layout and a matching schema in
+`information_extraction/schemas/` is a usable `--type`. Adding one takes no code
+edit, which is what lets a generation run use the type it just wrote.
 
 ## Build one document by hand
 
@@ -115,7 +145,7 @@ python main.py --type laalpurja --blank --png
 | Flag | Default | Description |
 |---|---|---|
 | `image` | — | Source scan to OCR. Omit when using `--data` or `--blank` |
-| `-t`, `--type` | `laalpurja` | `citizenship`, `laalpurja`, or `letter` |
+| `-t`, `--type` | `laalpurja` | Any discovered type; `python main.py --help` lists what is currently installed |
 | `-o`, `--output` | `output/<type>.html` | Output HTML path |
 | `--data` | — | Build from this JSON instead of running OCR |
 | `--save-data` | — | Write the extracted JSON for later `--data` runs |
@@ -138,7 +168,7 @@ frequently colourful; a colour difference is never a verification discrepancy.
 ## Tests
 
 ```bash
-python tests/run_all.py          # all 5 suites, 65 tests, no pytest needed
+python tests/run_all.py          # all 7 suites, 117 tests, no pytest needed
 python tests/test_styles.py      # or run one suite directly
 ```
 
@@ -146,9 +176,11 @@ python tests/test_styles.py      # or run one suite directly
 |---|---|
 | `test_styles.py` | Open `Style`: any CSS property renders, typos warn, shorthand orders before longhand |
 | `test_monochrome.py` | Every route CSS can take to the page, plus all registered layouts |
-| `test_components.py` | Placeholders, watermark, signature block, the `field=` contract |
+| `test_components.py` | Placeholders, watermark, signature block, the `field=` contract, child coercion |
 | `test_layout_gate.py` | `validate_layout` catches errors inside a builder body, not just at import |
 | `test_main_cli.py` | `--blank` / `--data` never reach OCR; argument validation |
+| `test_command_sandbox.py` | `execute_command` refuses `python -c`, redirection, chaining, substitution; originals are restored if a command touches them; an *existing* `layout.py` or base schema is never a write target, but a brand-new type may create its own |
+| `test_registry_resolution.py` | `ACTIVE` selects the live layout and degrades safely; traversal in `ACTIVE` is rejected; discovery finds new types; promotion takes effect mid-process |
 
 ## Generate example documents
 
