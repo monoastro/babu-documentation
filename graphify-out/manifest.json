@@ -95,8 +95,8 @@
     "semantic_hash": ""
   },
   "information_extraction/pipeline.py": {
-    "mtime": 1786352399.7059903,
-    "ast_hash": "2cec2fecde66f0a1364c85a2156054a2",
+    "mtime": 1786416488.8679814,
+    "ast_hash": "ca07ac03cea26bacc73106ba790c2842",
     "semantic_hash": ""
   },
   "information_extraction/schemas/citizenship.json": {
@@ -110,23 +110,18 @@
     "semantic_hash": ""
   },
   "information_extraction/translator.py": {
-    "mtime": 1786354355.7969828,
-    "ast_hash": "1f73a46673485882641577083981370f",
+    "mtime": 1786416774.9949803,
+    "ast_hash": "f01be52498e23d9fc986d89649e20263",
     "semantic_hash": ""
   },
   "main.py": {
-    "mtime": 1786412762.6611965,
-    "ast_hash": "ac69ce45684c2682a762d33f64b25202",
+    "mtime": 1786416556.198981,
+    "ast_hash": "73c8fc75bced47656728fe334a621f81",
     "semantic_hash": ""
   },
-  "web/app.py": {
-    "mtime": 1785668443.7599893,
-    "ast_hash": "9bf8227108845cea9f2e4c8aeec56d0f",
-    "semantic_hash": "9bf8227108845cea9f2e4c8aeec56d0f"
-  },
   "README.md": {
-    "mtime": 1786354898.0129807,
-    "ast_hash": "23b9ea27bcf0c573331549263dce38e0",
+    "mtime": 1786419212.7109709,
+    "ast_hash": "5e7091b527a86f28271d4e805e69f386",
     "semantic_hash": ""
   },
   "document_builder/citizenship/test-citizenship.html": {
@@ -135,8 +130,8 @@
     "semantic_hash": "3fc04798e5bd69d6ae24ada6129269f6"
   },
   "documentation/DOCUMENTATION.md": {
-    "mtime": 1786354871.397981,
-    "ast_hash": "aecdc309cbf89e9929848c3f87451088",
+    "mtime": 1786419106.0903115,
+    "ast_hash": "cb285fed26caad00603ccd27271655b7",
     "semantic_hash": ""
   },
   "documentation/agentic-generator.md": {
@@ -195,18 +190,18 @@
     "semantic_hash": ""
   },
   "agentic_controller/verifier.py": {
-    "mtime": 1786352610.9549894,
-    "ast_hash": "5a23f478beab916792546add60aaf20c",
+    "mtime": 1786418048.5819755,
+    "ast_hash": "1a15ec406cd85c84aee58d625f7d67cf",
     "semantic_hash": ""
   },
   "documentation/verification-rules.md": {
-    "mtime": 1786352636.9599893,
-    "ast_hash": "e5f1db8dd7fd497b27c37e89e6518671",
+    "mtime": 1786418698.554973,
+    "ast_hash": "13323f69cf94c0ee1199a48e1f0bc91f",
     "semantic_hash": ""
   },
   "agentic_controller/run.py": {
-    "mtime": 1786352556.9219897,
-    "ast_hash": "9dbe3d3fdba8b15e689ddca9ef4366d3",
+    "mtime": 1786418161.549975,
+    "ast_hash": "365d4951728800ce50b7cacedce0538c",
     "semantic_hash": ""
   },
   "documentation/context.txt": {
@@ -315,7 +310,7 @@
     "semantic_hash": ""
   },
   "document_builder/citizenship_back/layout.py": {
-    "mtime": 1786356961.8139129,
+    "mtime": 1786418879.5095267,
     "ast_hash": "b80853028e33147b8e097344d6b7e0c7",
     "semantic_hash": ""
   },
@@ -750,8 +745,8 @@
     "semantic_hash": ""
   },
   "tests/test_translator.py": {
-    "mtime": 1786354483.0109823,
-    "ast_hash": "47f827d30ca8c14f6637777322b9e434",
+    "mtime": 1786418460.0329738,
+    "ast_hash": "df9b41961e3b02e144500f27f69a2ef6",
     "semantic_hash": ""
   },
   "documentation/prd.md": {
@@ -822,6 +817,61 @@
   "test-output/citizenship.html": {
     "mtime": 1786413020.490099,
     "ast_hash": "c54446c447f90120a15d532a643c9e14",
+    "semantic_hash": ""
+  },
+  "information_extraction/languages.py": {
+    "mtime": 1786416589.7409809,
+    "ast_hash": "f0dc6d9d6fc29f907f4e8d6cf23e9e1b",
+    "semantic_hash": ""
+  },
+  "test-output/datalab-probe/citizenship.accurate.json": {
+    "mtime": 1786416053.1439831,
+    "ast_hash": "a1733372db89e14b61e19d191eed20b1",
+    "semantic_hash": ""
+  },
+  "test-output/datalab-probe/citizenship.convert.json": {
+    "mtime": 1786415966.8053806,
+    "ast_hash": "a1733372db89e14b61e19d191eed20b1",
+    "semantic_hash": ""
+  },
+  "test-output/datalab-probe/citizenship.ocr.json": {
+    "mtime": 1786416120.5489829,
+    "ast_hash": "a2cc4053c444799d6535e475650f746c",
+    "semantic_hash": ""
+  },
+  "test-output/datalab-probe/probe_lines.py": {
+    "mtime": 1786416070.4599829,
+    "ast_hash": "13fa75e6907b3a955d15b203083e0886",
+    "semantic_hash": ""
+  },
+  "test-output/datalab-probe/probe_modes.py": {
+    "mtime": 1786416013.9479833,
+    "ast_hash": "a11e8782e711f03c4437df0458a1fd0d",
+    "semantic_hash": ""
+  },
+  "test-output/datalab-probe/show_blocks.py": {
+    "mtime": 1786415990.8009832,
+    "ast_hash": "35c01da312c376713f8dbcb04e0ed198",
+    "semantic_hash": ""
+  },
+  "test-output/datalab-probe/show_lines.py": {
+    "mtime": 1786416142.3199828,
+    "ast_hash": "a5dfb6c02dbfbd610e750ba31bf8a141",
+    "semantic_hash": ""
+  },
+  "tests/test_verifier_prompt.py": {
+    "mtime": 1786418407.464974,
+    "ast_hash": "ff960d1c588e2791b626af53bf0bfb5d",
+    "semantic_hash": ""
+  },
+  "documentation/FRONTEND-PLAN.md": {
+    "mtime": 1786419106.0918264,
+    "ast_hash": "28f47e2172dd418fa2354c04f529fdb8",
+    "semantic_hash": ""
+  },
+  "documentation/prd-update.txt": {
+    "mtime": 1786413908.3501544,
+    "ast_hash": "a42b479fb1fc0e40bc4e4443d81d32c7",
     "semantic_hash": ""
   }
 }

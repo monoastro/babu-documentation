@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "main.py": {
-    "mtime": 1786352489.07699,
-    "ast_hash": "2891bf413c1401645d836c1f643759c2",
+    "mtime": 1786412762.6611965,
+    "ast_hash": "ac69ce45684c2682a762d33f64b25202",
     "semantic_hash": ""
   },
   "web/app.py": {
@@ -817,6 +817,11 @@
   "work.txt": {
     "mtime": 1786376213.685429,
     "ast_hash": "f32ee650ca75be6e00531fea0ba81428",
+    "semantic_hash": ""
+  },
+  "test-output/citizenship.html": {
+    "mtime": 1786413020.490099,
+    "ast_hash": "c54446c447f90120a15d532a643c9e14",
     "semantic_hash": ""
   }
 }

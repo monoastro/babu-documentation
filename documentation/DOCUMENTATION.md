@@ -510,11 +510,11 @@ being invented at render time.
 > correct key in `.env`, and the only symptom is a `401 Unauthorized` from
 > datalab.to. Check `env | grep DATALAB` before editing `.env`.
 
-### Translation (`translator.py`)
+### Translation (`translator.py`, `languages.py`)
 
 Extraction returns values in the script they were printed in, usually
-Devanagari. The rendered document is meant to be readable English, so a
-translation stage sits between extraction and the builder:
+Devanagari. The rendered document is meant to be read by someone who cannot read
+Nepali, so a translation stage sits between extraction and the builder:
 
 ```text
 extract() → build_data() → translate_data() → builder(data)
@@ -522,30 +522,47 @@ extract() → build_data() → translate_data() → builder(data)
 
 Both pipelines run it by default — `information_extraction/pipeline.py`
 (used by the agentic controller) and `main.py` — and both accept
-`--no-translate` to skip it.
+`--no-translate` to skip it and `--lang` to choose the target.
 
-`translate_data(data)` returns a `Translation` carrying the new data, a flat
-`path → original value` map, counts, and any error. Three rules shape the
-output:
+`translate_data(data, target_language="en")` returns a `Translation` carrying the
+new data, a flat `path → original value` map, counts, the language it rendered
+into, and any error. Three rules shape the output:
 
-| Rule | Example |
-|---|---|
-| Proper nouns are **transliterated**, not translated | `उमा देवी चौलागाई` → `Uma Devi Chaulagai` |
-| Everything else is translated for meaning | `वंशज` → `By descent` |
-| Devanagari numerals become ASCII | `८` → `8` |
-| Bikram Sambat dates become Gregorian | `२०४९/०३/०९` → `1992-06-23` |
+| Rule | Example (`en`) | Example (`ja`) |
+|---|---|---|
+| Proper nouns are **transliterated**, not translated | `उमा देवी चौलागाई` → `Uma Devi Chaulagai` | → `ウマ・デヴィ・チャウラガイ` |
+| Everything else is translated for meaning | `वंशज` → `By descent` | → `血統による` |
+| Devanagari numerals become ASCII | `८` → `8` | `८` → `8` |
+| Bikram Sambat dates become Gregorian | `२०४९/०३/०९` → `1992-06-23` | same |
 
 Office names combine the first two: `जिल्ला प्रशासन कार्यालय, काठमाण्डौ` →
-`District Administration Office, Kathmandu`.
+`District Administration Office, Kathmandu`, or `カトマンズ郡行政事務所`.
 
-**What is deliberately not sent to the model.** Values that are already Latin
-script — English text, an ID like `NM0000095`, a bare number — have nothing to
-translate. Bikram Sambat dates are converted locally by `nepali_datetime`,
-because date arithmetic is precisely the class of task an LLM gets subtly
-wrong; an unparseable or out-of-range date is returned unchanged rather than
-half-converted, since a partial conversion prints a year that looks Gregorian
-and is not. The extractor's provenance siblings (`<field>_meta`,
-`<field>_citations`) are skipped because they are never rendered.
+**Target languages live in one table.** `information_extraction/languages.py`
+holds a frozen `LanguageSpec` per language in the `LANGUAGES` registry: the code
+callers pass, the language's name for the prompt, whether its script is Latin,
+and the three blocks of worked examples (transliteration, meaning, office names)
+that a prompt needs written in the target script. The rules themselves do not
+vary between languages, so `translator.py` keeps the shared prompt template and
+each spec supplies only what differs. Adding a language is adding one entry. The
+module imports nothing, so `main.py` can read `LANGUAGES` to build its `--lang`
+choices without pulling in the OpenAI client or the OCR path.
+
+**What is deliberately not sent to the model.** Bikram Sambat dates are converted
+locally by `nepali_datetime`, because date arithmetic is precisely the class of
+task an LLM gets subtly wrong; an unparseable or out-of-range date is returned
+unchanged rather than half-converted, since a partial conversion prints a year
+that looks Gregorian and is not. Bare numbers have nothing to translate. The
+extractor's provenance siblings (`<field>_meta`, `<field>_citations`) are skipped
+because they are never rendered.
+
+Latin-script values are the interesting case, because whether they are finished
+depends on the target. For an English target they are left alone. For a Japanese
+one they are not — a document's printed English half, or a field OCR read as
+English, is still untranslated for that reader — so `script_is_ascii` on the spec
+decides. Identifiers are the exception in every language: a single token
+containing a digit (`NM0000095`, `41-01-78-00466`) is printed as it is, and
+sending it to a katakana-writing model would come back mangled.
 
 **Sentinels are control flow, not content.** `present` / `absent` /
 `unreadable signature` are OCR contract tokens that layouts branch on — a
@@ -562,7 +579,10 @@ maps each such suffix to the English counterparts that suppress it, and the
 suppression fires only when the sibling is actually present in the same dict —
 a lone `foo_np` is the only value on the page and is translated normally. This
 is deliberately keyed on structure rather than on a fixed list of field names,
-so a generated document type gets the behaviour without being registered.
+so a generated document type gets the behaviour without being registered. The
+table stays English-keyed whatever the target language: it describes the *source
+document*, and a scan that prints both halves prints them regardless of what we
+translate into.
 
 **Nesting.** The walker handles lists of dicts, which is what a laalpurja's
 `plots` table is: every row's fields are translated, and every row's metadata
@@ -575,9 +595,10 @@ than a call per field but more accurate — the model sees `district` and
 `municipality` together and can tell a word is a place name. Repeated values (a
 district down a table) are sent once and fanned back out. Results are cached on
 disk in `information_extraction/.translation_cache.json`, keyed by
-`(model, kind, text)`, so the repair loop's later iterations re-translate
-nothing. The cache is gitignored; an unwritable cache makes a run slower, not
-failed.
+`(model, kind, target_language, text)`, so the repair loop's later iterations
+re-translate nothing. The language belongs in that key — without it a Japanese
+run is served the English hits an earlier run left behind. The cache is
+gitignored; an unwritable cache makes a run slower, not failed.
 
 **Degradation.** A failed model call is reported on the result, not raised: a
 document rendered in Devanagari is more useful than no document. Local
@@ -587,7 +608,7 @@ values at their originals rather than blanking them.
 > **This changes what the verifier should accept.** Rule 1 in
 > `verifier.py`'s `SYSTEM_PROMPT` and `verification-rules.md` used to declare
 > Devanagari values the intended format. Both now say the output is fully
-> English and that a script difference is never a discrepancy — otherwise the
+> translated and that a script difference is never a discrepancy — otherwise the
 > vision model reports every translated value as a data-accuracy failure and
 > the repair loop chases them forever.
 
@@ -608,7 +629,7 @@ the Architect Agent writes layout code directly, gated by a validation step.
 | `verifier.py` | Vision-model source-vs-render comparison. |
 | `rendering.py` | HTML → PNG via headless Chrome. |
 | `models.py` | `VerificationReport`, `RepairPlan`, and patch types. |
-| *(`information_extraction/translator.py`)* | Nepali → English translation of extracted values, before the builder. |
+| *(`information_extraction/translator.py`)* | Translation of extracted values into the target language, before the builder. |
 | `schema_patcher.py` | Applies schema patches to `*_patched.json` sidecars. |
 
 ### Pipeline flow (`run.py`)
@@ -640,6 +661,7 @@ python -m agentic_controller.run path/to/document.png --document-type laalpurja
 | `--output-dir` | `output/` | Artifact directory |
 | `--auto-approve` | off | Unattended: auto-fix while blocking issues remain, then accept |
 | `--no-translate` | off | Keep extracted values in their original script |
+| `-l`, `--lang` | `en` | Language to translate into (`en`, `ja`); also the language verification judges against |
 | `--result-json` | — | Write the result and full history as JSON |
 
 At the checkpoint: `a`/`approve` finishes, `r`/`retry` runs an autonomous
@@ -654,8 +676,9 @@ structured `VerificationReport`.
 
 Expected transformations — **never** flagged as defects:
 
-1. **Language** — Nepali field labels become English; extracted values stay in
-   their original script. The mix is intended.
+1. **Language** — both labels and values appear in the run's target language.
+   A script difference is never a defect; a value is judged on whether it is the
+   correct rendering in that language.
 2. **Visual elements** — photographs, coats of arms, seals, stamps, thumb
    impressions, and signatures become bordered placeholder boxes with
    descriptive labels.
@@ -678,12 +701,20 @@ completeness, structural match, and placeholder correctness.
 to confirm a value, the model says so and sets `needs_human_review` rather than
 guessing.
 
-The prompt lives in `verifier.SYSTEM_PROMPT` and is mirrored in prose in
-`documentation/verification-rules.md`. **Change one, change the other** — the
-agent reads the markdown and the verifier reads the constant.
+The prompt is built per language by `verifier.build_prompt`; `SYSTEM_PROMPT` is
+the English build of it. Rule 1 — the language rule — carries the target
+language's name and its own worked examples, so a Japanese render is judged
+against Japanese. Passing the wrong language turns every correctly translated
+value into a reported discrepancy and the repair loop never converges, so
+`run.py` forwards the same `--lang` it gave the translator.
+
+The prompt is mirrored in prose in `documentation/verification-rules.md`.
+**Change one, change the other** — the agent reads the markdown and the verifier
+reads the prompt.
 
 ```bash
 python -m agentic_controller.verifier source.jpg rendered.png --output report.json
+python -m agentic_controller.verifier source.jpg rendered.png --lang ja
 ```
 
 Sources may be PNG **or** JPEG; format is sniffed from magic bytes rather than
@@ -908,10 +939,14 @@ Omitting `--report` runs the verifier first.
 
 ### Visual editor
 
-The `contenteditable` + `data-field` attributes on every value element lay the
-groundwork for a browser-based visual editor: direct text editing,
-drag-and-drop field reordering keyed on `data-field` paths, resize handles via
-`attrs`, and add/remove fields POSTed back through the repair path.
+Planned in detail in [FRONTEND-PLAN.md](FRONTEND-PLAN.md): a Next.js editor over
+a FastAPI layer, with a shared Document JSON schema as the contract between it
+and this engine.
+
+The `contenteditable` + `data-field` attributes on every value element are the
+existing groundwork. Those `data-field` paths are extraction-schema keys, and the
+plan reuses them as element metadata rather than inventing a second identifier
+space.
 
 ### PDF export
 
@@ -965,7 +1000,7 @@ python -m agentic_controller.architect generate <type> source.png --notes "..."
 python -m agentic_controller.rag_engine query "how do I center a heading"
 python -m agentic_controller.rag_engine stats
 
-# Tests — all 8 suites, 142 tests, no pytest needed
+# Tests — all 9 suites, 156 tests, no pytest needed
 python tests/run_all.py
 python tests/test_styles.py        # or one suite directly
 ```
@@ -979,7 +1014,8 @@ python tests/test_styles.py        # or one suite directly
 | `test_main_cli.py` | `--blank` / `--data` never reach OCR; argument validation |
 | `test_command_sandbox.py` | Every route `execute_command` used to leave open: `python -c`, redirection, chaining, substitution, newlines; the originals guard; and `_write_allowed()` refusing an *existing* `layout.py` or base schema while permitting a brand-new type to create its own |
 | `test_registry_resolution.py` | `ACTIVE` selects the live layout and degrades to `layout.py` rather than raising; traversal in `ACTIVE` is rejected; discovery finds new types and skips incomplete ones; promotion round-trips and takes effect inside one process; iteration imports no layouts |
-| `test_translator.py` | Which values reach the model and which never do — sentinels, already-English text, metadata siblings, and the script-preserved half of a bilingual pair; BS dates convert locally and refuse to half-convert; nested `plots` rows are walked and their metadata preserved; duplicates are sent once; a failed or partial reply degrades to the original values; the cache spares the second run and is keyed on the model |
+| `test_translator.py` | Which values reach the model and which never do — sentinels, values already in the target script, metadata siblings, and the source-script half of a bilingual pair; BS dates convert locally and refuse to half-convert; nested `plots` rows are walked and their metadata preserved; duplicates are sent once; a failed or partial reply degrades to the original values; the cache spares the second run and is keyed on model *and* target language; and the target language reaches the model, is reported back, is refused by name when unsupported, and changes which values count as already-translated |
+| `test_verifier_prompt.py` | The verification prompt is a pure function of the language spec: it names the target language, each language carries its own worked examples, the four non-language rules are shared verbatim, the rules stay numbered 1–5 because `verification-rules.md` mirrors them, `SYSTEM_PROMPT` is byte-identical to the English build, and an unsupported language raises |
 
 There is no pytest dependency. Each suite is an ordinary script that asserts and
 prints; `run_all.py` is the `&&` chain, written once, and exits non-zero if any

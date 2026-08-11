@@ -1,16 +1,16 @@
 # Graph Report - babu-documentation  (2026-08-11)
 
 ## Corpus Check
-- 93 files · ~796,472 words
+- 93 files · ~796,747 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1019 nodes · 2049 edges · 81 communities (64 shown, 17 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 78 edges (avg confidence: 0.53)
+- 1020 nodes · 2048 edges · 85 communities (65 shown, 20 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 79 edges (avg confidence: 0.54)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3b199335`
+- Built from commit: `ac64aad8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -18,11 +18,11 @@
 - run.py
 - test_components.py
 - Editable Nepali citizenship certificate (romanized test render)
-- grid.py
+- .__init__
 - base.py
 - citizenship/layout.py
 - test_translator.py
-- Style
+- test_styles.py
 - translator.py
 - laalpurja/layout.py
 - test_command_sandbox.py
@@ -36,7 +36,7 @@
 - required
 - Image
 - rag_engine.py
-- MultiFieldRow
+- Style
 - Salvage record: `controller-old/` → `agentic_controller/`
 - langgraph dependency
 - python-dotenv dependency
@@ -65,7 +65,10 @@
 - items
 - HTML document engine
 - Babu task list / tooling backlog
+- TableCell
 - 44. Engineering Rules for the Agent
+- .to_css
+- .__add__
 - Babu Document Digitization: Technical Documentation
 - Agentic controller
 - Future work
@@ -90,6 +93,7 @@
 - family_members
 - PRD — Visual HTML Document Editing Engine
 - 4. Core Design Principle
+- Path
 - agentic_controller/__init__.py
 - Ideal patching prompt composition
 - Perfect-match VerificationReport example
@@ -109,6 +113,8 @@
 10. `Div` - 28 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `main()` --calls--> `render_png()`  [INFERRED]
+  main.py → agentic_controller/rendering.py
 - `_resources_exist()` --calls--> `resolve_schema_path()`  [INFERRED]
   agentic_controller/run.py → document_builder/resolver.py
 - `digitize()` --calls--> `resolve_schema_path()`  [INFERRED]
@@ -117,25 +123,19 @@
   tests/test_monochrome.py → html_engine/styles.py
 - `test_route_3_style_raw_escape_hatch()` --calls--> `Style`  [EXTRACTED]
   tests/test_monochrome.py → html_engine/styles.py
-- `main()` --calls--> `resolve_schema_path()`  [EXTRACTED]
-  agentic_controller/architect.py → document_builder/resolver.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (81 total, 17 thin omitted)
+## Communities (85 total, 20 thin omitted)
 
 ### Community 0 - "run.py"
-Cohesion: 0.06
-Nodes (51): _crop_to_page(), _page_metrics(), Path, render_png(), _collect_decision(), _collect_user_concerns(), digitize(), main() (+43 more)
+Cohesion: 0.10
+Nodes (27): _crop_to_page(), _page_metrics(), Path, render_png(), _collect_decision(), _collect_user_concerns(), digitize(), main() (+19 more)
 
 ### Community 1 - "test_components.py"
 Cohesion: 0.11
 Nodes (27): build_see_certificate(), SEE Certificate Layout — document_builder/see_certificate/layout_1.py…, Div, Generic block container rendered as a ``<div>``. The simplest building block —…, corner_box(), PlaceholderBox, The signature cluster that closes an official letter. Stacks, top to bottom:…, A labelled outline standing in for artwork that cannot be rendered. Renders a… (+19 more)
-
-### Community 3 - "grid.py"
-Cohesion: 0.15
-Nodes (8): Card, Grid, GridItem, Any, Layout components: FlexRow, FlexCol, AbsoluteBox, Div. These are generic…, CSS Grid container. Parameters: columns: Grid template columns (e.g. 12 or…, CSS Grid item. Parameters: column_span: Number of columns this item spans (e.g.…, A styled container mimicking a paper card. Includes preset styles: background…
 
 ### Community 4 - "base.py"
 Cohesion: 0.12
@@ -149,16 +149,16 @@ Nodes (7): _address_block(), build_citizenship(), _ea(), field_row(), multi_row(
 Cohesion: 0.07
 Nodes (44): Tests for the translation stage. ``information_extraction/translator.py`` sits…, A sentence and a field label want different instructions, so they are batched…, A district repeated down a table is one string, not twenty., A half-converted date prints a year that looks Gregorian and is not., The SEE certificate prints ``certificate_title_np`` on one line and…, Without the English sibling, that value is the only one on the page., A laalpurja's ``plots`` is a list of dicts; every row must be reached., ``<field>_meta`` and ``<field>_citations`` are provenance the extractor… (+36 more)
 
-### Community 7 - "Style"
+### Community 7 - "test_styles.py"
 Cohesion: 0.08
-Nodes (26): An open set of CSS declarations. Any keyword is accepted and emitted as a CSS…, Return a new Style with *other*'s declarations overriding this one's. ``raw``…, Shorthand for ``merge``: ``combined = style_a + style_b``., Style, Tests for the open property bag that replaced the closed ``Style`` dataclass.…, Monochrome is enforced on the way out, including for unlisted props., The reported crash. Any valid CSS property must survive to the output., Both are deliberate, so neither should look like a typo. (+18 more)
+Nodes (22): Tests for the open property bag that replaced the closed ``Style`` dataclass.…, Monochrome is enforced on the way out, including for unlisted props., The reported crash. Any valid CSS property must survive to the output., Both are deliberate, so neither should look like a typo., The trade for accepting anything: a misspelling is no longer a TypeError. It…, What ``main.py --strict`` relies on., A name CSS could never accept is a bug worth stopping for., CSS resolves duplicates last-one-wins, so ``margin`` emitted after ``margin-… (+14 more)
 
 ### Community 8 - "translator.py"
-Cohesion: 0.11
-Nodes (28): _apply(), bs_to_ad(), _cache_key(), _collect(), _has_letters(), _is_ascii(), _is_meta_key(), _load_cache() (+20 more)
+Cohesion: 0.06
+Nodes (52): build_data(), extract(), load_schema(), build_document(), digitize_document(), _apply(), bs_to_ad(), _cache_key() (+44 more)
 
 ### Community 9 - "laalpurja/layout.py"
-Cohesion: 0.13
+Cohesion: 0.16
 Nodes (16): build_laalpurja(), _ea(), _lv(), Any, Land Ownership Registration Certificate (Laal Purja) — Layout Definition,…, _td(), _th(), _to_float() (+8 more)
 
 ### Community 10 - "test_command_sandbox.py"
@@ -194,16 +194,16 @@ Cohesion: 0.14
 Nodes (14): required, date, district, family_members, letter_no, main_text, municipality, office_name (+6 more)
 
 ### Community 19 - "Image"
-Cohesion: 0.40
-Nodes (3): Image, Renders an ``<img>`` element. Parameters: src: Image source — a URL, file path,…, Resolve the image source, optionally embedding as base64.
+Cohesion: 0.33
+Nodes (4): Image, Image component for the HTML Document Engine., Renders an ``<img>`` element. Parameters: src: Image source — a URL, file path,…, Resolve the image source, optionally embedding as base64.
 
 ### Community 20 - "rag_engine.py"
 Cohesion: 0.13
 Nodes (32): build_chunks(), build_index(), Chunk, chunk_file(), chunk_json_schema(), chunk_markdown(), chunk_python(), _embed() (+24 more)
 
-### Community 21 - "MultiFieldRow"
-Cohesion: 0.40
-Nodes (3): MultiFieldRow, Any, A horizontal row containing multiple label–value pairs. Useful for rows like:…
+### Community 21 - "Style"
+Cohesion: 0.13
+Nodes (3): Any, An open set of CSS declarations. Any keyword is accepted and emitted as a CSS…, Style
 
 ### Community 22 - "Salvage record: `controller-old/` → `agentic_controller/`"
 Cohesion: 0.33
@@ -214,16 +214,16 @@ Cohesion: 0.20
 Nodes (20): Check that a generated layout module is safe for the caller to use. Four gates,…, validate_layout(), _layout(), Path, Tests for ``architect.validate_layout`` — the gate that let the reported bug…, Blank probe data is the harsh case. A layout indexing a key the schema does not…, A property outside the known list is a cosmetic gap, not a reason to fail a…, Without a schema the builder is probed with ``{}``. (+12 more)
 
 ### Community 26 - "components/__init__.py"
-Cohesion: 0.14
+Cohesion: 0.16
 Nodes (8): html_engine.components — All renderable component types., Link, Paragraph, Text components: Text, Heading, Paragraph, Link., Escape hatch: renders arbitrary HTML verbatim. Use sparingly — this bypasses…, Renders an anchor element ``<a>``. Parameters: content: The text content or…, Block paragraph element rendered as ``<p>``. Parameters: content: The paragraph…, RawHTML
 
 ### Community 27 - "test_monochrome.py"
-Cohesion: 0.06
-Nodes (43): Build the HTML attribute string for this element. Combines ``css_class``,…, find_violations(), normalize_declarations(), normalize_html(), normalize_value(), Monochrome enforcement for the HTML Document Engine. Project rule: a rendered…, Rewrite every colour token in a single declaration's *value*. Parameters: prop:…, Rewrite colours across a CSS fragment. Works both on an inline declaration list… (+35 more)
+Cohesion: 0.07
+Nodes (39): Build the HTML attribute string for this element. Combines ``css_class``,…, find_violations(), normalize_declarations(), normalize_html(), normalize_value(), Monochrome enforcement for the HTML Document Engine. Project rule: a rendered…, Rewrite every colour token in a single declaration's *value*. Parameters: prop:…, Rewrite colours across a CSS fragment. Works both on an inline declaration list… (+31 more)
 
 ### Community 28 - "Any"
-Cohesion: 0.22
-Nodes (5): Any, Record one declaration, warning if the property looks misspelled., Iterate ``(python_name, value)`` for every set property., Set properties in emission order: known first, then unknown., Return a copy with specific properties overridden. Passing ``None`` removes a…
+Cohesion: 0.28
+Nodes (4): Any, Record one declaration, warning if the property looks misspelled., Iterate ``(python_name, value)`` for every set property., Return a copy with specific properties overridden. Passing ``None`` removes a…
 
 ### Community 29 - "43. Acceptance Criteria"
 Cohesion: 0.10
@@ -238,8 +238,8 @@ Cohesion: 0.67
 Nodes (3): route, index(), process()
 
 ### Community 34 - "html_engine/__init__.py"
-Cohesion: 0.12
-Nodes (19): Image component for the HTML Document Engine., Placeholder components for document furniture the render cannot reproduce. A…, Table components: Table, TableRow, TableCell. Supports both simple table…, A full ``<table>`` element. Can be built from: - Explicit ``TableRow`` objects…, Table, em(), pct(), pt() (+11 more)
+Cohesion: 0.10
+Nodes (22): Card, Grid, GridItem, Layout components: FlexRow, FlexCol, AbsoluteBox, Div. These are generic…, CSS Grid container. Parameters: columns: Grid template columns (e.g. 12 or…, CSS Grid item. Parameters: column_span: Number of columns this item spans (e.g.…, A styled container mimicking a paper card. Includes preset styles: background…, Placeholder components for document furniture the render cannot reproduce. A… (+14 more)
 
 ### Community 37 - "FlexCol"
 Cohesion: 0.19
@@ -285,9 +285,17 @@ Nodes (10): Arbitrary HTML attributes (`attrs`), Component reference, Editable f
 Cohesion: 0.22
 Nodes (9): Information extraction, Translation (`translator.py`), Donut (clovaai), Handwritten Nepali OCR model (TrOCR finetune, Tesseract), HTML abstraction engine over HTML/CSS, OCR JSON → HTML engine integration, Preprocessing engine (CamScanner-style rectification), Programmatic format building from received data (+1 more)
 
+### Community 50 - "TableCell"
+Cohesion: 0.27
+Nodes (5): Table components: Table, TableRow, TableCell. Supports both simple table…, A single table cell (``<td>`` or ``<th>``). Parameters: content: Cell content —…, A table row (``<tr>``) containing one or more cells. Parameters: cells:…, TableCell, TableRow
+
 ### Community 51 - "44. Engineering Rules for the Agent"
 Cohesion: 0.25
 Nodes (8): 44. Engineering Rules for the Agent, Rule 1 — Document model first, Rule 2 — Single source of truth, Rule 3 — Components are renderers, Rule 4 — Commands modify state, Rule 5 — History is operation-based, Rule 6 — No premature complexity, Rule 7 — Extensibility
+
+### Community 52 - ".to_css"
+Cohesion: 0.25
+Nodes (5): _css_name(), Map a Python keyword to its CSS property name. ``font_size`` -> ``font-size``.…, Set properties in emission order: known first, then unknown., Serialize to an inline CSS declaration string. Colours are normalized to black-…, Return a full ``style="..."`` attribute, or ``""`` if empty.
 
 ### Community 54 - "Babu Document Digitization: Technical Documentation"
 Cohesion: 0.33
@@ -346,7 +354,7 @@ Cohesion: 0.40
 Nodes (5): 5. Technology Requirements, Dragging and interaction, Frontend, Rich text, State management
 
 ### Community 68 - "spacer.py"
-Cohesion: 0.20
+Cohesion: 0.29
 Nodes (5): HorizontalRule, PageBreak, Spacer and divider components., Horizontal rule (``<hr>``) divider. Parameters: style: Override styles (color,…, Renders a page break for print media.
 
 ### Community 69 - "district"
@@ -380,17 +388,17 @@ Nodes (3): description, type, family_members
 ## Knowledge Gaps
 - **200 isolated node(s):** `What is included`, `Setup`, `Which layout is live`, `Build one document by hand`, `Output is in English` (+195 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **17 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **20 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Style` connect `Style` to `run.py`, `test_components.py`, `grid.py`, `base.py`, `citizenship/layout.py`, `laalpurja/layout.py`, `Spacer`, `Component`, `Image`, `MultiFieldRow`, `components/__init__.py`, `test_monochrome.py`, `Any`, `Text`, `html_engine/__init__.py`, `FlexCol`, `Document`, `LabelValue`, `spacer.py`?**
-  _High betweenness centrality (0.271) - this node is a cross-community bridge._
+- **Why does `Style` connect `Style` to `test_components.py`, `.__init__`, `base.py`, `citizenship/layout.py`, `test_styles.py`, `translator.py`, `laalpurja/layout.py`, `Spacer`, `Component`, `Image`, `components/__init__.py`, `test_monochrome.py`, `Any`, `Text`, `html_engine/__init__.py`, `FlexCol`, `Document`, `LabelValue`, `TableCell`, `.to_css`, `.__add__`, `spacer.py`?**
+  _High betweenness centrality (0.265) - this node is a cross-community bridge._
 - **Why does `resolve_schema_path()` connect `test_registry_resolution.py` to `run.py`, `analyze_and_repair`, `architect.py`?**
-  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+  _High betweenness centrality (0.058) - this node is a cross-community bridge._
 - **Why does `active_layout_path()` connect `test_registry_resolution.py` to `analyze_and_repair`, `architect.py`?**
-  _High betweenness centrality (0.050) - this node is a cross-community bridge._
+  _High betweenness centrality (0.051) - this node is a cross-community bridge._
 - **Are the 30 inferred relationships involving `Style` (e.g. with `Component` and `FieldGroup`) actually correct?**
   _`Style` has 30 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 30 inferred relationships involving `Component` (e.g. with `Style` and `FieldGroup`) actually correct?**

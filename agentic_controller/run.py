@@ -12,6 +12,7 @@ Flow:
 Usage:
   python -m agentic_controller.run <image> --document-type laalpurja
   python -m agentic_controller.run <image> -t citizenship --max-iterations 5
+  python -m agentic_controller.run <image> -t laalpurja --lang ja
 """
 
 from __future__ import annotations
@@ -31,6 +32,7 @@ from agentic_controller.architect import (
 )
 from agentic_controller.rendering import render_png
 from agentic_controller.verifier import verify
+from information_extraction.languages import DEFAULT_LANGUAGE, LANGUAGES
 from information_extraction.pipeline import build_document
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -173,6 +175,7 @@ def run_pipeline(
     output_dir: Path,
     tag: str,
     translate: bool = True,
+    target_language: str = DEFAULT_LANGUAGE,
 ) -> tuple[Path | None, Path | None]:
     """OCR → translate → build → save HTML → render PNG.
 
@@ -184,7 +187,12 @@ def run_pipeline(
 
     print(f"  → Extracting and building ({document_type})...")
     try:
-        doc = build_document(document_type, str(image_path), translate=translate)
+        doc = build_document(
+            document_type,
+            str(image_path),
+            translate=translate,
+            target_language=target_language,
+        )
         doc.save(str(html_path))
     except Exception as exc:
         print(f"Pipeline failed: {exc}")
@@ -210,6 +218,7 @@ def digitize(
     output_dir: Path = OUTPUT_DIR,
     auto_approve: bool = False,
     translate: bool = True,
+    target_language: str = DEFAULT_LANGUAGE,
 ) -> dict:
     """Run the full autonomous digitization flow.
 
@@ -319,7 +328,7 @@ def digitize(
 
         html_path, png_path = run_pipeline(
             document_type, image_path, output_dir, tag=f"{run_id}-{iteration}",
-            translate=translate,
+            translate=translate, target_language=target_language,
         )
         if html_path is None:
             return {"status": "pipeline_failed", "iteration": iteration, "history": history}
@@ -339,7 +348,9 @@ def digitize(
         # ---- Verify ----
         print("\n  → Verifying against source...")
         try:
-            report = verify(image_path, png_path)
+            report = verify(
+                image_path, png_path, target_language=target_language
+            )
         except Exception as exc:
             print(f"  ✗ Verification failed: {exc}", file=sys.stderr)
             return {
@@ -529,7 +540,15 @@ def main() -> None:
         dest="translate",
         action="store_false",
         help="Keep extracted values in their original script instead of "
-        "translating them into English.",
+        "translating them.",
+    )
+    parser.add_argument(
+        "-l",
+        "--lang",
+        dest="target_language",
+        default=DEFAULT_LANGUAGE,
+        choices=sorted(LANGUAGES),
+        help=f"Language to translate into (default: {DEFAULT_LANGUAGE}).",
     )
     parser.add_argument(
         "--result-json",
@@ -553,6 +572,7 @@ def main() -> None:
         output_dir=args.output_dir,
         auto_approve=args.auto_approve,
         translate=args.translate,
+        target_language=args.target_language,
     )
 
     if args.result_json:

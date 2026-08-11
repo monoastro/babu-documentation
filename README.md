@@ -9,7 +9,7 @@ rendered output against the source scan and repairs it under human supervision.
 source image
   → OCR extraction (Datalab)
   → structured JSON
-  → translation (LLM: Nepali → English)
+  → translation (LLM: Nepali → target language)
   → layout builder
   → html_engine
   → HTML + PNG
@@ -36,7 +36,7 @@ source image
   by Datalab OCR.
 - `agentic_controller/` — the autonomous pipeline: RAG index over the codebase,
   a vision verifier, and an Architect Agent that writes layout and schema fixes.
-- `tests/` — 142 tests across 8 suites covering the open `Style`, the monochrome
+- `tests/` — 156 tests across 9 suites covering the open `Style`, the monochrome
   guarantee, placeholder components, the layout validation gate, `main.py`, the
   Architect Agent's command sandbox, layout/schema resolution, and translation.
 - `output/` — generated HTML, PNG, and verification reports.
@@ -78,6 +78,7 @@ PNG rendering needs Chrome or Chromium on `PATH` (via `html2image`).
 
 ```bash
 python -m agentic_controller.run path/to/document.png --document-type laalpurja
+python -m agentic_controller.run path/to/document.png -t laalpurja --lang ja
 ```
 
 | Flag | Default | Description |
@@ -88,6 +89,7 @@ python -m agentic_controller.run path/to/document.png --document-type laalpurja
 | `--output-dir` | `output/` | Where HTML, PNG, and reports are written |
 | `--auto-approve` | off | Unattended: auto-fix while blocking issues remain, then accept |
 | `--no-translate` | off | Keep extracted values in their original script |
+| `-l`, `--lang` | `en` | Language to translate into (`en`, `ja`); verification judges against the same one |
 | `--result-json` | — | Write the run result, including full history, as JSON |
 
 The run extracts, translates, builds, renders, verifies, then pauses at a
@@ -145,6 +147,9 @@ python main.py --type letter --data output/letter.json
 # Keep the extracted values in their original script
 python main.py test-data/demo.png --type letter --no-translate
 
+# Translate into Japanese instead of English
+python main.py test-data/demo.png --type letter --lang ja
+
 # Build with every field empty, to check layout and spacing alone
 python main.py --type laalpurja --blank --png
 ```
@@ -158,6 +163,7 @@ python main.py --type laalpurja --blank --png
 | `--save-data` | — | Write the extracted JSON for later `--data` runs |
 | `--blank` | off | Every field empty — layout check, no OCR |
 | `--no-translate` | off | Keep extracted values in their original script |
+| `-l`, `--lang` | `en` | Language to translate into (`en`, `ja`) |
 | `--png` | off | Also render a PNG (needs Chrome/Chromium) |
 | `--strict` | off | Turn unrecognized-CSS-property warnings into errors |
 
@@ -165,23 +171,28 @@ Exactly one data source is required: an image, `--data`, or `--blank`. Both
 `--data` and `--blank` skip the extractor entirely, so neither costs an API
 call.
 
-## Output is in English
+## Output is in the target language
 
 Extraction returns values in the script they were printed in, usually
 Devanagari. `information_extraction/translator.py` translates them before they
-reach a layout, so the rendered document is readable English throughout:
+reach a layout, so the rendered document is readable in the target language
+throughout — English by default, Japanese with `--lang ja`:
 
-| | Source | Rendered |
-|---|---|---|
-| Phrases | `वंशज` | `By descent` |
-| Names, places | `उमा देवी चौलागाई` | `Uma Devi Chaulagai` |
-| Numerals | `८` | `8` |
-| BS dates | `२०४९/०३/०९` | `1992-06-23` |
+| | Source | English | Japanese |
+|---|---|---|---|
+| Phrases | `वंशज` | `By descent` | `子孫によって` |
+| Names, places | `उमा देवी चौलागाई` | `Uma Devi Chaulagai` | `ウマ・デヴィ・チャウラガイ` |
+| Numerals | `८` | `8` | `8` |
+| BS dates | `२०४९/०३/०९` | `1992-06-23` | `1992-06-23` |
 
-Three things are deliberately left alone. Values that are already English cost
-nothing and are skipped. Bikram Sambat dates are converted locally by
-`nepali_datetime`, never by the model — date arithmetic is exactly what an LLM
-gets subtly wrong. And `present` / `absent` are an OCR contract rather than
+A new language is a new row in the `LanguageSpec` registry in
+`information_extraction/languages.py` — the prompt templates are shared, only
+the worked examples change.
+
+Three things are deliberately left alone. Values that are already in the target
+script cost nothing and are skipped. Bikram Sambat dates are converted locally
+by `nepali_datetime`, never by the model — date arithmetic is exactly what an
+LLM gets subtly wrong. And `present` / `absent` are an OCR contract rather than
 content: a layout reads them to decide whether to draw a thumb-impression box
 at all, so rewording one would silently remove an element from the page.
 
@@ -194,12 +205,18 @@ this; a lone `foo_np` is the only value there is, and is translated normally.
 Everything translatable in a document goes out in one request. Batching is
 cheaper than a call per field and also more accurate — the model sees
 `district` and `municipality` together and can tell that a word is a place
-name. Results are cached on disk by `(text, model)`, so the repair loop's
-second and third iterations re-translate nothing.
+name. Results are cached on disk by `(model, kind, language, text)`, so the
+repair loop's second and third iterations re-translate nothing, and a Japanese
+run is never served an English cache hit.
 
 A failed translation is reported, not raised: a document rendered in Devanagari
 is more useful than no document. `--no-translate` skips the stage in both
 pipelines.
+
+Verification follows the same language. `agentic_controller/verifier.py` builds
+its system prompt per language, so a Japanese render is judged against Japanese;
+judged against the wrong one, every correctly translated value would be reported
+as a data-accuracy defect and the repair loop would chase them forever.
 
 ## Output is strictly black and white
 
@@ -212,7 +229,7 @@ frequently colourful; a colour difference is never a verification discrepancy.
 ## Tests
 
 ```bash
-python tests/run_all.py          # all 8 suites, 142 tests, no pytest needed
+python tests/run_all.py          # all 9 suites, 156 tests, no pytest needed
 python tests/test_styles.py      # or run one suite directly
 ```
 
@@ -225,7 +242,8 @@ python tests/test_styles.py      # or run one suite directly
 | `test_main_cli.py` | `--blank` / `--data` never reach OCR; argument validation |
 | `test_command_sandbox.py` | `execute_command` refuses `python -c`, redirection, chaining, substitution; originals are restored if a command touches them; an *existing* `layout.py` or base schema is never a write target, but a brand-new type may create its own |
 | `test_registry_resolution.py` | `ACTIVE` selects the live layout and degrades safely; traversal in `ACTIVE` is rejected; discovery finds new types; promotion takes effect mid-process |
-| `test_translator.py` | Sentinels, English values, and a bilingual pair's Nepali half never reach the model; BS dates convert locally; nested `plots` rows and extractor metadata survive; a failed call degrades to the original data; the cache spares the second run |
+| `test_translator.py` | Sentinels, values already in the target script, and a bilingual pair's Nepali half never reach the model; BS dates convert locally; nested `plots` rows and extractor metadata survive; a failed call degrades to the original data; the cache spares the second run and is keyed on model and language; `--lang` changes what counts as already-translated |
+| `test_verifier_prompt.py` | The verification prompt names its target language and carries that language's worked examples, while the other four rules stay shared and numbered as `verification-rules.md` mirrors them |
 
 ## Generate example documents
 
@@ -237,8 +255,9 @@ python document_builder/laalpurja/test-generate-laalpurja.py
 ## Standalone tools
 
 ```bash
-# Verify a render pair
+# Verify a render pair (--lang must match the language the render was built in)
 python -m agentic_controller.verifier source.jpg rendered.png --output report.json
+python -m agentic_controller.verifier source.jpg rendered.png --lang ja
 
 # Repair from a report (or omit --report to verify first)
 python -m agentic_controller.architect repair laalpurja source.png rendered.png
@@ -259,3 +278,7 @@ is needed before an agent run.
 See [documentation/DOCUMENTATION.md](documentation/DOCUMENTATION.md) for the
 engine architecture, component reference, builder design, extraction pipeline,
 monochrome enforcement, and agentic controller internals.
+
+See [documentation/FRONTEND-PLAN.md](documentation/FRONTEND-PLAN.md) for the
+staged plan to put a Next.js visual editor in front of this engine over a
+FastAPI layer, with a shared Document JSON schema as the contract between them.

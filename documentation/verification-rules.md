@@ -1,8 +1,10 @@
 # Verification & Repair Rules
 
-Extracted verbatim-in-substance from `controller-old/document_verifier.py` (SYSTEM_PROMPT) and
-`controller-old/layout_repairer.py` (ANALYSIS_PROMPT). `controller-old/` is deprecated and kept
-only as reference — these rules are the part that must survive into the agentic controller.
+Section 1 is the prose mirror of the live verification prompt in
+`agentic_controller/verifier.py` (`build_prompt`, and the `SYSTEM_PROMPT` constant it produces for
+English). Change one and change the other: the agent reads this markdown, the verifier reads the
+prompt. Section 2 comes from `controller-old/layout_repairer.py` (ANALYSIS_PROMPT); `controller-old/`
+is deprecated and kept only as reference.
 
 The Architect Agent is optimizing toward one thing: driving a `VerificationReport.overall_match`
 from `"fail"` / `"needs_review"` to `"pass"`. Everything below defines what that means.
@@ -11,7 +13,7 @@ from `"fail"` / `"needs_review"` to `"pass"`. Everything below defines what that
 
 ## 1. Document Verification Rules
 
-Source: `controller-old/document_verifier.py`
+Source: `agentic_controller/verifier.py`
 
 The rendered output is a **structured digital replica** of the source, not a pixel-perfect copy.
 The source document is the reference of truth.
@@ -20,10 +22,11 @@ The source document is the reference of truth.
 
 | # | Transformation | Detail |
 |---|---|---|
-| 1 | **Language** | The output is **fully English**. Labels are translated (`नाम थर:` → `Full Name:`), and so are **values**: phrases translated (`वंशज` → `By descent`), person and place names transliterated (`उमा देवी चौलागाई` → `Uma Devi Chaulagai`), Devanagari numerals converted to ASCII (`८` → `8`), and Bikram Sambat dates converted to Gregorian (`२०४९/०३/०९` → `1992-06-22`). A script difference is never a discrepancy — judge a value on whether it is the *correct* English rendering. Applied by `information_extraction/translator.py`; suppress with `--no-translate`. |
+| 1 | **Language** | The output is **fully in the run's target language** — English by default, Japanese under `--lang ja`. Labels are translated (`नाम थर:` → `Full Name:`), and so are **values**: phrases translated for meaning (`वंशज` → `By descent`), person and place names transliterated (`उमा देवी चौलागाई` → `Uma Devi Chaulagai`, or `ウマ・デヴィ・チャウラガイ`), Devanagari numerals converted to ASCII (`८` → `8`), and Bikram Sambat dates converted to Gregorian (`२०४९/०३/०९` → `1992-06-22`). A script difference is never a discrepancy — judge a value on whether it is the *correct* rendering in that language. Applied by `information_extraction/translator.py`; suppress with `--no-translate`. The verifier's own prompt is built per language by `verifier.build_prompt`, so it is told which language to judge against; the examples above are the English ones. |
 | 2 | **Visual elements** | Photographs, coat of arms, official seals, stamps, thumb impressions, and signatures are intentionally replaced by bordered placeholder boxes of similar size carrying a descriptive label — `Coat of Arms of Nepal`, `Round Office Seal`, `Photograph Sd.`, `Thumb Impression`, `(Signed)`. |
 | 3 | **Formatting** | Clean digital typography, consistent spacing, and structured layout in place of handwriting, rubber stamps, and scan artifacts. The output is *supposed* to look cleaner than the source. |
 | 4 | **Handwritten elements** | Handwritten text, manual signatures, and ink stamps become typed text or placeholder labels. |
+| 5 | **Colour** | The replica is deliberately black on white. Coloured letterheads, blue or red headings, and coloured stamps all render as black ink. A colour difference is never a discrepancy; a coloured element is judged only on whether its *content* survived — a purple stamp must still appear as a correctly labelled placeholder box, but it is correct that it is no longer purple. |
 
 ### 1.2 What to actually check
 

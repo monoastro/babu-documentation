@@ -1,21 +1,29 @@
-"""LLM translation of extracted field values into English.
+"""LLM translation of extracted field values into a target language.
 
 Extraction (Datalab OCR) returns values in the script they were printed in,
-usually Devanagari. The rendered document is meant to be readable English, so a
-translation stage sits between extraction and the layout builder:
+usually Devanagari. The rendered document is meant to be readable by someone who
+cannot read Nepali, so a translation stage sits between extraction and the layout
+builder:
 
     extract() → build_data() → translate_data() → builder(data)
 
+The target language is chosen by its code — ``translate_data(data,
+target_language="ja")`` — and every language-specific decision lives in a
+:class:`LanguageSpec` in the ``LANGUAGES`` registry. Adding a language means
+adding one entry there, not editing this module's logic.
+
 ``translate_data`` walks the extracted structure — nested, because a laalpurja's
 ``plots`` is a list of dicts — and returns the same structure with every
-translatable string replaced by its English equivalent, plus a flat map of the
-originals so the Devanagari is never lost.
+translatable string replaced by its equivalent in the target language, plus a
+flat map of the originals so the Devanagari is never lost.
 
 Three rules make the output usable rather than literally correct:
 
   * **Proper nouns are transliterated, not translated.** ``उमा देवी चौलागाई``
-    becomes ``Uma Devi Chaulagai``, not an attempt at meaning. Same for place
-    names: ``काठमाण्डौ`` → ``Kathmandu``.
+    becomes ``Uma Devi Chaulagai`` in English and ``ウマ・デヴィ・チャウラガイ`` in
+    Japanese — never an attempt at meaning. Each language's spec carries its own
+    transliteration guidance, because Devanagari to Latin and Devanagari to
+    katakana are different problems.
   * **Devanagari digits become ASCII.** ``८`` → ``8``. The laalpurja layout
     already parses plot areas this way (its ``_DEVA`` table); doing it here
     means every layout gets it, not just the one that remembered.
@@ -26,9 +34,9 @@ Three rules make the output usable rather than literally correct:
 Some strings must survive untouched. ``present`` / ``absent`` are an OCR
 contract, not content: layouts branch on them to decide whether to draw a thumb
 impression box at all, so rewording one silently removes a box from the page.
-Values that are already English, bare numbers, and the extractor's own
-provenance metadata (``<field>_meta``, ``<field>_citations``) are skipped too —
-the first two because there is nothing to do, the third because it is never
+Values already in the target language's script, bare numbers, and the extractor's
+own provenance metadata (``<field>_meta``, ``<field>_citations``) are skipped too
+— the first two because there is nothing to do, the third because it is never
 rendered.
 
 Everything translatable in one document goes out in a single request, keyed by
@@ -36,8 +44,9 @@ path. Batching is not only cheaper than a call per field, it is more accurate:
 the model sees ``district`` and ``municipality`` together and can tell that a
 word is a place name.
 
-Translated values are cached on disk by ``(text, model)``, so the repair loop's
-second and third iterations re-translate nothing.
+Translated values are cached on disk by ``(model, kind, target_language, text)``.
+The language belongs in that key: without it a Japanese run would be served the
+English hits left behind by an earlier one.
 """
 
 from __future__ import annotations
@@ -50,6 +59,13 @@ from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
+
+from information_extraction.languages import (
+    DEFAULT_LANGUAGE,
+    LANGUAGES,
+    LanguageSpec,
+    language_spec,
+)
 
 load_dotenv()
 
@@ -73,6 +89,9 @@ _PROSE_KEYS = {"remarks", "nepal_citizenship_act_sentence"}
 # Same for a ``<field>_bs`` date printed beside its ``<field>_ad`` counterpart.
 # Only the presence of the *sibling* triggers this — a lone ``foo_np`` is the
 # only value there is, and is translated normally.
+#
+# This table describes the *source document*, not the target language: a scan
+# that prints both halves prints them whatever we translate into.
 _PAIRED_SUFFIXES = {
     "_np": ("_en", "_eng", "_english"),
     "_nepali": ("_en", "_english"),
@@ -94,35 +113,34 @@ _BS_DATE_RE = re.compile(r"^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$")
 _LETTER_RE = re.compile(r"[^\W\d_]", re.UNICODE)
 _ASCII_ONLY_RE = re.compile(r"^[\x00-\x7f]*$")
 
-_SYSTEM_PROMPT = """You translate field values extracted from Nepali government
-documents into English, for a digitized replica of the document.
+_PROMPT_TEMPLATE = """You translate field values extracted from Nepali government
+documents into {language}, for a digitized replica of the document.
 
 You will receive a JSON object mapping opaque keys to values. Return a JSON
-object with exactly the same keys, where each value is the English rendering of
-the input value. Return only the JSON object — no prose, no code fence.
+object with exactly the same keys, where each value is the {language} rendering
+of the input value. Return only the JSON object — no prose, no code fence.
 
 Rules:
 1. PROPER NOUNS ARE TRANSLITERATED, NOT TRANSLATED. Person names, place names,
-   district and municipality names, and office names keep their identity:
-   "उमा देवी चौलागाई" -> "Uma Devi Chaulagai", "काठमाण्डौ" -> "Kathmandu",
-   "नाङ्गलेभारे" -> "Nangalebhare". Use the conventional English spelling when
-   one exists (Kathmandu, not Kathmandau).
-2. Everything else is translated for meaning: "वंशज" -> "By descent",
-   "मृत्युपछिको नामसारी" -> "Transfer after death", "प्रशासकीय अधिकृत" ->
-   "Administrative Officer".
-3. Devanagari digits become ASCII digits: "८" -> "8", "२०७८" -> "2078".
+   district and municipality names, and office names keep their identity rather
+   than being rendered for meaning.
+{transliteration}
+2. Everything else is translated for meaning.
+{meaning}
+3. Devanagari digits become the digits {language} normally prints: "८" -> "8",
+   "२०७८" -> "2078".
 4. Do not add, explain, expand, or annotate. No parentheses with the original.
    No "(lit. ...)". The value is going straight onto a printed document.
-5. If a value is already English, return it unchanged.
+5. If a value is already correct {language}, return it unchanged.
 6. If you cannot translate a value, return it unchanged rather than guessing.
 
-Office names combine both rules: "जिल्ला प्रशासन कार्यालय, काठमाण्डौ" ->
-"District Administration Office, Kathmandu" — the office type is translated,
-the place name transliterated."""
+Office names combine rules 1 and 2 — the office type is translated, the place
+name transliterated.
+{office}"""
 
-_PROSE_NOTE = """Some values are full sentences (legal text, printed remarks).
-Translate those as natural English prose, complete and unabridged, keeping the
-sentence a sentence."""
+_PROSE_TEMPLATE = """Some values are full sentences (legal text, printed
+remarks). Translate those as natural {language} prose, complete and unabridged,
+keeping the sentence a sentence."""
 
 
 @dataclass
@@ -134,11 +152,15 @@ class Translation:
     translated: int = 0
     skipped: int = 0
     error: str | None = None
+    target_language: str = DEFAULT_LANGUAGE
 
     def describe(self) -> str:
         if self.error:
             return f"translation skipped ({self.error})"
-        return f"{self.translated} translated, {self.skipped} left as-is"
+        return (
+            f"{self.translated} translated to {self.target_language}, "
+            f"{self.skipped} left as-is"
+        )
 
 
 # ── Classification ────────────────────────────────────────────────
@@ -180,19 +202,34 @@ def bs_to_ad(value: str) -> str:
         return value
 
 
-def _needs_translation(key: str, value: str) -> bool:
+def _is_identifier(value: str) -> bool:
+    """Whether an ASCII value is a code rather than words.
+
+    A certificate number like ``NM0000095`` or ``41-01-78-00466`` has letters in
+    it, so a language whose script is not Latin would otherwise send it to the
+    model and risk getting it back in katakana. A single token containing a digit
+    is an identifier, and identifiers are printed as they are in every language.
+    """
+    stripped = value.strip()
+    return bool(stripped) and " " not in stripped and any(c.isdigit() for c in stripped)
+
+
+def _needs_translation(value: str, spec: LanguageSpec) -> bool:
     """Whether this value should be sent to the model at all."""
     stripped = value.strip()
     if not stripped:
         return False
     if stripped.lower() in _SENTINELS:
         return False
-    if _is_ascii(stripped):
-        # Already Latin script: English text, an ID like "NM0000095", a number.
-        return False
     if not _has_letters(stripped):
-        # Devanagari digits and punctuation only — handled locally.
+        # Digits and punctuation only — normalised locally, no model needed.
         return False
+    if _is_ascii(stripped):
+        # Latin script already. Nothing to do when that is the target script,
+        # but for a non-Latin target this is a value still awaiting translation —
+        # a document's printed English half, or a field OCR read as English.
+        # Identifiers are the exception: they are never translated into anything.
+        return not spec.script_is_ascii and not _is_identifier(stripped)
     return True
 
 
@@ -274,8 +311,8 @@ def _save_cache(cache: dict[str, str]) -> None:
         pass
 
 
-def _cache_key(model: str, kind: str, value: str) -> str:
-    return f"{model}\x1f{kind}\x1f{value}"
+def _cache_key(model: str, kind: str, target: str, value: str) -> str:
+    return f"{model}\x1f{kind}\x1f{target}\x1f{value}"
 
 
 # ── Model call ────────────────────────────────────────────────────
@@ -284,7 +321,22 @@ def _model_name() -> str:
     return os.getenv("TRANSLATOR_MODEL") or os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
 
 
-def _translate_batch(values: dict[str, str], *, prose: bool, model: str) -> dict[str, str]:
+def build_prompt(spec: LanguageSpec, *, prose: bool = False) -> str:
+    """The system prompt for one target language."""
+    system = _PROMPT_TEMPLATE.format(
+        language=spec.name,
+        transliteration=spec.transliteration,
+        meaning=spec.meaning,
+        office=spec.office,
+    )
+    if prose:
+        system += "\n\n" + _PROSE_TEMPLATE.format(language=spec.name)
+    return system
+
+
+def _translate_batch(
+    values: dict[str, str], *, prose: bool, model: str, spec: LanguageSpec
+) -> dict[str, str]:
     """Send one batch of ``id → value`` and return ``id → translation``.
 
     Keys the model omits or mangles are simply absent from the result; the
@@ -296,7 +348,7 @@ def _translate_batch(values: dict[str, str], *, prose: bool, model: str) -> dict
     if not os.getenv("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY is not set — needed for translation.")
 
-    system = _SYSTEM_PROMPT + ("\n\n" + _PROSE_NOTE if prose else "")
+    system = build_prompt(spec, prose=prose)
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     # No temperature: the newer models reject anything but their default, and
     # the JSON response format plus an instruction-only prompt already leaves
@@ -324,17 +376,19 @@ def _translate_batch(values: dict[str, str], *, prose: bool, model: str) -> dict
 def translate_data(
     data: dict[str, Any],
     *,
+    target_language: str = DEFAULT_LANGUAGE,
     model: str | None = None,
     use_cache: bool = True,
     verbose: bool = False,
 ) -> Translation:
-    """Translate every translatable string in ``data`` into English.
+    """Translate every translatable string in ``data`` into ``target_language``.
 
     Returns a :class:`Translation` holding the new data, a flat
     ``path → original value`` map for everything that changed, and counts. A
     failed model call is reported on the result rather than raised: a document
     that renders in Devanagari is better than no document at all.
     """
+    spec = language_spec(target_language)
     model = model or _model_name()
     leaves: dict[str, tuple[str, str]] = {}
     _collect(data, "", "", leaves)
@@ -362,7 +416,7 @@ def translate_data(
                 original[path] = value
             continue
 
-        if not _needs_translation(key, value):
+        if not _needs_translation(value, spec):
             # Devanagari digits with no letters ("८", "२०७८-०९-२६") still get
             # their numerals normalised — that costs nothing and no model.
             ascii_digits = _to_ascii_digits(value)
@@ -372,7 +426,7 @@ def translate_data(
             continue
 
         kind = "prose" if key in _PROSE_KEYS else "label"
-        cached = cache.get(_cache_key(model, kind, stripped))
+        cached = cache.get(_cache_key(model, kind, spec.code, stripped))
         if cached is not None:
             resolved[path] = cached
             original[path] = value
@@ -393,18 +447,20 @@ def translate_data(
         if verbose:
             print(f"  → translating {len(request)} {kind} value(s)...")
         try:
-            reply = _translate_batch(request, prose=(kind == "prose"), model=model)
+            reply = _translate_batch(
+                request, prose=(kind == "prose"), model=model, spec=spec
+            )
         except Exception as exc:
             error = str(exc)
             continue
 
         for ident, value in request.items():
-            english = reply.get(ident)
-            if not english or english == value:
+            rendered = reply.get(ident)
+            if not rendered or rendered == value:
                 continue
-            cache[_cache_key(model, kind, value)] = english
+            cache[_cache_key(model, kind, spec.code, value)] = rendered
             for path in distinct[value]:
-                resolved[path] = english
+                resolved[path] = rendered
                 original[path] = batch[path]
 
     if use_cache and resolved:
@@ -416,4 +472,5 @@ def translate_data(
         translated=len(resolved),
         skipped=len(leaves) - len(resolved),
         error=error,
+        target_language=spec.code,
     )

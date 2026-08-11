@@ -21,6 +21,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from information_extraction import translator as tr  # noqa: E402
+from information_extraction.languages import language_spec  # noqa: E402
 
 
 # ── Stubbing the model ────────────────────────────────────────────
@@ -33,8 +34,10 @@ class _Recorder:
         self.raises = raises
         self.calls: list[dict] = []
 
-    def __call__(self, values, *, prose, model):
-        self.calls.append({"values": dict(values), "prose": prose, "model": model})
+    def __call__(self, values, *, prose, model, spec):
+        self.calls.append(
+            {"values": dict(values), "prose": prose, "model": model, "spec": spec}
+        )
         if self.raises:
             raise RuntimeError(self.raises)
         if self.reply is not None:
@@ -287,6 +290,77 @@ def test_an_unwritable_cache_does_not_fail_the_run():
         assert result.data["owner_name"] == "EN::उमा देवी"
     finally:
         tr.CACHE_PATH = saved_path
+
+
+# ── Target language ───────────────────────────────────────────────
+
+def test_the_target_language_reaches_the_model_call():
+    _, rec = _run({"owner_name": "उमा देवी"}, target_language="ja")
+    assert [call["spec"].code for call in rec.calls] == ["ja"], rec.calls
+
+
+def test_the_result_reports_the_language_it_translated_into():
+    result, _ = _run({"owner_name": "उमा देवी"}, target_language="ja")
+    assert result.target_language == "ja"
+    assert "ja" in result.describe(), result.describe()
+
+
+def test_an_unsupported_language_is_refused_by_name():
+    try:
+        tr.translate_data({"a": "उमा देवी"}, target_language="xx")
+    except ValueError as exc:
+        assert "xx" in str(exc) and "en" in str(exc), str(exc)
+    else:
+        raise AssertionError("an unknown language code must raise")
+
+
+def test_each_language_prompt_carries_its_own_examples():
+    """
+    The rules do not vary between languages; the worked examples in the target
+    script do. A prompt built for Japanese that shows Latin transliterations
+    would teach the model the wrong script.
+    """
+    english = tr.build_prompt(language_spec("en"))
+    japanese = tr.build_prompt(language_spec("ja"))
+    assert "Uma Devi Chaulagai" in english
+    assert "ウマ・デヴィ・チャウラガイ" in japanese
+    assert "Uma Devi Chaulagai" not in japanese
+
+
+def test_the_prose_note_names_the_target_language():
+    prompt = tr.build_prompt(language_spec("ja"), prose=True)
+    assert "Japanese prose" in prompt, prompt[-200:]
+
+
+def test_english_text_is_sent_when_the_target_is_not_latin():
+    """
+    A document's printed English half, or a field OCR read as English, is still
+    untranslated for a Japanese reader — the value being ASCII means nothing
+    when ASCII is not the target script.
+    """
+    _, rec = _run({"sex": "Male"}, target_language="ja")
+    assert rec.sent == ["Male"], rec.sent
+
+
+def test_identifiers_are_never_sent_to_any_language():
+    """A certificate number is printed as it is, in katakana-land too."""
+    data = {"citizenship_no": "29-01-78-03898", "cert_no": "NM0000095"}
+    _, rec = _run(data, target_language="ja")
+    assert rec.calls == [], rec.calls
+
+
+def test_the_cache_is_keyed_on_the_language():
+    """Without the language in the key, a Japanese run is served English hits."""
+    saved_path = tr.CACHE_PATH
+    with tempfile.TemporaryDirectory() as tmp:
+        tr.CACHE_PATH = Path(tmp) / "cache.json"
+        try:
+            data = {"owner_name": "उमा देवी"}
+            _run(data, use_cache=True, target_language="en")
+            _, rec = _run(data, use_cache=True, target_language="ja")
+            assert rec.calls, "a different language must not reuse the entry"
+        finally:
+            tr.CACHE_PATH = saved_path
 
 
 # ── Real extracted data ───────────────────────────────────────────

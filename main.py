@@ -15,6 +15,9 @@ python main.py --type letter --data output/letter.json
 # Save the extracted JSON so later runs can skip OCR entirely
 python main.py test-data/demo.png --type letter --save-data output/letter.json
 
+# Translate into Japanese instead of English
+python main.py test-data/demo.png --type letter --lang ja
+
 # Keep the extracted values in their original script
 python main.py test-data/demo.png --type letter --no-translate
 
@@ -30,6 +33,7 @@ import sys
 from pathlib import Path
 
 from document_builder.registry import DOCUMENTS
+from information_extraction.languages import DEFAULT_LANGUAGE, LANGUAGES
 
 DEFAULT_OUTPUT_DIR = Path("test-output")
 
@@ -59,12 +63,13 @@ def resolve_data(
     blank: bool = False,
     save_data: Path | None = None,
     translate: bool = True,
+    target_language: str = DEFAULT_LANGUAGE,
 ) -> dict:
     """Resolve the document's field values from whichever source was given.
 
-    The OCR branch translates the extracted values into English before they
-    reach a builder. ``--data`` is taken as-is: a saved JSON has already been
-    through translation, and re-translating English would only invite drift.
+    The OCR branch translates the extracted values into *target_language* before
+    they reach a builder. ``--data`` is taken as-is: a saved JSON has already
+    been through translation, and translating a translation only invites drift.
     """
     if blank:
         return _blank_data(document_type)
@@ -87,7 +92,7 @@ def resolve_data(
     if translate:
         from information_extraction.translator import translate_data
 
-        result = translate_data(data, verbose=True)
+        result = translate_data(data, target_language=target_language, verbose=True)
         print(f"  translation: {result.describe()}")
         data, original = result.data, result.original
 
@@ -148,11 +153,19 @@ def main(argv: list[str] | None = None) -> int:
         help="Build with every field empty — layout check, no OCR.",
     )
     parser.add_argument(
+        "-l",
+        "--lang",
+        dest="target_language",
+        default=DEFAULT_LANGUAGE,
+        choices=sorted(LANGUAGES),
+        help=f"Language to translate into (default: {DEFAULT_LANGUAGE})",
+    )
+    parser.add_argument(
         "--no-translate",
         dest="translate",
         action="store_false",
         help="Keep extracted values in their original script instead of "
-        "translating them into English.",
+        "translating them.",
     )
     parser.add_argument(
         "--png",
@@ -193,6 +206,7 @@ def main(argv: list[str] | None = None) -> int:
             blank=args.blank,
             save_data=args.save_data,
             translate=args.translate,
+            target_language=args.target_language,
         )
     except Exception as exc:
         print(f"Extraction failed: {exc}", file=sys.stderr)
