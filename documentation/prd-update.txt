@@ -1,0 +1,663 @@
+what things will change if the engine for translation and ocr and layout building and html engine stuff, everything's that already been built is in python
+
+Yes. Very little changes in the actual architecture if the OCR, translation, layout analysis, and HTML generation are already Python. In fact, I would recommend keeping those components in Python and making the Next.js editor a frontend/client for them.
+
+The biggest change is that the system becomes a polyglot architecture rather than trying to move the Python engine into TypeScript.
+
+1. Recommended overall architecture
+
+Instead of:
+
+Next.js
+  │
+  ├── OCR
+  ├── Translation
+  ├── Layout detection
+  └── HTML generation
+
+I'd build:
+
+                         ┌──────────────────────┐
+                         │      Next.js          │
+                         │   Visual Editor       │
+                         │                       │
+                         │ React + TypeScript    │
+                         │ Zustand               │
+                         └──────────┬───────────┘
+                                    │
+                              HTTP / WebSocket
+                                    │
+                         ┌──────────▼───────────┐
+                         │      API Layer       │
+                         │                       │
+                         │ FastAPI              │
+                         └──────────┬───────────┘
+                                    │
+              ┌─────────────────────┼─────────────────────┐
+              │                     │                     │
+              ▼                     ▼                     ▼
+       ┌────────────┐       ┌─────────────┐       ┌──────────────┐
+       │ OCR Engine │       │ Translation │       │ Layout Engine│
+       │  Python    │       │   Python    │       │    Python    │
+       └────────────┘       └─────────────┘       └──────────────┘
+              │                     │                     │
+              └─────────────────────┼─────────────────────┘
+                                    ▼
+                         ┌──────────────────────┐
+                         │  Document Model      │
+                         │       JSON           │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                         ┌──────────────────────┐
+                         │ HTML Renderer        │
+                         │      Python          │
+                         └──────────────────────┘
+
+The key is:
+
+Next.js owns interaction and visualization. Python owns document intelligence.
+
+2. Your existing Python code shouldn't be rewritten
+
+This is the biggest advantage.
+
+If you already have:
+
+Python
+├── OCR
+├── Translation
+├── Layout detection
+├── Document processing
+└── HTML generation
+
+don't rewrite those in JavaScript just because the frontend is Next.js.
+
+You would lose time and potentially introduce differences in:
+
+OCR results
+model behavior
+font handling
+image processing
+PDF processing
+translation
+layout calculations
+
+Instead, expose your existing Python functionality through an API.
+
+I'd strongly recommend FastAPI.
+
+For example:
+
+POST /api/documents/upload
+POST /api/documents/{id}/ocr
+POST /api/documents/{id}/translate
+POST /api/documents/{id}/layout
+POST /api/documents/{id}/render
+POST /api/documents/{id}/export
+3. The most important architectural change: shared document model
+
+This is where I'd modify the PRD substantially.
+
+Previously we had:
+
+Next.js
+   ↓
+Document JSON
+   ↓
+HTML
+
+Now you have:
+
+Python
+   ↓
+Document JSON
+   ↑
+Next.js editor
+   ↓
+Document JSON
+   ↓
+Python HTML renderer
+
+So Document JSON becomes the contract between Python and Next.js.
+
+This is extremely important.
+
+4. Python OCR → Editor
+
+Suppose your OCR engine produces:
+
+{
+  "text": "Certificate No.",
+  "bbox": [120, 100, 280, 130],
+  "confidence": 0.97
+}
+
+Don't send that directly to the React editor.
+
+Convert it into your canonical document model:
+
+{
+  "id": "text_001",
+  "type": "text",
+  "content": "Certificate No.",
+  "geometry": {
+    "x": 120,
+    "y": 100,
+    "width": 160,
+    "height": 30
+  },
+  "metadata": {
+    "ocr": {
+      "confidence": 0.97
+    }
+  }
+}
+
+Then Next.js simply renders it.
+
+Python OCR
+    ↓
+OCR Result
+    ↓
+Document Model
+    ↓
+Next.js
+    ↓
+Visual editor
+5. Layout engine becomes even more important
+
+Your Python layout engine can automatically generate the initial page.
+
+For example:
+
+                    OCR
+                     ↓
+             Text + bounding boxes
+                     ↓
+               Layout engine
+                     ↓
+        ┌────────────────────────┐
+        │ Certificate            │
+        │                        │
+        │ Certificate No: XXX    │
+        │                        │
+        │ Name: John Doe         │
+        │                        │
+        │ Address: Kathmandu     │
+        └────────────────────────┘
+                     ↓
+               Document JSON
+                     ↓
+               Next.js Editor
+
+Then the user can correct things visually.
+
+This is actually a very strong architecture.
+
+6. Translation becomes a document operation
+
+This is another thing I'd change.
+
+Don't think of translation as:
+
+HTML → translated HTML
+
+Instead:
+
+Document
+   ↓
+extract translatable elements
+   ↓
+Python translation engine
+   ↓
+updated Document
+   ↓
+Next.js
+
+For example:
+
+{
+  "id": "text_123",
+  "type": "text",
+  "content": "Certificate of Ownership"
+}
+
+Python translates it:
+
+{
+  "id": "text_123",
+  "type": "text",
+  "content": "स्वामित्व प्रमाणपत्र"
+}
+
+The ID stays the same.
+
+That's important because layout relationships don't break.
+
+7. Translation should preserve layout
+
+This is where your visual editor becomes particularly valuable.
+
+Suppose:
+
+English:
+
+┌────────────────────────────┐
+│ Certificate of Ownership   │
+└────────────────────────────┘
+
+After translation:
+
+┌────────────────────────────┐
+│ जग्गा स्वामित्व प्रमाणपत्र │
+└────────────────────────────┘
+
+The translated text may be wider.
+
+Your Python layout engine could calculate:
+
+text width
+font metrics
+overflow
+line wrapping
+
+and return:
+
+{
+  "layoutWarnings": [
+    {
+      "elementId": "text_123",
+      "type": "overflow",
+      "severity": "warning"
+    }
+  ]
+}
+
+The Next.js editor then highlights the element.
+
+┌─────────────────────────────┐
+│ जग्गा स्वामित्व प्रमाणपत्र  │ ← ⚠ overflow
+└─────────────────────────────┘
+
+This is much better than simply translating HTML.
+
+8. HTML generation should probably remain Python
+
+If your existing HTML engine is already Python, keep it there.
+
+Your Next.js editor is responsible for:
+
+visual representation
+
+while Python is responsible for:
+
+document processing
+HTML generation
+
+So:
+
+Document JSON
+     │
+     ├──────────────→ React Renderer
+     │
+     └──────────────→ Python HTML Renderer
+
+Both render from the same source.
+
+This gives you:
+
+Editor
+JSON → React → DOM
+Export
+JSON → Python → HTML
+9. But you need to be careful here
+
+The React renderer and Python HTML renderer must produce visually equivalent output.
+
+For example, if your JSON says:
+
+{
+  "x": 120,
+  "y": 200,
+  "width": 300,
+  "height": 50,
+  "fontSize": 16
+}
+
+both renderers need to interpret those values consistently.
+
+Therefore I'd define a Document Model Specification.
+
+For example:
+
+document-schema/
+├── document.schema.json
+├── element.schema.json
+├── text.schema.json
+├── image.schema.json
+├── field.schema.json
+└── README.md
+
+Both Python and TypeScript implement against this specification.
+
+10. You don't necessarily need one database
+
+You could have:
+
+PostgreSQL
+     │
+     ▼
+Document JSONB
+
+and both:
+
+Next.js
+Python
+
+access the document through your API.
+
+I would not have Next.js and Python independently modifying the database without a clear ownership model.
+
+Better:
+
+Next.js
+   ↓
+API
+   ↓
+Database
+
+and Python services operate through the API or through controlled internal service interfaces.
+
+11. You may want a Python worker system
+
+If OCR and translation are computationally expensive, don't make the HTTP request wait.
+
+Instead:
+
+Next.js
+   │
+   │ POST /ocr
+   ▼
+FastAPI
+   │
+   ▼
+Queue
+   │
+   ▼
+Python Worker
+   │
+   ├── OCR
+   ├── Layout
+   └── Translation
+   │
+   ▼
+Database / Object Storage
+   │
+   ▼
+Next.js
+
+For example:
+
+Upload document
+      ↓
+Job created
+      ↓
+OCR processing... 42%
+      ↓
+Layout processing... 73%
+      ↓
+Translation... 91%
+      ↓
+Complete
+      ↓
+Editor updated
+
+For MVP, you can keep it synchronous if processing is quick, but design the API so asynchronous jobs can be introduced later.
+
+12. I would separate the system into 4 layers
+
+This is probably the biggest architectural recommendation I'd make.
+
+┌─────────────────────────────────────────┐
+│              Presentation               │
+│                                         │
+│              Next.js / React            │
+│                                         │
+│              Visual Editor              │
+└────────────────────┬────────────────────┘
+                     │
+┌────────────────────▼────────────────────┐
+│               Application               │
+│                                         │
+│                 FastAPI                 │
+│                                         │
+│       Auth / Documents / Jobs / API     │
+└────────────────────┬────────────────────┘
+                     │
+┌────────────────────▼────────────────────┐
+│             Document Engine             │
+│                                         │
+│ OCR | Translation | Layout | HTML       │
+│                                         │
+│                Python                   │
+└────────────────────┬────────────────────┘
+                     │
+┌────────────────────▼────────────────────┐
+│                 Storage                 │
+│                                         │
+│ PostgreSQL | Object Storage | Redis     │
+└─────────────────────────────────────────┘
+13. What changes in the original PRD?
+
+Quite a few sections should be modified.
+
+Original
+Next.js
+React
+Zustand
+HTML renderer
+New
+Frontend:
+Next.js
+React
+TypeScript
+Zustand
+
+Backend/API:
+FastAPI
+Python
+
+Processing:
+OCR
+Translation
+Layout
+HTML generation
+
+Shared contract:
+Document Model JSON Schema
+
+Storage:
+PostgreSQL
+Object storage
+14. The editor itself remains almost unchanged
+
+The visual editor requirements we defined earlier still work:
+
+Text
+Image
+Rectangle
+Field
+Drag
+Resize
+Rotate
+Multi-select
+Alignment
+Snapping
+Undo/Redo
+Properties
+Grid
+Zoom
+
+The difference is where the intelligence comes from.
+
+For example:
+
+User clicks "Translate"
+
+Next.js:
+
+POST /documents/123/translate
+
+Python:
+
+load document
+     ↓
+extract translatable nodes
+     ↓
+translate
+     ↓
+layout validation
+     ↓
+return updated document
+
+Next.js:
+
+receive updated JSON
+     ↓
+update editor state
+     ↓
+render
+15. Even better: use commands between frontend and backend
+
+I'd introduce a command system.
+
+For example:
+
+{
+  "command": "TRANSLATE_DOCUMENT",
+  "documentId": "123",
+  "targetLanguage": "ne"
+}
+
+Python returns:
+
+{
+  "command": "TRANSLATE_DOCUMENT",
+  "status": "completed",
+  "changes": [
+    {
+      "elementId": "text_001",
+      "property": "content",
+      "oldValue": "Certificate",
+      "newValue": "प्रमाणपत्र"
+    }
+  ]
+}
+
+This gives you a proper history/audit system later.
+
+16. One thing I'd add to the document model
+
+Because you have OCR + translation + layout, I'd make elements contain metadata.
+
+For example:
+
+{
+  "id": "text_001",
+  "type": "text",
+
+  "content": "Certificate No.",
+
+  "geometry": {
+    "x": 120,
+    "y": 100,
+    "width": 160,
+    "height": 30
+  },
+
+  "style": {
+    "fontFamily": "Noto Sans",
+    "fontSize": 16,
+    "fontWeight": 400
+  },
+
+  "metadata": {
+    "source": "ocr",
+    "ocrConfidence": 0.97,
+    "originalText": "Certificate No.",
+    "language": "en",
+    "translatedFrom": null
+  }
+}
+
+After translation:
+
+{
+  "metadata": {
+    "source": "ocr",
+    "ocrConfidence": 0.97,
+    "originalText": "Certificate No.",
+    "language": "ne",
+    "translatedFrom": "en"
+  }
+}
+
+Now you haven't lost the original document information.
+
+17. This also enables side-by-side translation
+
+Eventually your editor could do:
+
+┌─────────────────────┬─────────────────────┐
+│      ORIGINAL       │     TRANSLATION     │
+│                     │                     │
+│ Certificate No.     │ प्रमाणपत्र नं.      │
+│                     │                     │
+│ Owner Name          │ जग्गाधनीको नाम      │
+│                     │                     │
+│ Address             │ ठेगाना              │
+└─────────────────────┴─────────────────────┘
+
+Both documents can share element IDs.
+
+That makes alignment and comparison much easier.
+
+18. So should you change the PRD?
+
+Yes.
+
+The original PRD is good for the editor, but now that you've told me the entire processing stack already exists in Python, I'd change the PRD into a full Document Processing + Visual Editing Platform PRD.
+
+The architecture should explicitly state:
+
+                 ┌─────────────────┐
+                 │    Next.js      │
+                 │ Visual Editor   │
+                 └────────┬────────┘
+                          │
+                     Document API
+                          │
+                 ┌────────▼────────┐
+                 │    FastAPI      │
+                 └────────┬────────┘
+                          │
+       ┌──────────────────┼──────────────────┐
+       │                  │                  │
+       ▼                  ▼                  ▼
+     OCR             Translation          Layout
+   Python              Python              Python
+       │                  │                  │
+       └──────────────────┼──────────────────┘
+                          │
+                          ▼
+                 Document Model
+                       JSON
+                          │
+                          ▼
+                    HTML Engine
+                      Python
+
+I would not rewrite your Python engine. The main engineering task becomes defining a rock-solid shared document schema/API contract between the Python processing engine and the Next.js visual editor.
+
+That separation also gives you a very clean future path for OCR → automatic layout → translation → visual correction → HTML export.
