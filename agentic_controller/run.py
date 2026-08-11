@@ -13,6 +13,7 @@ Usage:
   python -m agentic_controller.run <image> --document-type laalpurja
   python -m agentic_controller.run <image> -t citizenship --max-iterations 5
   python -m agentic_controller.run <image> -t laalpurja --lang ja
+  python -m agentic_controller.run <image> -t citizenship --rebuild-layout
 """
 
 from __future__ import annotations
@@ -26,12 +27,14 @@ from uuid import uuid4
 from agentic_controller.architect import (
     MAX_REPAIR_ITERATIONS,
     analyze_and_repair,
+    build_from_geometry,
     current_layout_path,
     generate_resources,
     resolve_schema_path,
 )
 from agentic_controller.rendering import render_png
 from agentic_controller.verifier import verify
+from document_builder.resolver import SCHEMA_DIR, next_layout_path
 from information_extraction.languages import DEFAULT_LANGUAGE, LANGUAGES
 from information_extraction.pipeline import build_document
 
@@ -210,6 +213,74 @@ def run_pipeline(
     return html_path, None
 
 
+def _rebuild_layout(
+    image_path: Path,
+    document_type: str,
+    *,
+    target_language: str = DEFAULT_LANGUAGE,
+) -> dict | None:
+    """Rebuild an existing type's layout from the scan's own block geometry.
+
+    Opt-in, behind ``--rebuild-layout``. The eleven hand-written types predate
+    the geometry path, and a rebuild is worth trying on them — but only as a
+    proposal. Nothing here can damage what is already shipping:
+
+    * The layout is written to ``layout_N.py`` beside the original.
+      ``layout.py`` is the rollback original and is never touched.
+    * The schema is written to the ``<type>_patched.json`` sidecar
+      :func:`resolve_schema_path` already prefers, so the base schema also
+      survives. An existing sidecar is restored if the rebuild is abandoned.
+    * ``ACTIVE`` moves only after ``validate_layout`` passes, inside
+      :func:`build_from_geometry`. Rolling back is one line in that file.
+
+    Returns a history entry describing what happened, or ``None`` when the
+    geometry path declined — the run then continues on the current layout,
+    because a rebuild that did not work out is not a reason to fail a
+    digitization that would otherwise have succeeded.
+    """
+    layout_target = next_layout_path(document_type)
+    schema_target = SCHEMA_DIR / f"{document_type}_patched.json"
+    # build_from_geometry only removes files it created, so a sidecar left by an
+    # earlier schema repair would be overwritten and not put back. Hold a copy.
+    previous_schema = (
+        schema_target.read_bytes() if schema_target.is_file() else None
+    )
+
+    print(f"\n{SEP}")
+    print("  REBUILDING LAYOUT FROM SCAN GEOMETRY")
+    print(SEP)
+    print(f"  Proposal only: {layout_target.name} beside the existing layout.")
+    print("  ACTIVE moves only if the rebuilt layout builds and renders.\n")
+
+    result = build_from_geometry(
+        image_path,
+        document_type,
+        layout_target=layout_target,
+        schema_target=schema_target,
+        target_language=target_language,
+        iteration=0,
+    )
+
+    if result is None:
+        if previous_schema is not None:
+            schema_target.write_bytes(previous_schema)
+        print("\n  ⚠ Rebuild declined — continuing on the current layout.")
+        return None
+
+    print(f"\n{result.describe()}")
+    print(f"\n✓ Rebuilt layout is live: {layout_target.name}")
+    print(f"    schema: {schema_target}")
+    print(f"    rollback: put 'layout.py' in "
+          f"{layout_target.parent / 'ACTIVE'} and delete {schema_target.name}")
+    return {
+        "iteration": 0,
+        "action": "rebuild_layout",
+        "summary": result.summary,
+        "schema": str(result.schema_path) if result.schema_path else None,
+        "layout": str(result.layout_path) if result.layout_path else None,
+    }
+
+
 def digitize(
     image_path: Path,
     document_type: str,
@@ -219,6 +290,7 @@ def digitize(
     auto_approve: bool = False,
     translate: bool = True,
     target_language: str = DEFAULT_LANGUAGE,
+    rebuild_layout: bool = False,
 ) -> dict:
     """Run the full autonomous digitization flow.
 
@@ -315,6 +387,15 @@ def digitize(
                 }
         except Exception:
             pass
+
+    elif rebuild_layout:
+        # An existing type, and the user asked for a rebuild. Never reached for
+        # an unseen type: the branch above already built that one from geometry.
+        entry = _rebuild_layout(
+            image_path, document_type, target_language=target_language
+        )
+        if entry is not None:
+            history.append(entry)
 
     # ---- Stage 1..N: pipeline → verify → checkpoint → repair ----------------
     iteration = 1
@@ -551,6 +632,14 @@ def main() -> None:
         help=f"Language to translate into (default: {DEFAULT_LANGUAGE}).",
     )
     parser.add_argument(
+        "--rebuild-layout",
+        action="store_true",
+        help="For a type that already has a layout, rebuild it from the scan's "
+        "own block geometry first. The rebuild is written beside the original "
+        "as layout_N.py and only becomes active if it builds and renders; "
+        "layout.py is never touched.",
+    )
+    parser.add_argument(
         "--result-json",
         type=Path,
         help="Optional path to write the run result (including history) as JSON.",
@@ -573,6 +662,7 @@ def main() -> None:
         auto_approve=args.auto_approve,
         translate=args.translate,
         target_language=args.target_language,
+        rebuild_layout=args.rebuild_layout,
     )
 
     if args.result_json:

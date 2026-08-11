@@ -101,7 +101,8 @@ _PAIRED_SUFFIXES = {
 
 # Values that are Bikram Sambat dates. Converted locally, never by the model.
 _BS_DATE_KEYS = {
-    "issue_date", "issue_date_bs", "print_date", "checked_by_date",
+    "issue_date", "issue_date_bs", "issuing_issue_date_bs",
+    "copy_issue_date_bs", "print_date", "checked_by_date",
     "evd_date", "registration_date", "date_bs", "issue_date_nepali",
     "print_date_nepali",
 }

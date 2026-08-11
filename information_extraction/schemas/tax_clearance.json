@@ -1,111 +1,192 @@
 {
-  "title": "Tax Clearance Certificate Extraction Schema",
+  "title": "TaxClearanceCertificateExtractionSchema",
   "type": "object",
-  "description": "Schema for extracting all structured and visible data from a Nepali tax clearance certificate.",
+  "description": "Schema for extracting the variable content required to reproduce the Nepali Tax Clearance Certificate as an English A4 document. Fixed English labels are supplied by the template. Preserve names, numbers, dates, and amounts; translate official Nepali administrative/legal text into English where requested.",
   "properties": {
     "emblem_present": {
       "type": "boolean",
-      "description": "True if the Coat of Arms of Nepal is visible at the top left; always set true unless the image is cropped."
+      "description": "True when the Nepal Coat of Arms is visibly present in the upper-left header."
     },
-    "office_name": {
+    "office_government": {
       "type": "string",
-      "description": "Full office name/heading (in Nepali or English, as present) at top center, starting with 'नेपाल सरकार' and including department/ministry/sub-office names. Keep line breaks as single spaces. Extract exactly as printed."
+      "description": "Government heading translated to English. For this document: 'Government of Nepal'."
+    },
+    "office_ministry": {
+      "type": "string",
+      "description": "Ministry heading translated to English. For this document: 'Ministry of Finance'."
+    },
+    "office_department": {
+      "type": "string",
+      "description": "Department heading translated to English. For this document: 'Inland Revenue Department'."
+    },
+    "office_main": {
+      "type": "string",
+      "description": "Main office name translated to English. For this document: 'Inland Revenue Office Lahan'."
+    },
+    "office_suboffice": {
+      "type": "string",
+      "description": "Sub-office/controller heading translated to English. Preserve the place name. For this document: 'Treasury and Accounts Controller Office, Udayapur'."
+    },
+    "rule_reference": {
+      "type": "string",
+      "description": "The separate statutory reference line beneath the office heading, translated to English. For this document: 'Related to Rule 26 of Income Tax Rules, 2079'."
     },
     "letter_no": {
       "type": "string",
-      "description": "The printed letter number (पत्र संख्या) in the information header near the upper left, exactly as shown."
+      "description": "Letter number exactly as printed. Preserve all digits and separators."
     },
     "registration_no": {
       "type": "string",
-      "description": "The registration or reference number (चलानी नं) in the upper header block. Extract exactly as printed."
+      "description": "Registration/reference number exactly as printed. Preserve all digits and separators."
     },
-    "tax_notice_no": {
+    "tax_clearance_no": {
       "type": "string",
-      "description": "Tax Notice Number (कर सूचना नं) in the header, upper left."
+      "description": "Tax Clearance Number exactly as printed. Preserve all digits and separators."
     },
     "issue_date_nepali": {
       "type": "string",
-      "description": "The Nepali-issued date (in Bs) (यो पत्र मिति ... मा तयार गरिएको छ) at the top right. Extract exactly as printed."
+      "description": "Original issue/preparation date in Bikram Sambat exactly as printed."
+    },
+    "issue_date_gregorian": {
+      "type": "string",
+      "description": "Issue/preparation date converted to Gregorian for the English output, preferably YYYY-MM-DD."
+    },
+    "issue_date_sentence": {
+      "type": "string",
+      "description": "Complete issue/preparation sentence translated to English, not just a date. Example: 'This letter has been prepared on 2082.10.23 BS.' Preserve the date exactly and retain the full sentence structure."
     },
     "print_date_nepali": {
       "type": "string",
-      "description": "The print date in Nepali (प्रिन्ट मिति ... ) at upper right. Extract exactly as printed."
+      "description": "Print date in Bikram Sambat exactly as printed."
+    },
+    "print_date_gregorian": {
+      "type": "string",
+      "description": "Print date converted to Gregorian for the English output, preferably YYYY-MM-DD."
+    },
+    "print_date_sentence": {
+      "type": "string",
+      "description": "Complete print-date line translated to English. Example: 'Print Date: 2082.10.23 BS.'"
     },
     "qr_present": {
       "type": "boolean",
-      "description": "True if QR code box is present in the header right area. Always true unless document is cropped."
+      "description": "True when a QR code is visibly present in the upper-right header area."
+    },
+    "seal_present": {
+      "type": "boolean",
+      "description": "True when an official round seal/stamp is visibly present on the document."
     },
     "subject": {
       "type": "string",
-      "description": "The subject line (विषय:) below the info block. Should always be 'कर चुक्ता प्रमाण पत्र' for this type."
+      "description": "Subject translated into English. For this certificate: 'Tax Clearance Certificate'."
+    },
+    "recipient_salutation": {
+      "type": "string",
+      "description": "The salutation exactly as written in the letter before the recipient name. Preserve repeated honorifics. For example, if the source says 'श्री श्री श्री', transliterate it as 'Shri Shri Shri'. Do not remove duplicates or normalize it."
     },
     "recipient_name": {
       "type": "string",
-      "description": "The recipient's full name (श्री ...) below the subject, in Devanagari. Extract exactly as shown."
+      "description": "Recipient's name exactly as printed after the salutation. Preserve the person's or institution's wording and transliterate Nepali text to English characters where necessary."
     },
     "recipient_address": {
       "type": "string",
-      "description": "Recipient's address block — the lines after the name, e.g., 'का.म.न.पा. १९, बागमती', plus any visible phone number. Collapse into a single line with commas if multi-line."
+      "description": "Recipient address as printed, preserving all visible address lines. Translate administrative labels into English but do not invent or semantically alter place names."
     },
     "recipient_pan": {
       "type": "string",
-      "description": "Personal PAN number of the recipient, as printed below the address block."
+      "description": "Recipient PAN exactly as printed. Preserve all digits."
     },
     "main_text": {
       "type": "string",
-      "description": "Full body text of the certificate explaining the clearance, extracted exactly as printed, including dates and numbers. Do not edit or summarize."
+      "description": "Complete main certificate paragraph translated into English. Preserve the tax year, statement date, and meaning of the certificate text."
+    },
+    "statement_date_nepali": {
+      "type": "string",
+      "description": "Income statement submission date in BS exactly as printed."
+    },
+    "statement_date_gregorian": {
+      "type": "string",
+      "description": "Income statement submission date converted to Gregorian for English output."
     },
     "income_items": {
       "type": "array",
-      "description": "Structured rows from the 'आयका शिर्षकहरू' table, one per row with column headers and amounts as printed.",
+      "description": "Financial table rows. Preserve amounts exactly; do not calculate or reformat values.",
       "items": {
         "type": "object",
         "properties": {
-          "item": {"type": "string", "description": "Income item title, exactly as shown in the left column."},
-          "amount": {"type": "string", "description": "Amount in NPR, as printed in the right column. Keep exact punctuation and formatting."}
+          "submission_date": {
+            "type": "string",
+            "description": "Income statement date for the row. Use the source date or reliable Gregorian conversion according to the English output."
+          },
+          "total_income": {
+            "type": "string",
+            "description": "Total income/turnover exactly as printed, including commas and decimal points."
+          },
+          "taxable_income": {
+            "type": "string",
+            "description": "Taxable income exactly as printed."
+          },
+          "tax_deposited": {
+            "type": "string",
+            "description": "Tax deposited exactly as printed."
+          }
         },
-        "required": ["item", "amount"]
+        "required": [
+          "submission_date",
+          "total_income",
+          "taxable_income",
+          "tax_deposited"
+        ]
       }
-    },
-    "total_income": {
-      "type": "string",
-      "description": "Total income as printed in the final row (अन्तिम समयमा कट्टी तथा कर सूचिमा भएको आय), right cell."
     },
     "signature_label": {
       "type": "string",
-      "description": "Text immediately above or beside the officer signature (e.g. (कर अधिकृत), or handwritten text: usually (Signed)). If handwritten, transcribe it exactly as shown."
+      "description": "Signature/official designation text associated with the certification area, translated to English if it is Nepali."
     },
     "certifying_officer_name": {
       "type": "string",
-      "description": "Printed or handwritten name of certifying officer if present. Extract exactly as it appears below the signature line."
+      "description": "Certifying officer's name, if visible. Preserve/transliterate the name; do not translate a personal name."
     },
     "certifying_officer_title": {
       "type": "string",
-      "description": "Title of certifying officer or official designation next to signature: (कर अधिकृत) etc."
+      "description": "Certifying officer's official designation translated into English."
     },
     "remarks": {
       "type": "string",
-      "description": "Footer notes (पुनश्च:), containing all visible legal/instructional notes at the bottom, below the signature area. Extract all visible lines, separated by double space or semicolons if multiline."
+      "description": "All footer legal/instructional notes translated into English. Preserve all substantive notes and numbering."
     }
   },
   "required": [
     "emblem_present",
-    "office_name",
+    "office_government",
+    "office_ministry",
+    "office_department",
+    "office_main",
+    "office_suboffice",
+    "rule_reference",
     "letter_no",
     "registration_no",
-    "tax_notice_no",
+    "tax_clearance_no",
     "issue_date_nepali",
+    "issue_date_gregorian",
+    "issue_date_sentence",
     "print_date_nepali",
+    "print_date_gregorian",
+    "print_date_sentence",
     "qr_present",
+    "seal_present",
     "subject",
+    "recipient_salutation",
     "recipient_name",
     "recipient_address",
     "recipient_pan",
     "main_text",
+    "statement_date_nepali",
+    "statement_date_gregorian",
     "income_items",
-    "total_income",
     "signature_label",
+    "certifying_officer_name",
     "certifying_officer_title",
     "remarks"
   ]
 }
+

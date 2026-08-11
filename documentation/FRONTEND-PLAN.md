@@ -52,8 +52,8 @@ they are not re-argued mid-build.
 | Request model | Synchronous FastAPI endpoints, with every long operation returning a job-shaped response from day one | prd-update §11: keep it synchronous while it is quick, but design so async can be introduced without changing the client |
 | Database ownership | Only FastAPI writes storage. Next.js never touches it directly | prd-update §10 |
 | Monochrome rule | Scoped to document output only. Editor chrome, overlays, warnings, and selection handles are free to use colour | The rule exists to keep the printed document print-safe and faithful; it was never about the tool |
-| First layout for an unseen type | Derived deterministically from OCR line boxes before the first model call, then critiqued by the Architect Agent in iteration 1 (Stage 4b) | The scan already knows where everything was. Clustering boxes costs nothing and repeats exactly, and the agent is better at judging a rendered page than at guessing positions blind |
-| Source of geometry | `/ocr` line and character boxes — not `/extract`, which has none, and not `/convert` block boxes alone, which are too coarse (a whole table is one block) | Confirmed by probe against `test-data/citizenship.png`; see Stage 4 |
+| First layout for an unseen type | Derived deterministically from `/convert` block boxes before the first model call, then critiqued by the Architect Agent in iteration 1 (Stage 4b). Implemented | The scan already knows where everything was. Arithmetic on boxes costs nothing and repeats exactly, and the agent is better at judging a rendered page than at guessing positions blind |
+| Source of geometry | `/convert` block `bbox` — not `/extract`, which has none, and not the deprecated `/ocr`, which is not needed: `/convert` blocks are already per-field | Confirmed by probe against `test-data/citizenship.png`; see Stage 4 |
 | Target language | A `LanguageSpec` in the `LANGUAGES` registry, selected by code (`en`, `ja`) and threaded through the pipeline. Engine side implemented | Adding a language must be adding one table entry, not editing prompts and cache keys across several files |
 
 ## Target architecture
@@ -152,8 +152,8 @@ useful, and each states what must be true before it counts as done.
   the editor as speculative.
 
 **Done when.** `git ls-files web/` is empty, `pip install -r requirements.txt`
-succeeds from a clean venv, and `python tests/run_all.py` still reports 9 suites
-and 156 tests passing.
+succeeds from a clean venv, and `python tests/run_all.py` still reports 10 suites
+and 183 tests passing.
 
 ## Stage 1 — The Document JSON schema
 
@@ -295,8 +295,8 @@ page-sized fragment, which is enough to prove the round trip.
 - Every element the serializer produces validates against the schema.
 - `find_violations` reports nothing on any rendered model.
 
-**Done when.** Round-trip is byte-identical for all nine types, and
-`tests/run_all.py` reports 9 suites with the new one passing.
+**Done when.** Round-trip is byte-identical for every registered type, and
+`tests/run_all.py` reports 11 suites with the new one passing.
 
 ## Stage 3 — FastAPI application layer
 
@@ -398,29 +398,34 @@ endpoint the pipeline uses:
 | Endpoint | What it returns | Geometry |
 | --- | --- | --- |
 | `/extract` (what `extractor.py` calls) | values keyed by the JSON schema, with citations | **none** |
-| `/convert` (`output_format="json"`, `add_block_ids=True`) | a block tree — `Page` → `Picture`/`Text`/`SectionHeader` | block `bbox` + `polygon`, page space 2296×1540 |
-| `/ocr` (deprecated, still live) | 34 `text_lines`, each with `text`, `confidence`, `chars`, `words` | **line-level and char-level** `bbox` + `polygon`, image space 1352×910 |
+| `/convert` (`output_format="json"`) | a block tree — `Page` → `Picture`/`Text`/`SectionHeader`; 34 `Text` + 5 `Picture` on the citizenship scan | block `bbox` + `polygon`, page space 1372×980 |
+| `/ocr` (deprecated) | `text_lines`, each with `text`, `confidence`, `chars`, `words` | line-level and char-level `bbox` + `polygon`, image space 1352×910 |
 
 Three things follow, and each is a trap if missed.
 
 - **Values and geometry come from different calls.** `/extract` gives clean,
-  schema-keyed values and no coordinates; `/ocr` gives coordinates attached to
-  noisy raw text (`"लिङ्ग :प्रुष"`, `"जिल्ला : ग्ल्मी"`, a stray emoji, confidences
-  from 0.434 to 0.998, one line containing a literal `<br>`). Neither is a
-  substitute for the other. The bridge matches an extracted value to the line
-  that most likely printed it, and treats a failed match as "no geometry for
-  this field" rather than guessing.
-- **The two geometry spaces do not agree.** `/convert` reports the page as
-  2296×1540, `/ocr` reports the image as 1352×910 — a factor of about 1.698.
-  Whichever is adopted, every box is normalized to fractions of the page before
-  anything else touches it, so the renderer's own page size in `_page_metrics`
-  stays the single reference frame.
-- **Block-level geometry is too coarse alone.** The citizenship scan's largest
-  `Text` block contains an entire `<table>` of label/value rows in its HTML, with
-  no per-cell coordinates. `/ocr` line boxes are what make individual fields
-  addressable. `ConvertOptions(extras="table_row_bboxes")` is worth one probe
-  before committing to the `/ocr` path, since it may give row geometry on the
-  supported endpoint.
+  schema-keyed values and no coordinates; `/convert` gives coordinates attached
+  to raw block text. Neither is a substitute for the other. Stage 4b does not
+  bridge them at all — it binds a *field name* to a box and lets the ordinary
+  `/extract` pass fill that field later, which sidesteps the matching problem
+  rather than solving it.
+- **The geometry space is not the image space.** `/convert` reports the page as
+  1372×980 (aspect 1.400) while the source PNG is 1352×910 (aspect 1.486): the
+  page box carries whatever padding the scan had. So the **ink extent** — the
+  bounding box of the blocks themselves, 1201×799 here — is what gets normalized,
+  never the page box, or that padding is baked into the output sheet.
+- **Block-level geometry is per-field, not per-table.** This was the assumption
+  that had to be retracted. The `/convert` tree puts a label and its value in
+  separate blocks — `Text/8` `[336,294,459,338]` is `नाम थर :`, `Text/9`
+  `[596,294,898,343]` is the name itself — so individual fields are already
+  addressable and no `<table>` blob has to be broken open. Two related API notes:
+  `add_block_ids` is **HTML-only** and must not be paired with
+  `output_format="json"` (the JSON tree already carries `id` per block), and
+  `extras="table_row_bboxes"` is deprecated in favour of `table_cell_bboxes`,
+  which needs HTML output and bills separately. Neither is needed.
+
+That last point drops the deprecated `/ocr` dependency entirely. `/convert`
+alone is sufficient for Stage 4b.
 
 So there are two distinct capabilities, and both are now in scope — the second
 in Stage 4b:
@@ -428,8 +433,8 @@ in Stage 4b:
 1. **Layout from the builder, values from OCR.** The builder decides where things
    go; OCR fills them in. This is what the engine does today and what this stage
    measures. It works, and it covers every registered document type.
-2. **Layout from the scan.** Deriving a first layout from OCR box positions, for
-   a document type nobody has written a layout for. Stage 4b.
+2. **Layout from the scan.** Deriving a first layout from `/convert` block
+   positions, for a document type nobody has written a layout for. Stage 4b.
 
 Fail soft: when Playwright or a browser is unavailable, `measure` returns `None`
 and serialization falls back to the whole-page fragment, exactly as
@@ -442,64 +447,71 @@ byte-identically, and the pipeline still runs with Playwright uninstalled.
 
 ## Stage 4b — A first layout from the scan's own geometry
 
-**Goal.** When a document type has no layout, the agent's first iteration
-reviews a real page instead of drafting one blind.
+**Goal.** When a document type has no layout, the first draft is the scan's own
+geometry, and the agent's first iteration reviews a real page instead of
+drafting one blind. **Implemented** — `document_builder/autolayout.py` plus the
+geometry-first route in `generate_resources()`. This section records what
+exists rather than what is planned.
 
-Today `generate_resources()` writes both schema and layout from the source image
-alone, with nothing rendered yet to look at. The agent is guessing at positions
-it cannot see the consequences of, and the repair loop then spends iterations
-undoing that guess. The scan already knows where everything was; that knowledge
-should arrive before the first model call, not after it.
+`generate_resources()` used to write both schema and layout from the source
+image alone, with nothing rendered yet to look at. The agent was guessing at
+positions it could not see the consequences of, and the repair loop then spent
+iterations undoing that guess. The scan already knows where everything was; that
+knowledge now arrives before the first model call rather than after it.
 
-**The decision** (this was left open, and this is the answer): the bbox-to-layout
-step is a **deterministic pre-agent generator**, not a new agent mode — but its
-output feeds the agent's existing first iteration, so from the outside it looks
-exactly like the "auto-layout runs first, agent refines" flow that was asked for.
+**The split.** Everything positional is arithmetic, everything semantic is a
+model call, and the two halves meet on a per-block plan.
 
-Two reasons for deterministic rather than model-driven:
+- **Geometry** (`document_builder/autolayout.py`). One `/convert` call gives
+  every block's bounding box. `blocks_from_conversion` flattens that tree,
+  `page_geometry` fits the blocks' *ink extent* onto an exact A4 sheet with a
+  single uniform scale and centres it, `place` maps every block over and sorts
+  into reading order, and `layout_source` emits an ordinary layout module — the
+  same shape the agent writes, accepted by the same `validate_layout` gate. No
+  model, no network, no API key, so the same scan gives the same layout every
+  time and a bad result is debuggable rather than resampled.
+- **Semantics** (`architect.plan_blocks`). One structured model call classifies
+  each block. `static` text is translated into the target language and baked
+  into the layout as a literal; a `value` block gets a snake_case field name and
+  a description, which `plan_to_schema` turns into the extraction schema with
+  every value in `required` — that is what `build_data` keeps, so a field left
+  out would render permanently blank. A `placeholder` gets a box-sized English
+  caption cut from the picture's `alt`. Every block is planned, and an unplanned
+  block still renders as static text, so content the scan had never silently
+  disappears.
 
-- It costs nothing and repeats exactly. Positions come from arithmetic on boxes,
-  so the same scan gives the same layout every time, and a bad layout is
-  debuggable rather than resampled.
-- The agent's tooling is already the right shape for the second half. It reads a
-  rendered PNG, compares it against the source, and edits a layout file through
-  `write_file` under the `validate_layout` gate. Handing it a rendered first
-  draft plays to that. Handing it a JSON geometry blob would not — nothing in
-  its toolset writes JSON.
+The A4 contract, worked on the real citizenship scan: page bbox `[0,0,1372,980]`,
+ink extent `x 13→1214, y 24→823` (1201×799, aspect 1.5031), A4 landscape
+1123×794 @ 96 DPI, 10 mm margin, one scale `min(1047.4/1201, 718.4/799) =
+0.8721` for both axes — the slack becomes margin and the aspect ratio survives
+exactly. The extent is the ink and not the page box, because the page box
+carries whatever padding the scan had and normalizing against it would bake that
+padding into the sheet.
 
-New `document_builder/autolayout.py`:
+Wiring:
 
-- `boxes_from_ocr(image_path) -> list[TextBox]` — one call to `/ocr`, each line
-  normalized to page fractions, low-confidence lines flagged rather than dropped.
-- `group_boxes(boxes) -> list[Region]` — lines merged into rows and columns by
-  vertical overlap and horizontal gaps. This is the whole algorithm: no model,
-  no learning, just clustering on coordinates.
-- `layout_source(regions, schema) -> str` — emits a `layout_1.py` in exactly the
-  form the agent writes and `validate_layout` accepts, positioning a `Text` or
-  `Field` per region and binding it to the schema key whose extracted value best
-  matches that region's OCR text.
-- Unmatched regions become placeholder text elements with the raw OCR string, so
-  nothing on the page silently disappears; the agent can see them and decide.
+1. `build_from_geometry` converts (or loads a cached `/convert` JSON), derives
+   the geometry, asks `plan_blocks` for the plan, writes the schema and layout,
+   and runs `validate_layout` — four gates ending in a live blank-data render.
+2. On a pass it promotes. On a failure it *discards what it created*, because a
+   broken `layout.py` left on disk turns a fall-back into a permanently broken
+   document type, and hands the run back to the agent-writes-everything route.
+3. `run.py --rebuild-layout` runs the same path for a type that already has a
+   layout, as a proposal only: the layout is written to `layout_N.py` beside the
+   original and the schema to the `<type>_patched.json` sidecar, and `ACTIVE`
+   moves only if the gate passes. `layout.py` is never touched, so rolling back
+   is one line in `ACTIVE`.
 
-Wiring in `agentic_controller/run.py`, at the `if not exists:` branch:
+Fail soft everywhere: no `DATALAB_API_KEY`, a refused `/convert`, a page that
+segmented into nothing, a plan that did not parse, or a `validate_layout`
+failure all fall back to the agent-drafts-the-layout path and say so in the
+console. A worse first draft is not worth a failed run.
 
-1. `autolayout` writes `layout_1.py` and, if no schema exists, `generate_resources()`
-   still writes the schema — the schema is a semantic question, not a geometric
-   one, and stays the agent's job.
-2. The pipeline runs and renders as normal, so iteration 1 produces a real PNG.
-3. `analyze_and_repair()` gets that PNG *plus* the region map, and its first pass
-   is a critique of a concrete page.
-
-Fail soft everywhere: if the `/ocr` call fails, if the boxes cluster into
-nonsense, or if the emitted source does not pass `validate_layout`, the run falls
-back to today's behaviour — `generate_resources()` drafts the layout — and says
-so in the console. A worse first draft is not worth a failed run.
-
-**Done when.** A document type with its layout deleted rebuilds to a recognisable
-page in iteration 1 without the agent having written a layout, the repair loop
-then converges in fewer iterations than from a blind draft, and deleting the
-`DATALAB_API_KEY` or breaking the `/ocr` call still produces a document by the
-old path.
+**Done when.** Met: `tests/test_autolayout.py` runs the whole geometry path
+offline against a saved `/convert` reply, asserting the uniform scale, the exact
+A4 sheet, the margin box, reading order, and that the emitted module passes
+`validate_layout` and renders monochrome. The eleven existing types render
+byte-identical, since nothing touches them without `--rebuild-layout`.
 
 ## Stage 5 — Editor skeleton
 

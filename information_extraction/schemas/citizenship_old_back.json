@@ -1,0 +1,79 @@
+{
+  "type": "object",
+  "title": "OldCitizenshipBackExtractionSchema",
+  "description": "Schema for structured extraction from the back of an old-format Nepal Citizenship Certificate. The reverse carries only the spouse's details, the certificate holder's name and citizenship type, the thumb impressions, and the officer who issued the certificate. Everything about the holder themself is printed on the front and must not be extracted here. Fixed labels are supplied by the document template. Names and place names are transliterated where the generated English document requires English text; dates, citizenship numbers, and other identifiers must be preserved exactly.",
+  "required": [
+    "spouse_full_name",
+    "spouse_address",
+    "spouse_citizenship",
+    "nepal_citizenship_act_sentence",
+    "certificate_holder_name",
+    "citizenship_type",
+    "certificate_holder_signature",
+    "right_thumb_impression",
+    "left_thumb_impression",
+    "citizenship_no",
+    "issuing_officer_signature",
+    "issuing_officer_name",
+    "issuing_officer_designation",
+    "issuing_issue_date_bs"
+  ],
+  "properties": {
+    "spouse_full_name": {
+      "type": "string",
+      "description": "Full name of the certificate holder's husband or wife exactly as printed in the spouse-name field. Preserve the printed name, transliterating it into English characters for the generated English document. If the field is blank, return an empty string."
+    },
+    "spouse_address": {
+      "type": "string",
+      "description": "Address of the certificate holder's husband or wife exactly as printed, such as 'Katari-4'. Preserve the printed place name, ward number, and separators."
+    },
+    "spouse_citizenship": {
+      "type": "string",
+      "description": "Citizenship or nationality recorded for the spouse exactly as printed in the spouse citizenship field, such as 'Nepali'. Translate the Nepali value into English for the generated document."
+    },
+    "nepal_citizenship_act_sentence": {
+      "type": "string",
+      "description": "Complete legal statement printed below the spouse details, citing the Act under which the certificate was issued. Translate the Nepali statement into English for the generated certificate. Do not omit its legal meaning."
+    },
+    "certificate_holder_name": {
+      "type": "string",
+      "description": "Name of the certificate holder as printed in the certificate-holder field on the reverse. Transliterate Nepali names into English characters rather than translating their meaning."
+    },
+    "citizenship_type": {
+      "type": "string",
+      "description": "Type or category of citizenship printed on the certificate. Translate the Nepali category into English for the generated document. For example, 'वंशज' should be returned as 'By descent'."
+    },
+    "certificate_holder_signature": {
+      "type": "string",
+      "description": "Status of the certificate holder's signature in the signature area. If a handwritten signature is visible but cannot reliably be transcribed, return 'present'. If no signature is visible, return 'absent'. If reliably readable text is present, return that text."
+    },
+    "right_thumb_impression": {
+      "type": "string",
+      "description": "Whether a thumb impression is visible in the right-thumb box. Return exactly 'present' or 'absent'."
+    },
+    "left_thumb_impression": {
+      "type": "string",
+      "description": "Whether a thumb impression is visible in the left-thumb box. Return exactly 'present' or 'absent'."
+    },
+    "citizenship_no": {
+      "type": "string",
+      "description": "Citizenship Certificate number exactly as printed beside the issuing officer's details. Preserve all digits, slashes, hyphens, spaces, and other separators. Do not infer, normalize, or reformat."
+    },
+    "issuing_officer_signature": {
+      "type": "string",
+      "description": "Signature of the officer who issued the citizenship certificate. Return readable signature text if possible; otherwise return 'present' when visible or 'absent' when not visible."
+    },
+    "issuing_officer_name": {
+      "type": "string",
+      "description": "Full name of the officer who issued the citizenship certificate. Extract the name as printed and transliterate it into English characters for the generated English document."
+    },
+    "issuing_officer_designation": {
+      "type": "string",
+      "description": "Designation of the officer who issued the citizenship certificate, such as 'Deputy Chief District Officer'. Translate the Nepali designation into English."
+    },
+    "issuing_issue_date_bs": {
+      "type": "string",
+      "description": "Issue date of the certificate in Bikram Sambat (BS), exactly as printed beside the issuing officer's details. Preserve all numerals and separators."
+    }
+  }
+}

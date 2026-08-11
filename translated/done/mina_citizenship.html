@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nepali Citizenship Certificate - Old Layout A4</title>
+
+<style>
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+    }
+
+    body {
+        font-family: "Noto Sans Devanagari", "Noto Sans", "Arial", sans-serif;
+    }
+
+    /*
+     * A4 at 96 DPI
+     * 210mm × 297mm ≈ 794px × 1123px
+     */
+    .a4-sheet {
+        width: 794px;
+        height: 1123px;
+        margin: 0 auto;
+        background: #ffffff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /*
+     * Original citizenship dimensions:
+     *
+     * FRONT: 1200 × 780
+     * BACK:  1200 × 680
+     *
+     * Uniform scale keeps the original layouts intact.
+     */
+    .citizenship-page {
+        position: absolute;
+        left: 17px;
+
+        width: 1200px;
+        background: #ffffff;
+        border: 2px solid #000000;
+        box-sizing: border-box;
+
+        transform: scale(0.63);
+        transform-origin: top left;
+
+        overflow: hidden;
+    }
+
+    .front-page {
+        top: 12px;
+        height: 780px;
+    }
+
+    .back-page {
+        top: 505px;
+        height: 680px;
+    }
+
+    [contenteditable]:hover {
+        outline: 2px dashed #000000;
+        cursor: text;
+    }
+
+    [contenteditable]:focus {
+        outline: 2px solid #000000;
+        background: #ffffff;
+    }
+
+    .label {
+        font-size: 20px;
+        font-weight: bold;
+        line-height: 1.2;
+        flex-shrink: 0;
+    }
+
+    .value {
+        font-size: 20px;
+        line-height: 1.2;
+    }
+
+    .row {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    @media print {
+        html,
+        body {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #ffffff !important;
+        }
+
+        .a4-sheet {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden;
+        }
+
+        .citizenship-page {
+            margin: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="a4-sheet">
+
+    <!-- =========================================================
+         FRONT — OLD CITIZENSHIP LAYOUT
+         ========================================================= -->
+
+    <div class="citizenship-page front-page">
+
+        <div style="
+            text-align:center;
+            width:135px;
+            height:135px;
+            border:2px solid #000000;
+            display:flex;
+            position:absolute;
+            top:48px;
+            left:70px;
+            justify-content:center;
+            align-items:center
+        ">
+            <span style="
+                font-size:13px;
+                text-align:center;
+                line-height:1.2
+            ">
+                Coat of Arms
+                of Nepal
+            </span>
+        </div>
+
+
+        <div style="
+            width:700px;
+            position:absolute;
+            top:25px;
+            left:285px
+        ">
+            <div style="
+                text-align:center;
+                line-height:1.35;
+                display:flex;
+                flex-direction:column;
+                gap:1px
+            ">
+
+                <h1 style="
+                    font-size:28px;
+                    font-weight:bold;
+                    margin:0
+                ">
+                    Government of Nepal
+                </h1>
+
+                <h2 style="
+                    font-size:28px;
+                    font-weight:bold;
+                    margin:0
+                ">
+                    Ministry of Home Affairs
+                </h2>
+
+                <h3 style="
+                    font-size:28px;
+                    font-weight:bold;
+                    margin:0
+                "
+                contenteditable="true"
+                data-field="district_admin_location">
+                    District Administration Office, Udayapur
+                </h3>
+
+                <h4 style="
+                    font-size:27px;
+                    font-weight:bold;
+                    margin:3px 0 0 0
+                ">
+                    Certificate of Nepali Citizenship
+                </h4>
+
+            </div>
+        </div>
+
+
+        <div style="
+            text-align:center;
+            width:125px;
+            height:125px;
+            border:2px solid #000000;
+            border-radius:50%;
+            display:flex;
+            position:absolute;
+            top:35px;
+            right:55px;
+            justify-content:center;
+            align-items:center
+        ">
+            <span style="
+                font-size:13px;
+                text-align:center;
+                line-height:1.2
+            ">
+                Office
+                Seal
+            </span>
+        </div>
+
+
+        <div style="
+            width:240px;
+            position:absolute;
+            top:205px;
+            left:42px
+        ">
+            <div style="
+                display:flex;
+                flex-direction:column;
+                gap:0px
+            ">
+
+                <span style="
+                    font-size:21px;
+                    font-weight:bold
+                "
+                contenteditable="true"
+                data-field="citizenship_no">
+                    141036 / 87954
+                </span>
+
+                <span style="
+                    font-size:18px;
+                    font-weight:bold
+                ">
+                    Citizenship No.
+                </span>
+
+            </div>
+        </div>
+
+
+        <div style="
+            text-align:center;
+            width:255px;
+            height:300px;
+            border:2px solid #000000;
+            display:flex;
+            position:absolute;
+            top:310px;
+            left:52px;
+            justify-content:center;
+            align-items:center
+        ">
+            <span style="
+                font-size:16px;
+                font-weight:bold;
+                text-align:center
+            ">
+                Photograph(Sd.)
+            </span>
+        </div>
+
+
+        <div style="
+            width:810px;
+            position:absolute;
+            top:205px;
+            left:350px
+        ">
+
+            <div style="
+                font-size:20px;
+                width:100%
+            ">
+
+                <!-- Full Name + Gender -->
+                <div style="margin-bottom:18px">
+
+                    <div style="
+                        margin-bottom:7px;
+                        display:flex;
+                        align-items:flex-start
+                    ">
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                width:245px;
+                                flex-shrink:0
+                            ">
+                                Full Name:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="full_name">
+                                Mina K. C.
+                            </div>
+
+                        </div>
+
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                text-align:right;
+                                width:180px;
+                                padding-right:10px;
+                                flex-shrink:0
+                            ">
+                                Gender:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="gender">
+                                Female
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Birth Place -->
+                <div style="margin-bottom:18px">
+
+                    <div style="
+                        margin-bottom:7px;
+                        display:flex;
+                        align-items:flex-start
+                    ">
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                width:245px;
+                                flex-shrink:0
+                            ">
+                                Birth Place, District:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="birth_district">
+                                Nawalparasi
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Birth VDC + Ward -->
+                <div style="margin-bottom:18px">
+
+                    <div style="
+                        margin-bottom:7px;
+                        display:flex;
+                        align-items:flex-start
+                    ">
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                width:245px;
+                                flex-shrink:0
+                            ">
+                                VDC/Municipality:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="birth_municipality">
+                                Naya Belhani
+                            </div>
+
+                        </div>
+
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                text-align:right;
+                                width:180px;
+                                padding-right:10px;
+                                flex-shrink:0
+                            ">
+                                Ward No.:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="birth_ward">
+                                8
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Permanent Address -->
+                <div style="margin-bottom:18px">
+
+                    <div style="
+                        margin-bottom:7px;
+                        display:flex;
+                        align-items:flex-start
+                    ">
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                width:245px;
+                                flex-shrink:0;
+                                white-space:nowrap
+                            ">
+                                Permanent Address: District:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1;
+                                white-space:nowrap
+                            "
+                            contenteditable="true"
+                            data-field="perm_district">
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Udayapur
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Permanent VDC + Ward -->
+                <div style="margin-bottom:18px">
+
+                    <div style="
+                        margin-bottom:7px;
+                        display:flex;
+                        align-items:flex-start
+                    ">
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                width:245px;
+                                flex-shrink:0
+                            ">
+                                VDC/Municipality:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="perm_municipality">
+                                Katari
+                            </div>
+
+                        </div>
+
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                text-align:right;
+                                width:180px;
+                                padding-right:10px;
+                                flex-shrink:0
+                            ">
+                                Ward No.:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="perm_ward">
+                                4
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Date of Birth -->
+                <div style="margin-bottom:18px">
+
+                    <div style="
+                        margin-bottom:7px;
+                        display:flex;
+                        align-items:flex-start
+                    ">
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                width:245px;
+                                flex-shrink:0
+                            ">
+                                Date of Birth:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            ">
+
+                                <div style="
+                                    display:flex;
+                                    flex-direction:row;
+                                    gap:7px
+                                ">
+
+                                    <span style="
+                                        font-size:20px;
+                                        flex:1
+                                    "
+                                    contenteditable="true"
+                                    data-field="dob_year">
+                                        1980&nbsp; &nbsp;&nbsp;
+                                    </span>
+
+                                    <span style="
+                                        font-size:20px;
+                                        width:45px
+                                    ">
+                                        Year
+                                    </span>
+
+                                    <span style="
+                                        font-size:20px;
+                                        width:55px
+                                    "
+                                    contenteditable="true"
+                                    data-field="dob_month">
+                                        &nbsp; &nbsp;11
+                                    </span>
+
+                                    <span style="
+                                        font-size:20px;
+                                        width:65px
+                                    ">
+                                        Month
+                                    </span>
+
+                                    <span style="
+                                        font-size:20px;
+                                        width:55px
+                                    "
+                                    contenteditable="true"
+                                    data-field="dob_day">
+                                        &nbsp; &nbsp;12
+                                    </span>
+
+                                    <span style="
+                                        font-size:20px;
+                                        width:45px
+                                    ">
+                                        Day
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Father -->
+                <div style="margin-bottom:18px">
+
+                    <div style="
+                        margin-bottom:7px;
+                        display:flex;
+                        align-items:flex-start
+                    ">
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                width:245px;
+                                flex-shrink:0
+                            ">
+                                Father's Full Name:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="father_name">
+                                Lilabahadur K. C.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Father Address + Citizenship -->
+                <div style="margin-bottom:18px">
+
+                    <div style="
+                        margin-bottom:7px;
+                        display:flex;
+                        align-items:flex-start
+                    ">
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                width:245px;
+                                flex-shrink:0
+                            ">
+                                Address:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="father_address">
+                                Naya Belhani-8
+                            </div>
+
+                        </div>
+
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                text-align:right;
+                                width:180px;
+                                padding-right:10px;
+                                flex-shrink:0
+                            ">
+                                Citizenship:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="father_na_ki">
+                                Nepali
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Mother -->
+                <div style="margin-bottom:18px">
+
+                    <div style="
+                        margin-bottom:7px;
+                        display:flex;
+                        align-items:flex-start
+                    ">
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                width:245px;
+                                flex-shrink:0
+                            ">
+                                Mother's Full Name:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="mother_name">
+                                <br>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Mother Address + Citizenship -->
+                <div>
+
+                    <div style="
+                        margin-bottom:7px;
+                        display:flex;
+                        align-items:flex-start
+                    ">
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                width:245px;
+                                flex-shrink:0
+                            ">
+                                Address:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="mother_address">
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                &nbsp; &nbsp; &nbsp;
+                            </div>
+
+                        </div>
+
+
+                        <div style="
+                            display:flex;
+                            align-items:flex-start
+                        ">
+
+                            <div style="
+                                font-size:20px;
+                                font-weight:bold;
+                                text-align:right;
+                                width:180px;
+                                padding-right:10px;
+                                flex-shrink:0
+                            ">
+                                Citizenship:
+                            </div>
+
+                            <div style="
+                                font-size:20px;
+                                flex:1
+                            "
+                            contenteditable="true"
+                            data-field="mother_na_ki">
+                                <br>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         BACK — OLD CITIZENSHIP LAYOUT
+         ========================================================= -->
+
+    <div class="citizenship-page back-page">
+
+        <!-- TOP INFORMATION -->
+
+        <div style="
+            position:absolute;
+            top:38px;
+            left:62px;
+            width:1080px;
+            font-size:20px;
+            line-height:1.2;
+        ">
+
+            <!-- Spouse's name -->
+            <div class="row" style="margin-bottom:9px;">
+
+                <div class="label" style="width:245px;">
+                    Spouse's Full Name:
+                </div>
+
+                <div class="value"
+                     contenteditable="true"
+                     data-field="spouse_full_name"
+                     style="width:420px;">
+                    Ganeshkumar Kandangwa
+                </div>
+
+            </div>
+
+
+            <!-- Address + Citizenship -->
+            <div class="row" style="margin-bottom:10px;">
+
+                <div class="label" style="width:245px;">
+                    Address:
+                </div>
+
+                <div class="value"
+                     contenteditable="true"
+                     data-field="spouse_address"
+                     style="width:420px;">
+                    Katari-4
+                </div>
+
+                <div class="label" style="width:150px;">
+                    Citizenship:
+                </div>
+
+                <div class="value"
+                     contenteditable="true"
+                     data-field="spouse_citizenship"
+                     style="width:160px;">
+                    Nepali
+                </div>
+
+            </div>
+
+
+            <!-- Legal statement -->
+
+            <div style="
+                margin-bottom:9px;
+                font-size:20px;
+                font-weight:bold;
+                line-height:1.2;
+            "
+            contenteditable="true"
+            data-field="nepal_citizenship_act_sentence">
+                This citizenship certificate has been issued in accordance with the Nepal Citizenship Act, 2063.
+            </div>
+
+
+            <!-- Certificate holder -->
+
+            <div class="row" style="margin-bottom:8px;">
+
+                <div class="label" style="width:390px;">
+                    Certificate Holder's Name:
+                </div>
+
+                <div class="value"
+                     contenteditable="true"
+                     data-field="certificate_holder_name"
+                     style="width:600px;">
+                    Mina K. C.
+                </div>
+
+            </div>
+
+
+            <!-- Citizenship type -->
+
+            <div class="row" style="margin-bottom:8px;">
+
+                <div class="label" style="width:390px;">
+                    Type of Citizenship:
+                </div>
+
+                <div class="value"
+                     contenteditable="true"
+                     data-field="citizenship_type"
+                     style="width:600px;">
+                    By Descent
+                </div>
+
+            </div>
+
+
+            <!-- Certificate holder signature -->
+
+            <div class="row">
+
+                <div class="label" style="width:390px;">
+                    Certificate Holder's Signature:
+                </div>
+
+                <div class="value"
+                     contenteditable="true"
+                     data-field="certificate_holder_signature"
+                     style="width:600px;min-height:24px;">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- THUMB IMPRESSIONS -->
+
+        <div style="
+            position:absolute;
+            top:245px;
+            left:62px;
+            width:470px;
+            text-align:center;
+            font-size:20px;
+            font-weight:bold;
+            line-height:1.2;
+        ">
+            Thumb impressions
+        </div>
+
+
+        <!-- RIGHT / LEFT LABELS -->
+
+        <div style="
+            position:absolute;
+            top:268px;
+            left:62px;
+            width:470px;
+            height:24px;
+            display:flex;
+            font-size:20px;
+            font-weight:bold;
+            line-height:1.2;
+            text-align:center;
+        ">
+
+            <div style="width:235px;">
+                Right
+            </div>
+
+            <div style="width:235px;">
+                Left
+            </div>
+
+        </div>
+
+
+        <!-- THUMBPRINT BOXES -->
+
+        <div style="
+            position:absolute;
+            top:292px;
+            left:62px;
+            width:470px;
+            height:270px;
+            display:flex;
+        ">
+
+            <!-- Right -->
+
+            <div style="
+                width:235px;
+                height:270px;
+                border:2px solid #000000;
+                box-sizing:border-box;
+                position:relative;
+            ">
+
+                <div style="
+                    position:absolute;
+                    bottom:18px;
+                    left:0;
+                    width:100%;
+                    text-align:center;
+                    font-size:18px;
+                "
+                contenteditable="true"
+                data-field="right_thumb_impression">
+                    Present
+                </div>
+
+            </div>
+
+
+            <!-- Left -->
+
+            <div style="
+                width:235px;
+                height:270px;
+                border:2px solid #000000;
+                border-left:0;
+                box-sizing:border-box;
+                position:relative;
+            ">
+
+                <div style="
+                    position:absolute;
+                    bottom:18px;
+                    left:0;
+                    width:100%;
+                    text-align:center;
+                    font-size:18px;
+                "
+                contenteditable="true"
+                data-field="left_thumb_impression">
+                    Present
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+
+        <div style="
+            position:absolute;
+            top:245px;
+            left:610px;
+            width:525px;
+            font-size:20px;
+            line-height:1.25;
+        ">
+
+            <!-- Certificate number -->
+
+            <div class="row" style="margin-bottom:12px;">
+
+                <div class="label" style="width:185px;">
+                    Certificate No.:
+                </div>
+
+                <div class="value"
+                     contenteditable="true"
+                     data-field="citizenship_no"
+                     style="width:300px;">
+                    141036/87954
+                </div>
+
+            </div>
+
+
+            <!-- Officer heading -->
+
+            <div style="
+                font-weight:bold;
+                font-size:20px;
+                margin-bottom:10px;
+            ">
+                Officer Issuing this Certificate:
+            </div>
+
+
+            <!-- Signature -->
+
+            <div class="row" style="margin-bottom:10px;">
+
+                <div class="label" style="width:220px;">
+                    Signature:
+                </div>
+
+                <div class="value"
+                     contenteditable="true"
+                     data-field="issuing_officer_signature"
+                     style="width:290px;min-height:24px;">
+                    Sd.
+                </div>
+
+            </div>
+
+
+            <!-- Full name -->
+
+            <div class="row" style="margin-bottom:10px;">
+
+                <div class="label" style="width:220px;">
+                    Full Name:
+                </div>
+
+                <div class="value"
+                     contenteditable="true"
+                     data-field="issuing_officer_name"
+                     style="width:290px;">
+                    Purushottam Ghimire
+                </div>
+
+            </div>
+
+
+            <!-- Designation -->
+
+            <div class="row" style="margin-bottom:10px;">
+
+                <div class="label" style="width:220px;">
+                    Designation:
+                </div>
+
+                <div class="value"
+                     contenteditable="true"
+                     data-field="issuing_officer_designation"
+                     style="width:290px;">
+                    Deputy Chief District Officer
+                </div>
+
+            </div>
+
+
+            <!-- Date -->
+
+            <div class="row">
+
+                <div class="label" style="width:220px;">
+                    Issue Date (BS):
+                </div>
+
+                <div class="value"
+                     contenteditable="true"
+                     data-field="issuing_issue_date_bs"
+                     style="width:290px;">
+                    2008-01-28
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+{
+  "type": "object",
+  "title": "OldCitizenshipExtractionSchema",
+  "description": "Schema for structured extraction from an old-format Nepal Citizenship Certificate. Extract values exactly as printed on the document. Do not infer, normalize, translate, or modify names, numbers, dates, or addresses. Return an empty string when a field is absent or unreadable.",
+  "properties": {
+    "citizenship_no": {
+      "type": "string",
+      "description": "Official Nepal Citizenship Certificate number printed on the old certificate. Extract the complete number exactly as shown, preserving all digits, letters, spaces, hyphens, slashes, or other separators. Do not infer or modify the format. Return an empty string if not present or unreadable."
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Full legal name of the citizenship certificate holder exactly as printed after 'Name, Surname'. Preserve spelling, spacing, and order. Do not translate the name."
+    },
+    "gender": {
+      "type": "string",
+      "description": "Gender/sex of the certificate holder exactly as printed. The value is generally महिला or पुरुष. Preserve the printed value rather than translating it."
+    },
+    "birth_district": {
+      "type": "string",
+      "description": "District of birth exactly as printed in the birth-place section."
+    },
+    "birth_municipality": {
+      "type": "string",
+      "description": "Village Development Committee (VDC), Municipality, Rural Municipality, Metropolitan City, or Sub-metropolitan City of birth, exactly as printed."
+    },
+    "birth_ward": {
+      "type": "string",
+      "description": "Ward number of the holder's place of birth exactly as printed. Preserve Nepali or Arabic numerals and any other printed formatting."
+    },
+    "perm_district": {
+      "type": "string",
+      "description": "District of the holder's permanent address exactly as printed."
+    },
+    "perm_municipality": {
+      "type": "string",
+      "description": "Village Development Committee (VDC), Municipality, Rural Municipality, Metropolitan City, or Sub-metropolitan City of the holder's permanent address, exactly as printed."
+    },
+    "perm_ward": {
+      "type": "string",
+      "description": "Ward number of the holder's permanent address exactly as printed."
+    },
+    "dob_year": {
+      "type": "string",
+      "description": "Year component of the holder's date of birth exactly as printed. Do not convert between Bikram Sambat and Gregorian calendars."
+    },
+    "dob_month": {
+      "type": "string",
+      "description": "Month component of the holder's date of birth exactly as printed. Do not convert or translate the value."
+    },
+    "dob_day": {
+      "type": "string",
+      "description": "Day component of the holder's date of birth exactly as printed."
+    },
+    "father_name": {
+      "type": "string",
+      "description": "Full name of the holder's father exactly as printed in the father's name field. Preserve spelling, spacing, and order."
+    },
+    "father_address": {
+      "type": "string",
+      "description": "Address of the holder's father exactly as printed in the father's address field. Do not infer missing address components."
+    },
+    "father_na_ki": {
+      "type": "string",
+      "description": "Citizenship/nationality or Nata/Kisim-related value associated with the father, exactly as printed in the father's citizenship field. For example, if the document says नेपाली, return नेपाली rather than translating it to Nepalese. Return an empty string if absent or unreadable."
+    },
+    "mother_name": {
+      "type": "string",
+      "description": "Full name of the holder's mother exactly as printed in the mother's name field. Preserve spelling, spacing, and order."
+    },
+    "mother_address": {
+      "type": "string",
+      "description": "Address of the holder's mother exactly as printed in the mother's address field. Do not infer missing address components."
+    },
+    "mother_na_ki": {
+      "type": "string",
+      "description": "Citizenship/nationality or Nata/Kisim-related value associated with the mother, exactly as printed in the mother's citizenship field. Preserve the printed value and do not translate it."
+    },
+    "district_admin_location": {
+      "type": "string",
+      "description": "Location/name of the District Administration Office that issued the certificate, exactly as printed in the document header. For example, if the document says उदयपुर, return उदयपुर rather than translating it."
+    }
+  },
+  "required": [
+    "citizenship_no",
+    "full_name",
+    "gender",
+    "birth_district",
+    "birth_municipality",
+    "birth_ward",
+    "perm_district",
+    "perm_municipality",
+    "perm_ward",
+    "dob_year",
+    "dob_month",
+    "dob_day",
+    "father_name",
+    "father_address",
+    "father_na_ki",
+    "mother_name",
+    "mother_address",
+    "mother_na_ki",
+    "district_admin_location"
+  ]
+}

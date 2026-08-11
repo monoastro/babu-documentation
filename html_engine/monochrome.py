@@ -94,6 +94,13 @@ _DECLARATION = re.compile(r"([-a-zA-Z]+)\s*:\s*([^;{}]*)")
 
 _URL = re.compile(r"url\([^)]*\)", re.IGNORECASE)
 
+# The two places a colour can hide in rendered HTML. Shared by the rewrite and
+# the audit so they cannot drift apart about where CSS lives.
+_STYLE_ATTR = re.compile(r'style="([^"]*)"')
+_STYLE_BLOCK = re.compile(
+    r"(<style[^>]*>)(.*?)(</style>)", re.DOTALL | re.IGNORECASE
+)
+
 
 def _target_for(prop: str) -> str:
     """Surfaces go white, ink goes black."""
@@ -160,41 +167,64 @@ def normalize_html(html: str) -> str:
     Only ``style="..."`` attributes and ``<style>`` blocks are touched. Text
     content is left exactly as-is — a land record may legitimately contain a
     token that looks like a hex colour, and corrupting document data would be
-    far worse than leaking a colour.
+    far worse than leaking a colour. :func:`find_violations` scans this same
+    surface, so the audit and the rewrite can never disagree about what counts
+    as a violation.
     """
     if not html:
         return html
 
-    html = re.sub(
-        r'style="([^"]*)"',
-        lambda m: f'style="{normalize_declarations(m.group(1))}"',
-        html,
+    html = _STYLE_ATTR.sub(
+        lambda m: f'style="{normalize_declarations(m.group(1))}"', html
     )
-    return re.sub(
-        r"(<style[^>]*>)(.*?)(</style>)",
-        lambda m: m.group(1) + normalize_declarations(m.group(2)) + m.group(3),
-        html,
-        flags=re.DOTALL | re.IGNORECASE,
+    return _STYLE_BLOCK.sub(
+        lambda m: m.group(1) + normalize_declarations(m.group(2)) + m.group(3), html
     )
+
+
+def css_surface(text: str) -> list[str]:
+    """
+    The parts of *text* that are actually CSS.
+
+    A full HTML page contributes its ``style="..."`` attributes and its
+    ``<style>`` block bodies; anything that is not markup is returned whole and
+    treated as a CSS fragment. This is the surface :func:`normalize_html`
+    rewrites, and scanning a page as though all of it were CSS is what made a
+    document reading "Red circular official seal" look like a colour leak:
+    ``_DECLARATION`` matches ``style="..."`` and then runs its value to the next
+    ``;``, ``{`` or ``}`` — straight through the tag and into the body text.
+    """
+    if not text:
+        return []
+    if "<" not in text:
+        return [text]
+    return [m.group(1) for m in _STYLE_ATTR.finditer(text)] + [
+        m.group(2) for m in _STYLE_BLOCK.finditer(text)
+    ]
 
 
 def find_violations(css: str) -> list[tuple[str, str]]:
     """
     Report colour tokens that normalization *would* change.
 
+    Accepts either a CSS fragment or a whole HTML page; :func:`css_surface`
+    reduces a page to exactly the declarations :func:`normalize_html` rewrites,
+    so document prose is never mistaken for a style.
+
     Returns a list of ``(property, token)`` pairs. Empty means the fragment is
     already monochrome. Used by the test suite and by the source-rewrite audit
     to prove the rule holds, rather than assuming it.
     """
     found: list[tuple[str, str]] = []
-    for match in _DECLARATION.finditer(css or ""):
-        prop, value = match.group(1).strip().lower(), match.group(2)
-        if prop in _SKIP_PROPS:
-            continue
-        for token_match in _COLOR_TOKEN.finditer(_URL.sub("", value)):
-            token = token_match.group(0)
-            if token.lower() in _KEEP:
+    for fragment in css_surface(css):
+        for match in _DECLARATION.finditer(fragment):
+            prop, value = match.group(1).strip().lower(), match.group(2)
+            if prop in _SKIP_PROPS:
                 continue
-            if token.lower() not in (BLACK, WHITE):
-                found.append((prop, token))
+            for token_match in _COLOR_TOKEN.finditer(_URL.sub("", value)):
+                token = token_match.group(0)
+                if token.lower() in _KEEP:
+                    continue
+                if token.lower() not in (BLACK, WHITE):
+                    found.append((prop, token))
     return found

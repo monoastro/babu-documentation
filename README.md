@@ -36,9 +36,10 @@ source image
   by Datalab OCR.
 - `agentic_controller/` — the autonomous pipeline: RAG index over the codebase,
   a vision verifier, and an Architect Agent that writes layout and schema fixes.
-- `tests/` — 156 tests across 9 suites covering the open `Style`, the monochrome
-  guarantee, placeholder components, the layout validation gate, `main.py`, the
-  Architect Agent's command sandbox, layout/schema resolution, and translation.
+- `tests/` — 183 tests across 10 suites covering the open `Style`, the monochrome
+  guarantee, placeholder components, the layout validation gate, the A4
+  autolayout geometry, `main.py`, the Architect Agent's command sandbox,
+  layout/schema resolution, and translation.
 - `output/` — generated HTML, PNG, and verification reports.
 
 ## Setup
@@ -229,7 +230,7 @@ frequently colourful; a colour difference is never a verification discrepancy.
 ## Tests
 
 ```bash
-python tests/run_all.py          # all 9 suites, 156 tests, no pytest needed
+python tests/run_all.py          # all 10 suites, 183 tests, no pytest needed
 python tests/test_styles.py      # or run one suite directly
 ```
 
@@ -239,6 +240,7 @@ python tests/test_styles.py      # or run one suite directly
 | `test_monochrome.py` | Every route CSS can take to the page, plus all registered layouts |
 | `test_components.py` | Placeholders, watermark, signature block, the `field=` contract, child coercion |
 | `test_layout_gate.py` | `validate_layout` catches errors inside a builder body, not just at import |
+| `test_autolayout.py` | `/convert` block geometry becomes an exact A4 layout: one uniform scale, ink-extent fit, relative order preserved, generated source passes the gate, every field survives extraction |
 | `test_main_cli.py` | `--blank` / `--data` never reach OCR; argument validation |
 | `test_command_sandbox.py` | `execute_command` refuses `python -c`, redirection, chaining, substitution; originals are restored if a command touches them; an *existing* `layout.py` or base schema is never a write target, but a brand-new type may create its own |
 | `test_registry_resolution.py` | `ACTIVE` selects the live layout and degrades safely; traversal in `ACTIVE` is rejected; discovery finds new types; promotion takes effect mid-process |

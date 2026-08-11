@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<!-- saved from url=(0085)file:///home/moon/pragya/babu-documentation/translated/done/citizenship_old_back.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nepali Citizenship Certificate - Old Back Layout</title>
+
+<style>
+    body {
+        margin: 0;
+        background: #ffffff;
+        font-family: "Noto Sans Devanagari", "Noto Sans", "Arial", sans-serif;
+    }
+
+    .page {
+        width: 1200px;
+        height: 680px;
+        margin: 30px auto;
+        background: #ffffff;
+        position: relative;
+        border: 2px solid #000000;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    @media print {
+        body {
+            background: #ffffff !important;
+            margin: 0 !important;
+        }
+
+        .page {
+            margin: 0 !important;
+            border: 2px solid #000000 !important;
+            box-shadow: none !important;
+            page-break-after: always;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+    }
+
+    [contenteditable]:hover {
+        outline: 2px dashed #000000;
+        cursor: text;
+    }
+
+    [contenteditable]:focus {
+        outline: 2px solid #000000;
+        background: #ffffff;
+    }
+
+    .label {
+        font-size: 20px;
+        font-weight: bold;
+        line-height: 1.2;
+        flex-shrink: 0;
+    }
+
+    .value {
+        font-size: 20px;
+        line-height: 1.2;
+    }
+
+    .row {
+        display: flex;
+        align-items: flex-start;
+    }
+</style>
+</head>
+
+<body>
+<div class="page">
+
+    <!-- =========================================================
+         TOP INFORMATION
+         ========================================================= -->
+
+    <div style="
+        position:absolute;
+        top:38px;
+        left:62px;
+        width:1080px;
+        font-size:20px;
+        line-height:1.2;
+    ">
+
+        <!-- Spouse's name -->
+        <div class="row" style="margin-bottom:9px;">
+            <div class="label" style="width:245px;">
+                Spouse's Full Name:
+            </div>
+
+            <div class="value" contenteditable="true" data-field="spouse_full_name" style="width:420px;">
+                Ganeshkumar Kandangwa
+            </div>
+        </div>
+
+        <!-- Address + Citizenship value on the SAME line -->
+        <div class="row" style="margin-bottom:10px;">
+            <div class="label" style="width:245px;">
+                Address:
+            </div>
+
+            <div class="value" contenteditable="true" data-field="spouse_address" style="width:420px;">
+                Katari-4
+            </div>
+
+            <div class="label" style="width:150px;">
+                Citizenship:
+            </div>
+
+            <div class="value" contenteditable="true" data-field="spouse_citizenship" style="width:160px;">
+                Nepali
+            </div>
+        </div>
+
+        <!-- Legal statement -->
+        <div style="
+            margin-bottom:9px;
+            font-size:20px;
+            font-weight:bold;
+            line-height:1.2;
+        " contenteditable="true" data-field="nepal_citizenship_act_sentence">
+            This citizenship certificate has been issued in accordance with the Nepal Citizenship Act, 2063.
+        </div>
+
+        <!-- Certificate holder -->
+        <div class="row" style="margin-bottom:8px;">
+            <div class="label" style="width:390px;">
+                Certificate Holder's Name:
+            </div>
+
+            <div class="value" contenteditable="true" data-field="certificate_holder_name" style="width:600px;">
+                Mina K. C.</div>
+        </div>
+
+        <!-- Citizenship type -->
+        <div class="row" style="margin-bottom:8px;">
+            <div class="label" style="width:390px;">
+                Type of Citizenship:
+            </div>
+
+            <div class="value" contenteditable="true" data-field="citizenship_type" style="width:600px;">
+                By Descent
+            </div>
+        </div>
+
+        <!-- Certificate holder signature -->
+        <div class="row">
+            <div class="label" style="width:390px;">
+                Certificate Holder's Signature:
+            </div>
+
+            <div class="value" contenteditable="true" data-field="certificate_holder_signature" style="width:600px; min-height:24px;">
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         LITERAL THUMB IMPRESSIONS TEXT
+         ========================================================= -->
+
+    <div style="
+        position:absolute;
+        top:245px;
+        left:62px;
+        width:470px;
+        text-align:center;
+        font-size:20px;
+        font-weight:bold;
+        line-height:1.2;
+    ">
+        Thumb impressions
+    </div>
+
+
+    <!-- =========================================================
+         RIGHT / LEFT LABELS ABOVE THUMB BOXES
+         ========================================================= -->
+
+    <div style="
+        position:absolute;
+        top:268px;
+        left:62px;
+        width:470px;
+        height:24px;
+        display:flex;
+        font-size:20px;
+        font-weight:bold;
+        line-height:1.2;
+        text-align:center;
+    ">
+        <div style="width:235px;">
+            Right
+        </div>
+
+        <div style="width:235px;">
+            Left
+        </div>
+    </div>
+
+
+    <!-- =========================================================
+         THUMBPRINT BOXES
+         ========================================================= -->
+
+    <div style="
+        position:absolute;
+        top:292px;
+        left:62px;
+        width:470px;
+        height:270px;
+        display:flex;
+    ">
+
+        <!-- Right thumbprint -->
+        <div style="
+            width:235px;
+            height:270px;
+            border:2px solid #000000;
+            box-sizing:border-box;
+            position:relative;
+        ">
+            <div style="
+                position:absolute;
+                bottom:18px;
+                left:0;
+                width:100%;
+                text-align:center;
+                font-size:18px;
+            " contenteditable="true" data-field="right_thumb_impression">
+                Present
+            </div>
+        </div>
+
+        <!-- Left thumbprint -->
+        <div style="
+            width:235px;
+            height:270px;
+            border:2px solid #000000;
+            border-left:0;
+            box-sizing:border-box;
+            position:relative;
+        ">
+            <div style="
+                position:absolute;
+                bottom:18px;
+                left:0;
+                width:100%;
+                text-align:center;
+                font-size:18px;
+            " contenteditable="true" data-field="left_thumb_impression">
+                Present
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =========================================================
+         RIGHT SIDE
+         ========================================================= -->
+
+    <div style="
+        position:absolute;
+        top:245px;
+        left:610px;
+        width:525px;
+        font-size:20px;
+        line-height:1.25;
+    ">
+
+        <!-- Certificate number -->
+        <div class="row" style="margin-bottom:12px;">
+            <div class="label" style="width:185px;">
+                Certificate No.:
+            </div>
+
+            <div class="value" contenteditable="true" data-field="citizenship_no" style="width:300px;">
+                141036/87954
+            </div>
+        </div>
+
+        <!-- Officer heading -->
+        <div style="
+            font-weight:bold;
+            font-size:20px;
+            margin-bottom:10px;
+        ">
+            Officer Issuing this Certificate:
+        </div>
+
+        <!-- Signature -->
+        <div class="row" style="margin-bottom:10px;">
+            <div class="label" style="width:220px;">
+                Signature:
+            </div>
+
+            <div class="value" contenteditable="true" data-field="issuing_officer_signature" style="width:290px; min-height:24px;">
+                Sd.
+            </div>
+        </div>
+
+        <!-- Full name -->
+        <div class="row" style="margin-bottom:10px;">
+            <div class="label" style="width:220px;">
+                Full Name:
+            </div>
+
+            <div class="value" contenteditable="true" data-field="issuing_officer_name" style="width:290px;">
+                Purushottam Ghimire
+            </div>
+        </div>
+
+        <!-- Designation -->
+        <div class="row" style="margin-bottom:10px;">
+            <div class="label" style="width:220px;">
+                Designation:
+            </div>
+
+            <div class="value" contenteditable="true" data-field="issuing_officer_designation" style="width:290px;">
+                Deputy Chief District Officer
+            </div>
+        </div>
+
+        <!-- Date -->
+        <div class="row">
+            <div class="label" style="width:220px;">
+                Issue Date (BS):
+            </div>
+
+            <div class="value" contenteditable="true" data-field="issuing_issue_date_bs" style="width:290px;">
+                2008-01-28
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+</body></html>

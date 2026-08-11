@@ -73,6 +73,7 @@ import ast
 import base64
 import json
 import os
+import re
 import shlex
 import subprocess
 import sys
@@ -82,6 +83,7 @@ from typing import Any, Literal
 from dotenv import load_dotenv
 from agentic_controller.models import VerificationReport
 from agentic_controller.rag_engine import format_context, query_context
+from information_extraction.languages import DEFAULT_LANGUAGE, language_spec
 
 load_dotenv()
 
@@ -1094,8 +1096,12 @@ def _run_agent(
 
 
 
-def _parse_contract(final_text: str) -> dict[str, Any]:
-    """Extract the JSON contract from the agent's final message."""
+def _parse_json_object(final_text: str) -> dict[str, Any]:
+    """Extract a single JSON object from a model's final message.
+
+    Models fence their JSON about half the time and occasionally wrap it in a
+    sentence, so both are unwrapped here rather than at each call site.
+    """
     text = final_text.strip()
     if text.startswith("```"):
         # ```json ... ``` or ``` ... ```
@@ -1115,7 +1121,15 @@ def _parse_contract(final_text: str) -> dict[str, Any]:
             parsed = json.loads(text[start:end + 1])
         except json.JSONDecodeError as e:
             raise RuntimeError(f"Agent returned invalid JSON: {e}\n\n{final_text[:2000]}") from e
-    if not isinstance(parsed, dict) or "summary" not in parsed:
+    if not isinstance(parsed, dict):
+        raise RuntimeError(f"Agent JSON is not an object:\n\n{final_text[:2000]}")
+    return parsed
+
+
+def _parse_contract(final_text: str) -> dict[str, Any]:
+    """Extract the JSON contract from the agent's final message."""
+    parsed = _parse_json_object(final_text)
+    if "summary" not in parsed:
         raise RuntimeError(f"Agent JSON is missing 'summary':\n\n{final_text[:2000]}")
     return parsed
 
@@ -1307,6 +1321,417 @@ object. Begin."""
     return result
 
 
+# ── Geometry-first planning ───────────────────────────────────────
+#
+# ``document_builder.autolayout`` derives every coordinate from the scan's own
+# block geometry, which leaves exactly one question arithmetic cannot answer:
+# what each block *means*. :func:`plan_blocks` answers it in a single structured
+# call — no tool loop, because nothing here writes files — and
+# :func:`plan_to_schema` turns that answer into the extraction schema.
+
+_PLAN_ROLES = ("static", "value", "placeholder")
+
+_PLAN_CONTRACT = """{
+  "blocks": [
+    {
+      "block_id": "exactly as listed, e.g. /page/0/Text/9",
+      "role": "static | value | placeholder",
+      "text": "static: the block's text in the target language. value: the value visible in the scan, translated — used only to size the box.",
+      "field": "value only: a snake_case key, e.g. full_name",
+      "description": "value only: one sentence telling an extractor what to pull",
+      "label": "placeholder only: a short English caption, e.g. Official seal"
+    }
+  ]
+}"""
+
+_PLAN_SYSTEM = """You classify the blocks of a scanned official document.
+
+Every block's position is already decided, from the scan's own geometry. You are
+not writing code and not choosing coordinates. You decide only which of three
+roles each block has:
+
+- `static` — printed chrome, identical on every copy of this document: headings,
+  office names, field labels such as "Full Name:", legal boilerplate. Give its
+  `text` translated into {language}. That string is baked into the layout, so it
+  must read as finished {language} rather than as a gloss.
+- `value` — what differs per person or per copy: names, dates, numbers, places,
+  the answer that follows a label. Give a snake_case `field` and a `description`
+  an extractor can act on, plus `text`: the value visible in the scan,
+  translated. The text is used only to size the box and is never rendered.
+- `placeholder` — a seal, stamp, photograph, signature, or thumbprint. Give a
+  short English `label`. Imagery is never reproduced, only outlined.
+
+Rules:
+- One entry per block, for every block listed, in the order given. Do not invent
+  a block_id and do not merge two blocks into one entry.
+- A label and its value are separate blocks. "Full Name:" is static; the name
+  beside it is a value.
+- `field` names are unique across the document. Where a label repeats, qualify
+  it: `father_name`, `mother_name`, `father_citizenship_no`.
+- Prefer fewer values. Anything preprinted on the blank form is static.
+
+Reply with this JSON object and nothing else:
+
+{contract}"""
+
+
+def _plan_block_lines(placed: list[Any]) -> str:
+    """The numbered block list the planner classifies, one block per line."""
+    lines = []
+    for block in placed:
+        box = ", ".join(f"{v:.0f}" for v in block.bbox)
+        detail = f"alt={block.alt!r}" if block.kind == "Picture" else repr(block.text)
+        lines.append(f"{block.block_id}  {block.kind}  bbox=[{box}]  {detail}")
+    return "\n".join(lines)
+
+
+def _field_name(raw: str, taken: set[str], index: int) -> str:
+    """A unique snake_case identifier for a planned value field.
+
+    The model is asked for snake_case and mostly obliges, but a stray space or
+    capital would emit a layout that reads ``d['Full Name']`` while the schema
+    says ``full_name`` — a mismatch that renders blank rather than failing.
+    """
+    slug = re.sub(r"[^a-z0-9]+", "_", (raw or "").strip().lower()).strip("_")
+    if not slug or slug[0].isdigit():
+        slug = f"field_{index}" if not slug else f"f_{slug}"
+    candidate, n = slug, 2
+    while candidate in taken:
+        candidate, n = f"{slug}_{n}", n + 1
+    taken.add(candidate)
+    return candidate
+
+
+def plan_blocks(
+    placed: list[Any],
+    source_image: Path,
+    *,
+    target_language: str = DEFAULT_LANGUAGE,
+    verbose: bool = True,
+) -> dict[str, dict[str, Any]]:
+    """Classify each placed block as static text, an extractable value, or imagery.
+
+    One structured model call, not the tool-use loop: every coordinate is
+    already fixed by :mod:`document_builder.autolayout`, so there is nothing to
+    write and nothing to look up. The model sees the block list and the scan
+    together — the list alone loses which value belongs to which label, and the
+    scan alone loses the block ids the plan has to be keyed by.
+
+    Args:
+        placed: Blocks from ``autolayout.place``, in reading order.
+        source_image: The scan, attached so the model can see the layout it is
+            labelling.
+        target_language: Language code static text is translated into.
+        verbose: Print the backend and a role tally.
+
+    Returns:
+        ``block_id -> {"role": ..., "text"/"field"/"description"/"label": ...}``,
+        ready for ``autolayout.layout_source``. Blocks the model omitted are
+        absent; ``autolayout`` renders those as static text rather than dropping
+        them.
+
+    Raises:
+        RuntimeError: No backend key, or the reply held no usable JSON.
+    """
+    spec = language_spec(target_language)
+    system_prompt = _PLAN_SYSTEM.format(language=spec.name, contract=_PLAN_CONTRACT)
+    task = (
+        f"Classify all {len(placed)} blocks below. Coordinates are given for "
+        f"context only — they are already final.\n\n"
+        f"{_plan_block_lines(placed)}"
+    )
+    blocks = [_text(task), _text("The scan those blocks came from:"), _image(source_image)]
+
+    backend, client, model = _select_backend()
+    if verbose:
+        print(f"  planner: {backend} ({model}), {len(placed)} blocks -> {spec.name}")
+
+    if backend == "anthropic":
+        response = client.messages.create(
+            model=model, max_tokens=16_000, system=system_prompt,
+            messages=[{"role": "user", "content": _to_anthropic_blocks(blocks)}],
+        )
+        final = "\n".join(
+            b.text for b in response.content if getattr(b, "type", None) == "text"
+        ).strip()
+    else:
+        response = client.chat.completions.create(
+            model=model, max_tokens=16_000,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": _to_openai_blocks(blocks)},
+            ],
+        )
+        final = (response.choices[0].message.content or "").strip()
+
+    return _parse_plan(final, placed)
+
+
+def _parse_plan(final_text: str, placed: list[Any]) -> dict[str, dict[str, Any]]:
+    """Turn the planner's reply into a plan keyed by block id.
+
+    Every entry is checked against the blocks that were actually sent. A model
+    that invents a block id, or answers with a role outside the vocabulary, is
+    corrected here rather than emitting a layout entry for a box that does not
+    exist.
+    """
+    parsed = _parse_json_object(final_text)
+    entries = parsed.get("blocks")
+    if not isinstance(entries, list) or not entries:
+        raise RuntimeError(f"Planner returned no 'blocks' list:\n\n{final_text[:2000]}")
+
+    known = {b.block_id: b for b in placed}
+    plan: dict[str, dict[str, Any]] = {}
+    taken: set[str] = set()
+
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            continue
+        block_id = str(entry.get("block_id") or "")
+        block = known.get(block_id)
+        if block is None or block_id in plan:
+            continue
+
+        role = str(entry.get("role") or "").strip().lower()
+        if role not in _PLAN_ROLES:
+            role = "placeholder" if block.kind == "Picture" else "static"
+        # A picture has no text to bake and a text block has no imagery to
+        # outline, so a role that contradicts the block's own kind is a
+        # misread. Correct it rather than emitting an empty box.
+        if block.kind == "Picture":
+            role = "placeholder"
+        elif role == "placeholder":
+            role = "static"
+
+        if role == "placeholder":
+            plan[block_id] = {
+                "role": "placeholder",
+                "label": str(entry.get("label") or block.alt or "Image").strip(),
+            }
+        elif role == "value":
+            plan[block_id] = {
+                "role": "value",
+                "field": _field_name(str(entry.get("field") or ""), taken, index),
+                "description": str(entry.get("description") or "").strip(),
+                "text": str(entry.get("text") or block.text).strip(),
+            }
+        else:
+            plan[block_id] = {
+                "role": "static",
+                # Falling back to the source string keeps the block on the page
+                # in its original script, which is worth more than a gap.
+                "text": str(entry.get("text") or block.text).strip() or block.text,
+            }
+    if not plan:
+        raise RuntimeError(
+            f"Planner matched none of the {len(placed)} block ids:\n\n{final_text[:2000]}"
+        )
+    return plan
+
+
+def plan_to_schema(
+    plan: dict[str, dict[str, Any]],
+    document_type: str,
+    *,
+    title: str | None = None,
+    description: str | None = None,
+) -> dict[str, Any]:
+    """Build the extraction schema for the value fields *plan* names.
+
+    Every value field lands in ``required``: ``build_data`` keeps only required
+    keys, so a field that is merely a property extracts and then renders blank.
+    """
+    properties: dict[str, Any] = {}
+    for entry in plan.values():
+        if entry.get("role") != "value":
+            continue
+        name = entry.get("field")
+        if not name or name in properties:
+            continue
+        properties[name] = {
+            "type": "string",
+            "description": entry.get("description") or f"The {name.replace('_', ' ')}.",
+        }
+
+    pretty = document_type.replace("_", " ").title()
+    return {
+        "type": "object",
+        "title": title or pretty,
+        "description": description or f"Fields extracted from a {pretty} document.",
+        "properties": properties,
+        "required": list(properties),
+    }
+
+
+def write_plan_schema(
+    plan: dict[str, dict[str, Any]], document_type: str, *, path: Path | None = None
+) -> Path:
+    """Write :func:`plan_to_schema` output to the schema directory and return it."""
+    target = path or (SCHEMA_DIR / f"{document_type}.json")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(
+        json.dumps(plan_to_schema(plan, document_type), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    return target
+
+
+def build_from_geometry(
+    source_image: Path,
+    document_type: str,
+    *,
+    layout_target: Path,
+    schema_target: Path,
+    conversion_path: Path | None = None,
+    target_language: str = DEFAULT_LANGUAGE,
+    iteration: int = 1,
+    verbose: bool = True,
+) -> RepairResult | None:
+    """Build a layout and schema from the scan's own block geometry.
+
+    The geometry-first path: Datalab's ``/convert`` gives every block's bounding
+    box, :mod:`document_builder.autolayout` scales those onto an A4 sheet, and
+    the model is asked only what each block means. The agent never chooses a
+    coordinate, so the first draft already has the source's aspect ratio and the
+    relative placement of its text and pictures.
+
+    Args:
+        source_image: The scan to convert.
+        document_type: Slug; names ``build_<document_type>``.
+        layout_target: Where to write the layout module.
+        schema_target: Where to write the extraction schema.
+        conversion_path: A ``/convert`` JSON saved earlier. Given, no API call is
+            made — this is how the path runs offline and how a re-run avoids
+            paying for the same conversion twice.
+        target_language: Language static text is baked in.
+        iteration: Recorded on the result.
+        verbose: Print each stage.
+
+    Returns:
+        A :class:`RepairResult`, or **None** when any stage fails. None is the
+        signal to fall back to the agent-writes-everything path: no API key, a
+        refused conversion, a page that segmented into nothing, a reply that did
+        not parse, or a layout that failed the gate. A worse first draft beats a
+        failed run, so nothing here raises.
+    """
+    # Imported here, not at module scope: the conversion module constructs a
+    # Datalab client at import time, and ``architect`` is imported by callers
+    # that never touch the geometry path and may have no key at all.
+    try:
+        from document_builder.autolayout import (
+            blocks_from_conversion,
+            layout_source,
+            page_geometry,
+            place,
+        )
+        from information_extraction.conversion import convert, load_conversion
+    except Exception as e:  # noqa: BLE001 - any import failure means fall back
+        if verbose:
+            print(f"  geometry path unavailable ({e.__class__.__name__}: {e})")
+        return None
+
+    # Anything this function creates and then abandons has to go. ``layout.py``
+    # is what makes a type discoverable, so a broken one left on disk turns a
+    # fall-back into a permanently broken document type. Files that already
+    # existed are left alone — a rebuild must not delete the layout in use.
+    created: list[Path] = [p for p in (layout_target, schema_target) if not p.exists()]
+
+    def _discard() -> None:
+        for path in created:
+            try:
+                path.unlink(missing_ok=True)
+            except OSError:
+                pass
+
+    try:
+        if conversion_path is not None:
+            conversion = load_conversion(conversion_path)
+            if verbose:
+                print(f"  conversion: {conversion_path} (cached)")
+        else:
+            if verbose:
+                print(f"  conversion: /convert on {source_image.name}")
+            conversion = convert(source_image)
+
+        blocks = blocks_from_conversion(conversion)
+        if not blocks:
+            if verbose:
+                print("  geometry path skipped: the conversion held no usable blocks")
+            return None
+
+        geometry = page_geometry(blocks)
+        placed = place(blocks, geometry)
+        if verbose:
+            orientation = "landscape" if geometry.landscape else "portrait"
+            print(
+                f"  geometry: {len(placed)} blocks -> A4 {orientation} "
+                f"{geometry.page_width}x{geometry.page_height}, scale {geometry.scale:.4f}"
+            )
+
+        plan = plan_blocks(
+            placed, source_image, target_language=target_language, verbose=verbose
+        )
+        schema_path = write_plan_schema(plan, document_type, path=schema_target)
+        ok_schema, schema_msg = validate_schema(schema_path)
+        if not ok_schema:
+            if verbose:
+                print(f"  geometry path abandoned: {schema_msg}")
+            _discard()
+            return None
+
+        layout_target.parent.mkdir(parents=True, exist_ok=True)
+        layout_target.write_text(
+            layout_source(placed, plan, document_type, geometry), encoding="utf-8"
+        )
+    except Exception as e:  # noqa: BLE001 - fall back rather than fail the run
+        if verbose:
+            print(f"  geometry path failed ({e.__class__.__name__}: {e})")
+        _discard()
+        return None
+
+    roles = [entry.get("role") for entry in plan.values()]
+    result = RepairResult(
+        summary=(
+            f"Built {layout_target.name} from the scan's own block geometry: "
+            f"{len(placed)} blocks scaled by {geometry.scale:.4f} onto an A4 "
+            f"{'landscape' if geometry.landscape else 'portrait'} sheet "
+            f"({roles.count('static')} static, {roles.count('value')} value, "
+            f"{roles.count('placeholder')} placeholder). "
+            f"{schema_msg}"
+        ),
+        needs_reextraction=True,  # nothing has been extracted yet, by definition
+        schema_path=schema_path,
+        layout_path=layout_target,
+        iteration=iteration,
+        history=[
+            {"tool": "(autolayout)", "input": {"source": str(source_image)},
+             "result": f"{len(placed)} blocks placed"},
+            {"tool": "(plan_blocks)", "input": {"language": target_language},
+             "result": f"{len(plan)} blocks classified"},
+        ],
+    )
+
+    ok, msg = validate_layout(layout_target, document_type, schema_path)
+    result.history.append({"tool": "(validate_layout)", "input": {}, "result": msg})
+    result.layout_valid = ok
+    result.validation_message = msg
+    if verbose:
+        print(f"  validate_layout: {'OK' if ok else 'FAILED'} — {msg}")
+    if not ok:
+        # The gate is the whole point of generating deterministically: a layout
+        # that does not build is worth less than the agent's attempt, so hand
+        # the run back rather than promoting it.
+        if verbose:
+            print("  geometry path abandoned: falling back to the agent")
+        _discard()
+        return None
+
+    result.promoted = promote_layout(document_type, layout_target)
+    if verbose:
+        print(f"  promoted: {layout_target.name} is now the live layout")
+    return result
+
+
 # ── Public entry point: generate from scratch ─────────────────────
 
 def generate_resources(
@@ -1314,16 +1739,37 @@ def generate_resources(
     document_type: str,
     *,
     user_notes: str | None = None,
+    conversion_path: Path | None = None,
+    target_language: str = DEFAULT_LANGUAGE,
+    use_geometry: bool = True,
     max_tool_calls: int = MAX_TOOL_CALLS,
     verbose: bool = True,
 ) -> RepairResult:
     """Create a layout builder and extraction schema for an unseen document type.
 
-    This is the feature that ``controller-old/graph.py`` left as a
-    ``NotImplementedError`` stub. The agent sees only the source scan — no render
-    exists yet — and must infer the structure, write
-    ``information_extraction/schemas/<doc_type>.json`` and
-    ``document_builder/<doc_type>/layout.py``, imitating an existing builder.
+    Two routes, tried in order.
+
+    **Geometry first** (:func:`build_from_geometry`). Datalab's ``/convert``
+    already knows where every block on the scan sits, so the layout is computed
+    rather than invented and the model is asked only what each block means. This
+    is the default because a coordinate the agent guessed is a coordinate the
+    repair loop then spends iterations undoing.
+
+    **The agent, writing both files itself.** The original route, and the
+    fallback whenever the geometry route cannot finish — no Datalab key, a page
+    that segmented into nothing, a plan that did not parse, a layout that failed
+    the gate. It sees only the source scan and must infer the structure,
+    imitating an existing builder.
+
+    Args:
+        source_image: The scan. Attached to every model call as an image.
+        document_type: Slug, e.g. ``"laalpurja"``.
+        user_notes: Free text steering the agent route.
+        conversion_path: A ``/convert`` JSON saved earlier, so the geometry
+            route can run without calling the API again.
+        target_language: Language static text is baked in, on the geometry route.
+        use_geometry: Set False to force the agent route.
+        max_tool_calls: Budget for the agent route's tool loop.
 
     The returned ``needs_reextraction`` is always True: nothing has been
     extracted yet.
@@ -1341,6 +1787,25 @@ def generate_resources(
     # and drop the type out of discovery entirely instead of degrading to a
     # working layout. Repairs still write ``layout_N.py`` beside this one.
     layout_target = BUILDER_DIR / document_type / "layout.py"
+
+    if verbose:
+        print(f"Architect (generate) — new document type '{document_type}'")
+
+    if use_geometry:
+        result = build_from_geometry(
+            source_image,
+            document_type,
+            layout_target=layout_target,
+            schema_target=schema_target,
+            conversion_path=conversion_path,
+            target_language=target_language,
+            verbose=verbose,
+        )
+        if result is not None:
+            return result
+        if verbose:
+            print("  falling back to the agent-written layout")
+
     notes_block = (
         f"\n## Notes from the user\n\n{user_notes.strip()}\n" if user_notes and user_notes.strip() else ""
     )
@@ -1379,9 +1844,6 @@ schema, then the layout, then return the JSON object. Begin."""
         _text(f"SOURCE scan of the {document_type} document:"),
         _image(source_image),
     ]
-
-    if verbose:
-        print(f"Architect (generate) — new document type '{document_type}'")
 
     final_text, history = _run_agent(
         _build_system_prompt("generate"),

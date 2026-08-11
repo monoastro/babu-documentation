@@ -23,6 +23,7 @@ from html_engine import Document, Style, Text  # noqa: E402
 from html_engine.monochrome import (  # noqa: E402
     BLACK,
     WHITE,
+    css_surface,
     find_violations,
     normalize_declarations,
     normalize_html,
@@ -156,6 +157,44 @@ def test_normalize_html_leaves_body_text_alone():
 def test_find_violations_reports_pairs():
     assert find_violations("margin:0;color:#000000;background:#ffffff") == []
     assert ("color", "red") in find_violations("color:red")
+
+
+def test_css_surface_separates_style_from_prose():
+    """A page contributes its style attributes and style blocks, nothing else."""
+    html = '<style>p{color:red}</style><div style="margin:0">a red seal</div>'
+    assert css_surface(html) == ["margin:0", "p{color:red}"]
+    # No markup at all: the whole string is a CSS fragment.
+    assert css_surface("color:red") == ["color:red"]
+    assert css_surface("") == []
+
+
+def test_find_violations_ignores_document_prose():
+    """
+    An autolayout placeholder caption reads "Red circular official seal of the
+    Government of Nepal". Scanning a whole page as CSS reported that as a
+    violation: ``_DECLARATION`` matched the tag's own ``style="..."`` and then
+    ran its value past the closing quote to the next ``;`` — through the body
+    text, where "Red" reads as a colour token.
+    """
+    html = (
+        '<div style="display:flex;align-items:center">'
+        "Red circular official seal of the Government of Nepal"
+        "</div>"
+    )
+    assert find_violations(html) == []
+
+
+def test_find_violations_still_catches_a_leak_beside_prose():
+    """The narrowed scan must not have narrowed past a genuine violation."""
+    html = (
+        '<style>.page{background:lightblue}</style>'
+        '<div style="color:#4a90d9">a red seal</div>'
+    )
+    leaks = find_violations(html)
+    assert ("color", "#4a90d9") in leaks, leaks
+    assert ("background", "lightblue") in leaks, leaks
+    # The prose contributed nothing.
+    assert len(leaks) == 2, leaks
 
 
 def test_registered_layouts_render_monochrome():

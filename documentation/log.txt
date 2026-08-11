@@ -25,5 +25,14 @@ layout.py
 schema
 html_engine docs
 
-graphify is installed but not recognized as a skill, reference your skills in .claude/skills and run graphify
+-----
+1. fixing initial layout builder
+-should follow rules such as should maintain aspect ratio and relative positioning of texts
+must preserve the a4 size 
 
+ideally done using bounding boxes from datalab
+rotation of bounding boxes
+
+2. we shall implement the html editor later, for now use an existing editor
+
+3. patching loop doesn't need the verification report type shit, just the input document, output generated, layout and schema

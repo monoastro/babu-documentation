@@ -24,7 +24,7 @@ python main.py test-data/demo.png --type letter --no-translate
 # Build with empty values, to check layout and spacing alone
 python main.py --type laalpurja --blank --png
 """
-
+#claude --resume 2c0b20bb-0c2c-48ac-bc42-4e38b7df89e6
 from __future__ import annotations
 
 import argparse
@@ -35,7 +35,7 @@ from pathlib import Path
 from document_builder.registry import DOCUMENTS
 from information_extraction.languages import DEFAULT_LANGUAGE, LANGUAGES
 
-DEFAULT_OUTPUT_DIR = Path("test-output")
+DEFAULT_OUTPUT_DIR = Path("translated")
 
 # Key under which a saved JSON carries the pre-translation values. Underscored
 # so it cannot collide with a schema field, and popped on load so it never

@@ -493,6 +493,76 @@ be a Python identifier, because it becomes part of `build_<type>` — a scan nam
 Or skip both and let the Architect Agent generate them — see
 `generate_resources` below.
 
+### Generated layouts: geometry from the scan (`autolayout.py`)
+
+A generated layout is not invented. `document_builder/autolayout.py` turns
+Datalab's `/convert` block tree into layout source, and only what each block
+*means* is left to the model.
+
+```text
+conversion  →  blocks_from_conversion  →  page_geometry  →  place
+                                                              │
+                     plan (from architect.plan_blocks)  ────→ │
+                                                              ↓
+                                                        layout_source
+```
+
+Everything in that top row is arithmetic — no model, no network, no API key — so
+the same scan gives the same layout every time and a bad result is debuggable
+rather than resampled. `tests/test_autolayout.py` runs the whole path offline
+against a saved `/convert` reply in `tests/fixtures/`.
+
+**The A4 contract.** The sheet is exactly A4 at 96 DPI — 794 × 1123 portrait or
+1123 × 794 landscape — because that is the paper these documents are printed on.
+Three rules make the source survive the trip onto it:
+
+- **Orientation follows the source's own aspect.** A landscape citizenship
+  certificate is not letterboxed onto a portrait page.
+- **One scale for both axes.** `min(inner_w / extent_w, inner_h / extent_h)`.
+  Two factors would fit the sheet exactly and distort every box doing it; the
+  slack on the other axis becomes margin instead. This is the aspect-ratio
+  guarantee, and the test suite asserts it directly rather than inferring it
+  from a render.
+- **The *ink extent* is normalized, not the page box.** The two disagree, and
+  non-uniformly: on the citizenship scan the conversion page is 1372 × 980
+  (aspect 1.400) around ink that is 1201 × 799 (aspect 1.503). Scaling against
+  the page box would bake Datalab's own padding into the sheet.
+
+Nothing is placed outside a 10 mm margin, so a printer's unprintable edge never
+clips a field. Per block: `left = offset_x + (x0 - ink_x0) × scale`, and the
+font size comes from the box height × 0.62 — a bbox is the line box, and cap
+height plus descender is roughly that fraction of it, so a font sized to the
+full box overflows. `fit_text` shrinks further when a translated string is
+longer than the Devanagari it replaces.
+
+**The semantic half** is `architect.plan_blocks`, one structured model call that
+labels each block:
+
+| Role | What is emitted | Where it goes |
+|---|---|---|
+| `static` | `Text('District Administration Office')` — the translation, baked in | nowhere; it is printed chrome |
+| `value` | `Text(d['full_name'], field='full_name')` | a schema property, **and** `required` |
+| `placeholder` | `PlaceholderBox('Official seal', shape='circle')` | nowhere |
+
+Every value field lands in the schema's `required` list because `build_data`
+keeps only what is listed there — a field the layout renders but the schema
+omits would be permanently blank. A block with no plan entry still renders as
+static text: dropping it would silently lose content the scan clearly had, and
+the agent reviewing the render cannot ask back for something it cannot see.
+
+A placeholder's caption is cut to fit its box. Datalab's `alt` is a full
+sentence ("A color photograph of a man with short black hair, wearing a dark
+suit jacket…"), which would overflow the box it labels. Shape follows whichever
+the caption mentions first, round or rectangular, because a caption names its
+subject before it says where the subject sits — "a red circular stamp
+overlapping the photo" is a circle, not a photo box.
+
+**Rebuilding an existing type.** `run.py --rebuild-layout` runs the same path
+for a type that already has a layout, as a proposal only: the layout is written
+to `layout_N.py` beside the original and the schema to the `<type>_patched.json`
+sidecar, and `ACTIVE` moves only if `validate_layout` passes. `layout.py` is
+never touched. Without the flag an existing type is untouched entirely.
+
 ---
 
 ## Information extraction
@@ -793,10 +863,23 @@ Two entry points:
 - **`analyze_and_repair()`** — a render exists and failed verification. The
   agent receives the `VerificationReport` plus both images and writes
   `layout_N.py` / `<doc>_patched.json`.
-- **`generate_resources()`** — no layout or schema exists. The agent receives
-  the source scan alone and writes both from scratch. This was the
-  `NotImplementedError` stub in the old controller; it is now the feature that
-  makes the pipeline self-extending.
+- **`generate_resources()`** — no layout or schema exists. Two routes, tried in
+  order. **Geometry first**: `build_from_geometry()` derives every coordinate
+  from the scan's own `/convert` block boxes (see *Generated layouts* above) and
+  asks the model only what each block means. **The agent writing both files
+  itself** is the original route and the fallback — it sees the source scan
+  alone and must infer the structure, imitating an existing builder. Either way
+  this is the feature that makes the pipeline self-extending; it was a
+  `NotImplementedError` stub in the old controller.
+
+The geometry route falls back rather than fails. No `DATALAB_API_KEY`, a
+refused `/convert`, a page that segmented into nothing, a plan that did not
+parse, or a `validate_layout` failure all hand the run to the agent route and
+print why. It also **discards what it created** on the way out: a broken
+`layout.py` left on disk would turn a fall-back into a permanently broken
+document type, since a layout is what makes a type discoverable. Files that
+already existed are left alone, so a `--rebuild-layout` run cannot delete the
+layout in use.
 
 Every call carries four context sources: the source scan, the rendered output
 (absent on a from-scratch run), the current layout and schema paths, and
@@ -1000,7 +1083,7 @@ python -m agentic_controller.architect generate <type> source.png --notes "..."
 python -m agentic_controller.rag_engine query "how do I center a heading"
 python -m agentic_controller.rag_engine stats
 
-# Tests — all 9 suites, 156 tests, no pytest needed
+# Tests — all 10 suites, 183 tests, no pytest needed
 python tests/run_all.py
 python tests/test_styles.py        # or one suite directly
 ```
@@ -1011,6 +1094,7 @@ python tests/test_styles.py        # or one suite directly
 | `test_monochrome.py` | All four CSS routes to the page, plus every registered layout |
 | `test_components.py` | Placeholders, watermark inertness, signature block, the `field=` contract, child coercion |
 | `test_layout_gate.py` | `validate_layout` catches errors inside a builder body, not just at import |
+| `test_autolayout.py` | The geometry half, run offline against a saved `/convert` reply: every block parsed, the extent taken from the ink rather than the page, one scale for both axes, the fit centred inside the margin, reading order and relative position preserved, captions cut to their box, and the emitted module passing the same four gates with every field still surviving `build_data` |
 | `test_main_cli.py` | `--blank` / `--data` never reach OCR; argument validation |
 | `test_command_sandbox.py` | Every route `execute_command` used to leave open: `python -c`, redirection, chaining, substitution, newlines; the originals guard; and `_write_allowed()` refusing an *existing* `layout.py` or base schema while permitting a brand-new type to create its own |
 | `test_registry_resolution.py` | `ACTIVE` selects the live layout and degrades to `layout.py` rather than raising; traversal in `ACTIVE` is rejected; discovery finds new types and skips incomplete ones; promotion round-trips and takes effect inside one process; iteration imports no layouts |
