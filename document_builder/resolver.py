@@ -1,32 +1,22 @@
-"""
-Which layout is live, and which document types exist.
+"""Which layout is live, and which document types exist.
 
-Both questions used to be answered by hand-written import statements in
-``registry.py``. That made promotion a two-step edit — write ``layout_2.py``,
-then repoint the registry — and a missed second step left the tree unimportable:
-one dangling ``from document_builder.citizenship_back.layout_1 import ...`` took
-down all four document types, ``main.py``, and four of six test suites.
-
-The answers now come from the filesystem.
+Both questions are answered from the filesystem.
 
 **Which layout is live** is whatever ``ACTIVE`` names. It holds one bare
 filename, nothing else::
 
     document_builder/citizenship_back/ACTIVE   ->  "layout_1.py"
 
-No ``ACTIVE`` file means ``layout.py``, so a directory that never patched
-anything needs no bookkeeping. The architect writes ``ACTIVE`` only after
-``validate_layout`` passes, which is what makes automatic promotion safe: a
-layout that does not build cannot become live, and the previous good one stays
-up. Rolling back is editing one line, and ``git diff`` shows the history.
+No ``ACTIVE`` file means ``layout.py``. The architect writes ``ACTIVE`` only
+after ``validate_layout`` passes, so a layout that does not build cannot become
+live. Rolling back is editing one line.
 
-**Which types exist** is every directory holding both a layout and a schema. A
-generated document type is usable on the next run with no code edit.
+**Which types exist** is every directory holding both a layout and a schema, so
+a generated type is usable on the next run with no code edit.
 
-This module deliberately imports nothing from ``agentic_controller`` or
-``html_engine`` — ``registry.py`` and ``architect.py`` both depend on it, and a
-cycle between them is how the duplicated path logic got out of sync in the first
-place.
+This module imports nothing from ``agentic_controller`` or ``html_engine``:
+``registry.py`` and ``architect.py`` both depend on it and a cycle would be
+fatal.
 """
 
 from __future__ import annotations
@@ -57,11 +47,10 @@ def _type_dir(document_type: str, *, builder_dir: Path | None = None) -> Path:
 # ── Schemas ───────────────────────────────────────────────────────
 
 def resolve_schema_path(document_type: str, *, schema_dir: Path | None = None) -> Path:
-    """Return the schema the pipeline should actually extract with.
+    """Return the schema the pipeline should extract with.
 
-    Prefers a ``<doc>_patched.json`` sidecar over the original. Skipping this is
-    what makes a schema repair look like a silent no-op: OCR re-runs against the
-    unpatched base and the repaired fields never appear.
+    Prefers a ``<doc>_patched.json`` sidecar over the original, so a schema
+    repair is not a silent no-op.
     """
     directory = schema_dir or SCHEMA_DIR
     patched = directory / f"{document_type}_patched.json"
@@ -78,8 +67,8 @@ def active_layout_path(
     """Return the layout ``ACTIVE`` names, or ``layout.py``, or None.
 
     Never raises and never returns a path outside the type's own directory. A
-    malformed or dangling pointer degrades to the rollback original with a
-    warning, because a stale pointer should cost a stale render, not a crash.
+    malformed or dangling pointer degrades to the rollback original, warning on
+    stderr — a stale pointer should cost a stale render, not a crash.
     """
     directory = _type_dir(document_type, builder_dir=builder_dir)
     if not directory.is_dir():
@@ -120,9 +109,8 @@ def latest_layout_path(
 ) -> Path | None:
     """Highest-numbered ``layout_N.py``, else ``layout.py``, else None.
 
-    The newest layout written, which is not necessarily the live one — an
-    unpromoted ``layout_3.py`` sits here while ``ACTIVE`` still names
-    ``layout_2.py``. Use :func:`active_layout_path` to decide what to build.
+    The newest layout written, not necessarily the live one — use
+    :func:`active_layout_path` to decide what to build.
     """
     directory = _type_dir(document_type, builder_dir=builder_dir)
     if not directory.is_dir():
@@ -141,7 +129,7 @@ def next_layout_path(document_type: str, *, builder_dir: Path | None = None) -> 
     """Return the next unused ``layout_N.py`` for *document_type*.
 
     ``layout.py`` is the rollback original and is never written to; iterations
-    land beside it as ``layout_1.py``, ``layout_2.py``, ... .
+    land beside it as ``layout_1.py``, ``layout_2.py``, ...
     """
     directory = _type_dir(document_type, builder_dir=builder_dir)
     n = 1
@@ -155,12 +143,9 @@ def promote_layout(
 ) -> Path:
     """Make *layout_path* the live layout by writing ``ACTIVE``.
 
-    Callers must only reach this after ``validate_layout`` passes — that gate is
-    the entire reason automatic promotion is safe. Returns the ``ACTIVE`` path.
-
-    Promotion writes a pointer, never the layout itself, so ``layout.py`` stays
-    byte-identical as the rollback original. Copying a patch over ``layout.py``
-    is what destroyed the original the manual process was supposed to protect.
+    Callers must only reach this after ``validate_layout`` passes. Writes a
+    pointer, never the layout itself, so ``layout.py`` stays byte-identical as
+    the rollback original. Returns the ``ACTIVE`` path.
     """
     directory = _type_dir(document_type, builder_dir=builder_dir)
     if not directory.is_dir():
@@ -193,8 +178,7 @@ def discover_document_types(
     """Every document type with both a resolvable layout and a schema.
 
     A directory with a layout but no schema is not yet a document type: the
-    pipeline cannot extract for it, so offering it in ``--type`` would only
-    produce a confusing failure later.
+    pipeline cannot extract for it, so ``--type`` must not offer it.
     """
     directory = builder_dir or BUILDER_DIR
     if not directory.is_dir():
@@ -206,8 +190,7 @@ def discover_document_types(
             continue
         name = child.name
         # A builder name has to be a Python identifier: it becomes part of
-        # `build_<type>`. `__pycache__` is excluded by the same rule that
-        # excludes `tax-clearance`.
+        # `build_<type>`. This is also what excludes `__pycache__`.
         if name.startswith("_") or not name.isidentifier():
             continue
         if active_layout_path(name, builder_dir=directory) is None:
@@ -225,10 +208,9 @@ def load_builder(
 ) -> Callable[[dict[str, Any]], Any]:
     """Import the active layout and return its ``build_<document_type>``.
 
-    Loaded from a file path rather than by module name. ``ACTIVE`` can name any
-    ``layout_N.py``, and a promotion inside a live process has to take effect
-    without a stale ``sys.modules`` entry serving the old builder — which is the
-    mid-run promotion this whole mechanism exists to allow.
+    Loaded from a file path rather than by module name, so ``ACTIVE`` can name
+    any ``layout_N.py`` and a mid-run promotion takes effect without a stale
+    ``sys.modules`` entry serving the old builder.
     """
     layout_path = active_layout_path(document_type, builder_dir=builder_dir)
     if layout_path is None:

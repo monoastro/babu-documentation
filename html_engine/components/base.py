@@ -1,5 +1,4 @@
-"""
-Abstract base class for all HTML Document Engine components.
+"""Abstract base class for all HTML Document Engine components.
 
 Every renderable element (Text, Image, Table, etc.) inherits from
 ``Component`` and implements ``to_html()``.
@@ -15,23 +14,11 @@ if TYPE_CHECKING:
 
 
 def coerce_child(value: Any, *, owner: str = "Component", index: int = 0) -> Optional[Component]:
-    """
-    Turn one constructor argument into a child component, or reject it.
+    """Turn one constructor argument into a child component, or reject it.
 
-    Containers take components, but a bare string is not ambiguous —
-    ``Div("(Signed)")`` can only mean a div containing that text. Left
-    uncoerced it used to survive construction and then fail during rendering
-    with ``AttributeError: 'str' object has no attribute 'to_html'``, raised
-    from inside ``_render_children`` with nothing in the traceback naming the
-    layout, the container, or the string. Numbers are coerced for the same
-    reason.
-
-    ``None`` is skipped, so a conditional child (``Div(*(row if rows else
-    None))``) collapses instead of crashing, matching the project rule that a
-    missing value renders as nothing rather than as ``"None"``.
-
-    Anything else is a real mistake — a list, a dict, a raw ``Style`` — and
-    raises ``TypeError`` naming the position and the type.
+    Components pass through. Strings and numbers become ``Text``. ``None`` is
+    skipped, so a conditional child collapses instead of rendering ``"None"``.
+    Anything else raises ``TypeError`` naming the position and the type.
     """
     from html_engine.components.text import Text
 
@@ -40,7 +27,6 @@ def coerce_child(value: Any, *, owner: str = "Component", index: int = 0) -> Opt
     if isinstance(value, Component):
         return value
     if isinstance(value, str):
-        # Text escapes by default, which is the safe reading of a bare string.
         return Text(value)
     if isinstance(value, (int, float)) and not isinstance(value, bool):
         return Text(str(value))
@@ -66,14 +52,11 @@ def coerce_children(
 
 
 def editable_attrs(field: str) -> dict[str, str]:
-    """
-    Attributes that make one rendered value editable in the browser.
+    """Attributes that make one rendered value editable in the browser.
 
-    The ``data-field`` path is the contract the web editor writes back
-    through, so it must match the extraction schema's key exactly — dotted for
-    nesting, indexed for list rows (``plots.0.plot_no``). Every layout used to
-    redeclare this as a private ``_ea()`` helper; centralizing it means a
-    builder cannot render a value that silently is not editable.
+    The ``data-field`` path is the contract the web editor writes back through,
+    so it must match the extraction schema's key exactly — dotted for nesting,
+    indexed for list rows (``plots.0.plot_no``).
     """
     return {"contenteditable": "true", "data-field": field}
 
@@ -86,12 +69,10 @@ class Component(ABC):
         style: Optional inline styles applied to this component.
         css_class: Optional CSS class name(s) to add to the element.
         children: Nested child components (for container elements).
-        attrs: Optional dict of arbitrary HTML attributes (e.g.
-            ``{"contenteditable": "true", "data-field": "name"}``).
+        attrs: Optional dict of arbitrary HTML attributes.
         field: Dotted path of the data field this element renders, e.g.
             ``"owner_name"`` or ``"plots.0.plot_no"``. Expands to
-            ``contenteditable="true" data-field="<path>"`` — see
-            ``editable_attrs``.
+            ``contenteditable="true" data-field="<path>"``.
     """
 
     def __init__(
@@ -116,11 +97,7 @@ class Component(ABC):
                 self.attrs.setdefault(key, value)
 
     def add(self, *components: Any) -> Component:
-        """Append one or more child components. Returns self for chaining.
-
-        Accepts the same values as the constructor — components, strings,
-        numbers, or ``None`` — see :func:`coerce_child`.
-        """
+        """Append one or more child components. Returns self for chaining."""
         self.children.extend(
             coerce_children(components, owner=type(self).__name__)
         )
@@ -131,12 +108,10 @@ class Component(ABC):
         return "".join(child.to_html() for child in self.children)
 
     def _build_attrs(self, extra_style: Optional[Style] = None) -> str:
-        """
-        Build the HTML attribute string for this element.
+        """Build the HTML attribute string for this element.
 
-        Combines ``css_class``, ``style`` (merged with any extra_style),
-        and arbitrary ``attrs`` into a string like
-        ``class="foo" style="color:red" contenteditable="true"``.
+        Combines ``css_class``, ``style`` (merged with any *extra_style*), and
+        arbitrary ``attrs``.
         """
         from html_engine.styles import Style as _Style
 
@@ -155,8 +130,7 @@ class Component(ABC):
                 parts.append(attr.strip())
 
         for key, val in self.attrs.items():
-            # A raw style attribute bypasses Style.to_css() entirely, so it
-            # needs normalizing here too — see html_engine.monochrome.
+            # A raw style attribute bypasses Style.to_css(), so normalize here.
             if key.strip().lower() == "style":
                 from html_engine.monochrome import normalize_declarations
 

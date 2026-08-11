@@ -1,0 +1,144 @@
+{
+  "letter_no": "2082/83",
+  "ref_no": "259",
+  "office_name": "Nagarjun Municipality 10 No. Ward Office",
+  "municipality": "Nagarjun Municipality",
+  "ward_no": "10",
+  "district": "Kathmandu",
+  "province": "Bagmati Province",
+  "date": "2025-10-19",
+  "subject": "RELATIONSHIP VERIFICATION",
+  "main_text": "This is to certify that Mr. Aaditya Joshi, grandson of Mr. Pitambar Joshi, son of Mr. Devkant Joshi and Mrs. Yashoda Kumari Bhatta Joshi, a permanent resident of Nagarjun Municipality, Ward No. 10, Kathmandu District, Bagmati Province, Nepal, (Previously: Syuchatar V.D.C, Ward No. 2, Kathmandu District, Bagmati Province, Nepal). This certificate is issued according to Chapter 3, Section 12, Sub-Section 2, Clause (E), Sub-Clause (1) of the Local Government Operation Act 2074 B.S. (2017 A.D.). As per the application processed in this office, the following members are the relatives of the applicant as mentioned below.",
+  "family_members": [
+    {
+      "name": "Mr. Aaditya Joshi",
+      "name_citations": [
+        "/page/0/Caption/12"
+      ],
+      "name_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Caption/12"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Block /page/0/Caption/12 on page 1 states 'Mr. Aaditya Joshi'.\nConclusion: Mr. Aaditya Joshi, which agrees with the extraction."
+        }
+      },
+      "relation": "Applicant",
+      "relation_citations": [
+        "/page/0/Text/13"
+      ],
+      "relation_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Text/13"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Block /page/0/Text/13 on page 1 states 'Applicant'.\nConclusion: Applicant, which agrees with the extraction."
+        }
+      }
+    },
+    {
+      "name": "Mr. Devkant Joshi",
+      "name_citations": [
+        "/page/0/Caption/15"
+      ],
+      "name_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Caption/15"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Block /page/0/Caption/15 on page 1 states 'Mr. Devkant Joshi'.\nConclusion: Mr. Devkant Joshi, which agrees with the extraction."
+        }
+      },
+      "relation": "Father",
+      "relation_citations": [
+        "/page/0/Text/16"
+      ],
+      "relation_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Text/16"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Block /page/0/Text/16 on page 1 states 'Father'.\nConclusion: Father, which agrees with the extraction."
+        }
+      }
+    },
+    {
+      "name": "Mrs. Yashoda Kumari Bhatta\nJoshi",
+      "name_citations": [
+        "/page/0/Caption/18"
+      ],
+      "name_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Caption/18"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Block /page/0/Caption/18 on page 1 states 'Mrs. Yashoda Kumari Bhatta\\nJoshi'.\nConclusion: Mrs. Yashoda Kumari Bhatta\nJoshi, which agrees with the extraction."
+        }
+      },
+      "relation": "Mother",
+      "relation_citations": [
+        "/page/0/Text/19"
+      ],
+      "relation_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Text/19"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Block /page/0/Text/19 on page 1 states 'Mother'.\nConclusion: Mother, which agrees with the extraction."
+        }
+      }
+    },
+    {
+      "name": "Ms. Diya Joshi",
+      "name_citations": [
+        "/page/0/Caption/21"
+      ],
+      "name_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Caption/21"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Block /page/0/Caption/21 on page 1 states 'Ms. Diya Joshi'.\nConclusion: Ms. Diya Joshi, which agrees with the extraction."
+        }
+      },
+      "relation": "Sister",
+      "relation_citations": [
+        "/page/0/Text/22"
+      ],
+      "relation_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Text/22"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Block /page/0/Text/22 on page 1 states 'Sister'.\nConclusion: Sister, which agrees with the extraction."
+        }
+      }
+    }
+  ],
+  "ward_chairperson_name": "Sundar Bahadur K.C",
+  "ward_chairperson_title": "Ward Chairperson"
+}

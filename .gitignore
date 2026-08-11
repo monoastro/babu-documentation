@@ -5,3 +5,4 @@ master-data/
 controller/.env
 .claude/
 agentic_controller/.rag_index/
+information_extraction/.translation_cache.json

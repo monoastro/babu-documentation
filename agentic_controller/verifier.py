@@ -34,11 +34,20 @@ The rendered output is NOT a pixel-perfect copy. It is a clean, typed,
 structured reproduction. The following transformations are expected and correct
 — never flag them as issues:
 
-  1. LANGUAGE — Field labels in the source (Nepali) are replaced with their
-     English translations in the output (e.g. "नाम थर:" → "Full Name:").
-     Field values extracted from the source stay in their original script
-     (usually Devanagari). This mix of English labels and Nepali values is
-     currently the intended format.
+  1. LANGUAGE — The rendered output is in English. Field labels in the source
+     (Nepali) appear as their English translations (e.g. "नाम थर:" → "Full
+     Name:"), and field VALUES are translated too: common nouns and phrases are
+     translated ("वंशज" → "By descent"), person and place names are
+     transliterated ("उमा देवी चौलागाई" → "Uma Devi Chaulagai", "काठमाण्डौ" →
+     "Kathmandu"), Devanagari numerals become ASCII digits ("८" → "8"), and
+     Bikram Sambat dates are converted to Gregorian ("२०४९/०३/०९" →
+     "1992-06-22"). A fully English output is the intended format. NEVER report
+     a value as a discrepancy merely because its script differs from the
+     source. Judge a value on whether it is the CORRECT English rendering of
+     the source value — a wrong name, a wrong number, or a mistranslation that
+     changes meaning is a real discrepancy; a faithful translation or
+     transliteration is not. Where a date has been converted, check the
+     conversion rather than the digits.
   2. VISUAL ELEMENTS — Photographs, coat of arms, official seals, stamps,
      thumb impressions, and signatures are intended to be  replaced with
      bordered placeholder boxes of similar size containing a descriptive

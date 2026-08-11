@@ -172,8 +172,9 @@ def run_pipeline(
     image_path: Path,
     output_dir: Path,
     tag: str,
+    translate: bool = True,
 ) -> tuple[Path | None, Path | None]:
-    """OCR → build → save HTML → render PNG.
+    """OCR → translate → build → save HTML → render PNG.
 
     Returns ``(html_path, png_path)``. Either may be ``None`` if that stage
     failed; a missing PNG degrades verification but does not stop the run.
@@ -183,7 +184,7 @@ def run_pipeline(
 
     print(f"  → Extracting and building ({document_type})...")
     try:
-        doc = build_document(document_type, str(image_path))
+        doc = build_document(document_type, str(image_path), translate=translate)
         doc.save(str(html_path))
     except Exception as exc:
         print(f"Pipeline failed: {exc}")
@@ -208,6 +209,7 @@ def digitize(
     max_iterations: int = MAX_REPAIR_ITERATIONS,
     output_dir: Path = OUTPUT_DIR,
     auto_approve: bool = False,
+    translate: bool = True,
 ) -> dict:
     """Run the full autonomous digitization flow.
 
@@ -316,7 +318,8 @@ def digitize(
         print(SEP)
 
         html_path, png_path = run_pipeline(
-            document_type, image_path, output_dir, tag=f"{run_id}-{iteration}"
+            document_type, image_path, output_dir, tag=f"{run_id}-{iteration}",
+            translate=translate,
         )
         if html_path is None:
             return {"status": "pipeline_failed", "iteration": iteration, "history": history}
@@ -522,6 +525,13 @@ def main() -> None:
         "then accept. Use for unattended runs.",
     )
     parser.add_argument(
+        "--no-translate",
+        dest="translate",
+        action="store_false",
+        help="Keep extracted values in their original script instead of "
+        "translating them into English.",
+    )
+    parser.add_argument(
         "--result-json",
         type=Path,
         help="Optional path to write the run result (including history) as JSON.",
@@ -542,6 +552,7 @@ def main() -> None:
         max_iterations=args.max_iterations,
         output_dir=args.output_dir,
         auto_approve=args.auto_approve,
+        translate=args.translate,
     )
 
     if args.result_json:

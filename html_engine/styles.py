@@ -1,23 +1,14 @@
-"""
-Style descriptor for the HTML Document Engine.
+"""Style descriptor for the HTML Document Engine.
 
 ``Style`` is an **open** property bag, not a closed schema. Any CSS property
 can be set, whether or not this module has heard of it::
 
     Style(user_select="none", backdrop_filter="blur(2px)")
 
-That openness is deliberate. Layouts in this project are written by the
-Architect Agent as well as by hand, and an agent writes CSS from its general
-knowledge of CSS — not from whatever list somebody remembered to enumerate
-here. When ``Style`` was a fixed dataclass, every unlisted property was a
-``TypeError`` raised deep inside a builder, and the layout-validation gate
-could not see it coming (the call sits inside ``build_<type>()``, which the
-gate's import probe never executes). A missing property is a cosmetic gap;
-crashing the pipeline over one is not.
-
 The trade is that a typo (``font_wieght``) no longer raises — it would emit a
 declaration the browser silently drops. So unrecognized names raise a
-``StyleWarning`` instead: visible in a run log, fatal to nothing.
+``StyleWarning`` instead: visible in a run log, fatal to nothing. See
+DESIGN-NOTES.md for why openness beats a fixed dataclass here.
 """
 
 from __future__ import annotations
@@ -31,14 +22,10 @@ class StyleWarning(UserWarning):
     """An unrecognized CSS property name reached ``Style``. Probably a typo."""
 
 
-# Emission order for properties this module knows about.
-#
-# Order is load-bearing: CSS resolves duplicate declarations last-one-wins, so
-# a shorthand must be emitted *before* its longhands or ``Style(margin="0",
-# margin_top="5px")`` would collapse the top margin. Keyword order in the
-# caller cannot be trusted to get that right, so it is ignored for known
-# properties — they emit in the order below regardless of how they were passed.
-# Unknown properties follow, in insertion order.
+# Emission order for properties this module knows about. Load-bearing: each
+# shorthand must precede its longhands, or `Style(margin="0", margin_top="5px")`
+# loses the top margin to CSS's last-one-wins rule. Unknown properties follow,
+# in insertion order.
 _KNOWN_ORDER: tuple[str, ...] = (
     # Typography
     "font", "font_family", "font_size", "font_weight", "font_style",
@@ -121,9 +108,8 @@ def _css_name(attr: str) -> str:
     """Map a Python keyword to its CSS property name.
 
     ``font_size`` -> ``font-size``. A leading underscore becomes a leading
-    hyphen, which is how a vendor prefix is spelled as a Python keyword:
-    ``_webkit_user_select`` -> ``-webkit-user-select``. Names that are already
-    CSS-shaped (passed through ``**{"--brand": "..."}``) survive unchanged.
+    hyphen for vendor prefixes: ``_webkit_user_select`` ->
+    ``-webkit-user-select``. Custom properties (``--brand``) pass through.
     """
     if attr.startswith("--"):
         return attr
@@ -135,20 +121,14 @@ class Style:
     An open set of CSS declarations.
 
     Any keyword is accepted and emitted as a CSS property. Unset properties are
-    simply absent from the output, so you only declare what you care about::
+    absent from the output, and read back as ``None`` rather than raising::
 
         bold = Style(font_weight="bold")
         big = Style(font_size="28px")
         both = bold.merge(big)          # font-weight:bold;font-size:28px
-        print(both.to_css())
 
-    Reading an unset property gives ``None`` rather than raising, so
-    ``style.filter`` is safe on a Style that never set ``filter``.
-
-    Values are stringified on the way out, so numbers are fine for unitless
-    properties::
-
-        Style(z_index=5, opacity=0.5, flex_grow=1)
+    Values are stringified on the way out, so ``Style(z_index=5, opacity=0.5)``
+    is fine.
 
     Parameters:
         **props: CSS properties as Python keywords. ``raw`` is reserved — its
@@ -168,14 +148,14 @@ class Style:
     def _set(self, name: str, value: Any) -> None:
         """Record one declaration, warning if the property looks misspelled."""
         if value is None:
-            return  # An explicit None means "unset" — same as never passing it.
+            return  # An explicit None means "unset".
         if name != "raw" and name not in _KNOWN:
             if not _VALID_NAME.match(name.replace("_", "-")):
                 raise ValueError(
                     f"{name!r} is not a usable CSS property name."
                 )
-            # A vendor prefix (``_webkit_``) or custom property (``--brand``)
-            # is spelled deliberately; only a bare unknown name is typo-shaped.
+            # A vendor prefix or custom property is spelled deliberately; only
+            # a bare unknown name is typo-shaped.
             if name.startswith("_") or name.startswith("--"):
                 self._props[name] = value
                 return
@@ -189,8 +169,7 @@ class Style:
         self._props[name] = value
 
     def __getattr__(self, name: str) -> Any:
-        # Only reached when normal lookup fails, so this never shadows a real
-        # method. Unset properties read as None.
+        # Only reached when normal lookup fails. Unset properties read as None.
         if name.startswith("__"):
             raise AttributeError(name)
         return self._props.get(name)
@@ -210,13 +189,7 @@ class Style:
         return iter(self._props.items())
 
     def _ordered(self) -> list[tuple[str, Any]]:
-        """Set properties in emission order: known first, then unknown.
-
-        Known properties emit in ``_KNOWN_ORDER``, which puts each shorthand
-        ahead of its longhands. Without that, ``Style(margin="0",
-        margin_top="5px")`` would depend on keyword order to survive CSS's
-        last-one-wins rule.
-        """
+        """Set properties in emission order: known first, then unknown."""
         known = [(n, self._props[n]) for n in _KNOWN_ORDER if n in self._props]
         unknown = [
             (n, v) for n, v in self._props.items()
@@ -227,12 +200,10 @@ class Style:
     # ── serialization ───────────────────────────────────────────
 
     def to_css(self) -> str:
-        """
-        Serialize to an inline CSS declaration string.
+        """Serialize to an inline CSS declaration string.
 
-        Colours are normalized to black-and-white on the way out — see
-        ``html_engine.monochrome``. ``raw`` is normalized too, so the escape
-        hatch cannot smuggle colour past the rule.
+        Colours are normalized to black-and-white on the way out, ``raw``
+        included.
 
         Returns:
             A string like ``"font-weight:bold;font-size:28px"``.
@@ -259,12 +230,9 @@ class Style:
     # ── combination ─────────────────────────────────────────────
 
     def merge(self, other: Optional[Style]) -> Style:
-        """
-        Return a new Style with *other*'s declarations overriding this one's.
+        """Return a new Style with *other*'s declarations overriding this one's.
 
-        Properties set only on ``self`` survive. ``raw`` fragments concatenate
-        rather than replace, since two raw blocks are usually two unrelated
-        rules and dropping one silently would be surprising.
+        ``raw`` fragments concatenate rather than replace.
         """
         if other is None:
             return self
@@ -280,11 +248,9 @@ class Style:
         return merged
 
     def clone(self, **overrides: Any) -> Style:
-        """
-        Return a copy with specific properties overridden.
+        """Return a copy with specific properties overridden.
 
-        Passing ``None`` removes a property, which is how a preset default
-        gets cleared::
+        Passing ``None`` removes a property::
 
             Card._default_style.clone(border=None)
         """

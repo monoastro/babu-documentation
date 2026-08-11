@@ -1,20 +1,20 @@
 {
   "emblem_present": true,
-  "office_name": "नेपाल सरकार अर्थ मन्त्रालय आन्तरिक राजस्व विभाग आन्तरिक राजस्व कार्यालय कालीमाटी ( आयकर नियमावली, २०५९ को नियम २६ संग सम्बन्धित )",
-  "letter_no": "२०८१/०८२",
-  "registration_no": "६४४६",
-  "tax_notice_no": "८१५०८४५०१",
-  "issue_date_nepali": "२०८१.१२.२२",
-  "print_date_nepali": "२०८१.१२.२२",
+  "office_name": "Government of Nepal Ministry of Finance Inland Revenue Department Inland Revenue Office Kalimati (Related to Rule 26 of the Income Tax Rules, 2059)",
+  "letter_no": "2081/082",
+  "registration_no": "6446",
+  "tax_notice_no": "815084501",
+  "issue_date_nepali": "2025-04-04",
+  "print_date_nepali": "2025-04-04",
   "qr_present": true,
-  "subject": "कर चुक्ता प्रमाण पत्र ।",
-  "recipient_name": "श्री देवकान्त जोशी",
-  "recipient_address": "का.म.न.पा. - १४, काठमाडौं",
-  "recipient_pan": "१००४४३८२६",
-  "main_text": "तपाईंले आय वर्ष २०८०.०८१ को लागि रोजगारी, लगानी, गैर व्यवसायिक करयोग्य सम्पत्ति, व्यवसाय संचालनमा संलग्न नरहेको वासिन्दा प्राकृतिक व्यक्तिको आय र अन्तिम रुपमा कर कट्टी तथा कर सुविधा भएका आय रकम समावेश भएको आय विवरण मिति २०८१.१२.२२ मा यस कार्यालयमा पेश गरी सो अनुसार देहाय बमोजिमको आय र सो आय बमोजिमको आयकर रु १३६,५३१.७६ ( एक लाख छत्तीस हजार पाँच सय एकतीस रुपैयाँ छहत्तर पैसा ) दाखिला गरेकोले यो कर चुक्ताको प्रमाणपत्र प्रदान गरिएको छ ।",
+  "subject": "Tax Clearance Certificate.",
+  "recipient_name": "Mr. Devkant Joshi",
+  "recipient_address": "Kathmandu Metropolitan City - 14, Kathmandu",
+  "recipient_pan": "100443826",
+  "main_text": "You submitted to this office on 2081.12.22 the income return for income year 2080.081 including income from employment, investment, non-business taxable assets, income of a resident natural person not engaged in business operation, and income amounts subject to final withholding tax and tax facilities, and as per the same, having deposited the following income and income tax of Rs. 136,531.76 (one lakh thirty-six thousand five hundred thirty-one rupees seventy-six paisa), this tax clearance certificate has been provided.",
   "income_items": [
     {
-      "item": "रोजगारीबाट भएको आय",
+      "item": "Income from employment",
       "item_citations": [
         "/page/0/Table/14"
       ],
@@ -29,7 +29,7 @@
           "feedback": "The item title in the first row of /page/0/Table/14 is \"रोजगारीबाट भएको आय\".\nConclusion: रोजगारीबाट भएको आय, which agrees with the extraction."
         }
       },
-      "amount": "१२६८४३९.२०",
+      "amount": "1268439.20",
       "amount_citations": [
         "/page/0/Table/14"
       ],
@@ -46,7 +46,7 @@
       }
     },
     {
-      "item": "लगानीबाट भएको आय",
+      "item": "Income from investment",
       "item_citations": [
         "/page/0/Table/14"
       ],
@@ -61,7 +61,7 @@
           "feedback": "The item title in the second row of /page/0/Table/14 is \"लगानीबाट भएको आय\".\nConclusion: लगानीबाट भएको आय, which agrees with the extraction."
         }
       },
-      "amount": "०.००",
+      "amount": "0.00",
       "amount_citations": [
         "/page/0/Table/14"
       ],
@@ -78,7 +78,7 @@
       }
     },
     {
-      "item": "गैर व्यवसायिक करयोग्य सम्पत्तिको निःसर्गबाट प्राप्त लाभ",
+      "item": "Gain received from disposal of non-business taxable assets",
       "item_citations": [
         "/page/0/Table/14"
       ],
@@ -93,7 +93,7 @@
           "feedback": "The item title in the third row of /page/0/Table/14 is \"गैर व्यवसायिक करयोग्य सम्पत्तिको निःसर्गबाट प्राप्त लाभ\".\nConclusion: गैर व्यवसायिक करयोग्य सम्पत्तिको निःसर्गबाट प्राप्त लाभ, which agrees with the extraction."
         }
       },
-      "amount": "०.००",
+      "amount": "0.00",
       "amount_citations": [
         "/page/0/Table/14"
       ],
@@ -110,7 +110,7 @@
       }
     },
     {
-      "item": "व्यवसाय संचालनमा संलग्न नरहेको वासिन्दा प्राकृतिक व्यक्तिको आय",
+      "item": "Income of a resident natural person not engaged in business operation",
       "item_citations": [
         "/page/0/Table/14"
       ],
@@ -125,7 +125,7 @@
           "feedback": "The item title in the fourth row of /page/0/Table/14 is \"व्यवसाय संचालनमा संलग्न नरहेको वासिन्दा प्राकृतिक व्यक्तिको आय\".\nConclusion: व्यवसाय संचालनमा संलग्न नरहेको वासिन्दा प्राकृतिक व्यक्तिको आय, which agrees with the extraction."
         }
       },
-      "amount": "०.००",
+      "amount": "0.00",
       "amount_citations": [
         "/page/0/Table/14"
       ],
@@ -142,7 +142,7 @@
       }
     },
     {
-      "item": "अन्तिम रुपमा कर कट्टी तथा कर सुविधा भएका आय",
+      "item": "Income subject to final withholding tax and tax facilities",
       "item_citations": [
         "/page/0/Table/14"
       ],
@@ -157,7 +157,7 @@
           "feedback": "The item title in the fifth row of /page/0/Table/14 is \"अन्तिम रुपमा कर कट्टी तथा कर सुविधा भएका आय\".\nConclusion: अन्तिम रुपमा कर कट्टी तथा कर सुविधा भएका आय, which agrees with the extraction."
         }
       },
-      "amount": "३३०१७७५.२९",
+      "amount": "3301775.29",
       "amount_citations": [
         "/page/0/Table/14"
       ],
@@ -175,7 +175,33 @@
     }
   ],
   "total_income": null,
-  "signature_label": "(कर अधिकृत)",
-  "certifying_officer_title": "कर अधिकृत",
-  "remarks": "१. यो प्रमाणपत्र प्राकृतिक व्यक्ति (व्यवसायको आय विवरण पेश गर्ने बाहेक) ले पेश गरेको विवरणको आधारमा जारी गरिएको छ । पेश भएको आय विवरण छानविनमा परेमा आयकर ऐन, २०५८ को दफा १०१ बमोजिम संशोधित कर निर्धारण हुन सक्ने जानकारी गराइन्छ ।  २. यो कर चुक्ताको प्रमाण पत्र विभागको वेबसाईट www.ird.gov.np मा कर चुक्ता खोजी वा Tax Clear Search गएर रुजु गरि यकिन गर्न सकिने छ ।"
+  "signature_label": "(Tax Officer)",
+  "certifying_officer_title": "Tax Officer",
+  "remarks": "1. This certificate has been issued on the basis of the details submitted by a natural person (except those submitting an income statement for business). Please be informed that if the submitted income statement is subject to investigation, an amended tax assessment may be made pursuant to Section 101 of the Income Tax Act, 2058. 2. This tax clearance certificate can be verified and confirmed by going to Tax Clearance Search or Tax Clear Search on the Department's website www.ird.gov.np.",
+  "_translation_original": {
+    "letter_no": "२०८१/०८२",
+    "registration_no": "६४४६",
+    "tax_notice_no": "८१५०८४५०१",
+    "issue_date_nepali": "२०८१.१२.२२",
+    "print_date_nepali": "२०८१.१२.२२",
+    "recipient_pan": "१००४४३८२६",
+    "income_items[0].amount": "१२६८४३९.२०",
+    "income_items[1].amount": "०.००",
+    "income_items[2].amount": "०.००",
+    "income_items[3].amount": "०.००",
+    "income_items[4].amount": "३३०१७७५.२९",
+    "office_name": "नेपाल सरकार अर्थ मन्त्रालय आन्तरिक राजस्व विभाग आन्तरिक राजस्व कार्यालय कालीमाटी ( आयकर नियमावली, २०५९ को नियम २६ संग सम्बन्धित )",
+    "subject": "कर चुक्ता प्रमाण पत्र ।",
+    "recipient_name": "श्री देवकान्त जोशी",
+    "recipient_address": "का.म.न.पा. - १४, काठमाडौं",
+    "main_text": "तपाईंले आय वर्ष २०८०.०८१ को लागि रोजगारी, लगानी, गैर व्यवसायिक करयोग्य सम्पत्ति, व्यवसाय संचालनमा संलग्न नरहेको वासिन्दा प्राकृतिक व्यक्तिको आय र अन्तिम रुपमा कर कट्टी तथा कर सुविधा भएका आय रकम समावेश भएको आय विवरण मिति २०८१.१२.२२ मा यस कार्यालयमा पेश गरी सो अनुसार देहाय बमोजिमको आय र सो आय बमोजिमको आयकर रु १३६,५३१.७६ ( एक लाख छत्तीस हजार पाँच सय एकतीस रुपैयाँ छहत्तर पैसा ) दाखिला गरेकोले यो कर चुक्ताको प्रमाणपत्र प्रदान गरिएको छ ।",
+    "income_items[0].item": "रोजगारीबाट भएको आय",
+    "income_items[1].item": "लगानीबाट भएको आय",
+    "income_items[2].item": "गैर व्यवसायिक करयोग्य सम्पत्तिको निःसर्गबाट प्राप्त लाभ",
+    "income_items[3].item": "व्यवसाय संचालनमा संलग्न नरहेको वासिन्दा प्राकृतिक व्यक्तिको आय",
+    "income_items[4].item": "अन्तिम रुपमा कर कट्टी तथा कर सुविधा भएका आय",
+    "signature_label": "(कर अधिकृत)",
+    "certifying_officer_title": "कर अधिकृत",
+    "remarks": "१. यो प्रमाणपत्र प्राकृतिक व्यक्ति (व्यवसायको आय विवरण पेश गर्ने बाहेक) ले पेश गरेको विवरणको आधारमा जारी गरिएको छ । पेश भएको आय विवरण छानविनमा परेमा आयकर ऐन, २०५८ को दफा १०१ बमोजिम संशोधित कर निर्धारण हुन सक्ने जानकारी गराइन्छ ।  २. यो कर चुक्ताको प्रमाण पत्र विभागको वेबसाईट www.ird.gov.np मा कर चुक्ता खोजी वा Tax Clear Search गएर रुजु गरि यकिन गर्न सकिने छ ।"
+  }
 }

@@ -130,8 +130,8 @@
     "semantic_hash": "9bf8227108845cea9f2e4c8aeec56d0f"
   },
   "README.md": {
-    "mtime": 1786338056.0009587,
-    "ast_hash": "bafa8b618e57d6d88e9f2d7ffd4d202f",
+    "mtime": 1786341141.401947,
+    "ast_hash": "ace2899c1655174d05492ed103d71a20",
     "semantic_hash": ""
   },
   "document_builder/citizenship/test-citizenship.html": {
@@ -140,8 +140,8 @@
     "semantic_hash": "3fc04798e5bd69d6ae24ada6129269f6"
   },
   "documentation/DOCUMENTATION.md": {
-    "mtime": 1786337749.96996,
-    "ast_hash": "8d0d3215cbd5ab1cb4de02e215f379be",
+    "mtime": 1786338980.1979551,
+    "ast_hash": "bb468864ebcfa8a195046ce53830ad81",
     "semantic_hash": ""
   },
   "documentation/agentic-generator.md": {
@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "agentic_controller/architect.py": {
-    "mtime": 1786335700.9199677,
-    "ast_hash": "1510530cf59309a1be17405fdaef2796",
+    "mtime": 1786338806.366956,
+    "ast_hash": "76cec971b74acb889572a3f4da84b8f4",
     "semantic_hash": ""
   },
   "agentic_controller/models.py": {
@@ -320,7 +320,7 @@
     "semantic_hash": ""
   },
   "document_builder/citizenship_back/layout.py": {
-    "mtime": 1786337695.7647266,
+    "mtime": 1786341154.9679503,
     "ast_hash": "b80853028e33147b8e097344d6b7e0c7",
     "semantic_hash": ""
   },
@@ -600,63 +600,13 @@
     "semantic_hash": ""
   },
   "tests/test_command_sandbox.py": {
-    "mtime": 1786276012.0239797,
-    "ast_hash": "35b7fb4c07663e5e5de14beebda53711",
-    "semantic_hash": ""
-  },
-  "document_builder/income_certificate/layout_1.py": {
-    "mtime": 1786336877.3662155,
-    "ast_hash": "a682ac8059dddb1f5a2168a518fe7b1d",
-    "semantic_hash": ""
-  },
-  "document_builder/relationship_certificate/layout_1.py": {
-    "mtime": 1786337017.393938,
-    "ast_hash": "3b66e8e4e05d723e1693d3d9862a58ed",
+    "mtime": 1786338762.1409562,
+    "ast_hash": "038dcde96785cd881743687e221e69dc",
     "semantic_hash": ""
   },
   "document_builder/resolver.py": {
     "mtime": 1786335207.6099696,
     "ast_hash": "93c44fee160d17a8a3911a55791d7165",
-    "semantic_hash": ""
-  },
-  "document_builder/see_certificate/layout_1.py": {
-    "mtime": 1786337456.5560782,
-    "ast_hash": "7fcc8070aeda3ae03583ebc710434dc1",
-    "semantic_hash": ""
-  },
-  "document_builder/tax_clearance/layout_1.py": {
-    "mtime": 1786337257.5772684,
-    "ast_hash": "bddacbf4738a90e97309a42b3ce8740d",
-    "semantic_hash": ""
-  },
-  "document_builder/transfer_certificate/layout_1.py": {
-    "mtime": 1786337345.1995149,
-    "ast_hash": "f6e4ca9a452288b093f08f8e8e9ace33",
-    "semantic_hash": ""
-  },
-  "information_extraction/schemas/income_certificate_patched.json": {
-    "mtime": 1786336835.9809248,
-    "ast_hash": "2ee6c870830e63b5a45c28a51425639f",
-    "semantic_hash": ""
-  },
-  "information_extraction/schemas/relationship_certificate_patched.json": {
-    "mtime": 1786336989.7178655,
-    "ast_hash": "dc5b848f057dd041c0b209af75cc4b28",
-    "semantic_hash": ""
-  },
-  "information_extraction/schemas/see_certificate_patched.json": {
-    "mtime": 1786337426.6439562,
-    "ast_hash": "f08c4793c960181f87991365110addc2",
-    "semantic_hash": ""
-  },
-  "information_extraction/schemas/tax_clearance_patched.json": {
-    "mtime": 1786337245.185962,
-    "ast_hash": "3eb40704ac3114eeb2b10f7d9c7c6218",
-    "semantic_hash": ""
-  },
-  "information_extraction/schemas/transfer_certificate_patched.json": {
-    "mtime": 1786337336.2633915,
-    "ast_hash": "1b8d18ea30138c341702910e15fc62e5",
     "semantic_hash": ""
   },
   "test-output/citizenship_back.json": {
@@ -727,6 +677,66 @@
   "test-output/transfer_certificate.html": {
     "mtime": 1786337622.0102677,
     "ast_hash": "594261df84fc389027bdc043484bdf10",
+    "semantic_hash": ""
+  },
+  "document_builder/income_certificate/layout.py": {
+    "mtime": 1786336877.3662155,
+    "ast_hash": "a682ac8059dddb1f5a2168a518fe7b1d",
+    "semantic_hash": ""
+  },
+  "document_builder/relationship_certificate/layout.py": {
+    "mtime": 1786337017.393938,
+    "ast_hash": "3b66e8e4e05d723e1693d3d9862a58ed",
+    "semantic_hash": ""
+  },
+  "document_builder/see_certificate/layout.py": {
+    "mtime": 1786337456.5560782,
+    "ast_hash": "7fcc8070aeda3ae03583ebc710434dc1",
+    "semantic_hash": ""
+  },
+  "document_builder/tax_clearance/layout.py": {
+    "mtime": 1786337257.5772684,
+    "ast_hash": "bddacbf4738a90e97309a42b3ce8740d",
+    "semantic_hash": ""
+  },
+  "document_builder/transfer_certificate/layout.py": {
+    "mtime": 1786337345.1995149,
+    "ast_hash": "f6e4ca9a452288b093f08f8e8e9ace33",
+    "semantic_hash": ""
+  },
+  "information_extraction/schemas/income_certificate.json": {
+    "mtime": 1786336835.9809248,
+    "ast_hash": "2ee6c870830e63b5a45c28a51425639f",
+    "semantic_hash": ""
+  },
+  "information_extraction/schemas/relationship_certificate.json": {
+    "mtime": 1786336989.7178655,
+    "ast_hash": "dc5b848f057dd041c0b209af75cc4b28",
+    "semantic_hash": ""
+  },
+  "information_extraction/schemas/see_certificate.json": {
+    "mtime": 1786337426.6439562,
+    "ast_hash": "f08c4793c960181f87991365110addc2",
+    "semantic_hash": ""
+  },
+  "information_extraction/schemas/tax_clearance.json": {
+    "mtime": 1786337245.185962,
+    "ast_hash": "3eb40704ac3114eeb2b10f7d9c7c6218",
+    "semantic_hash": ""
+  },
+  "information_extraction/schemas/transfer_certificate.json": {
+    "mtime": 1786337336.2633915,
+    "ast_hash": "1b8d18ea30138c341702910e15fc62e5",
+    "semantic_hash": ""
+  },
+  "test-output/citizenship_back.png": {
+    "mtime": 1786343756.741937,
+    "ast_hash": "a00a01e92ce956555b4f8ddc5083d671",
+    "semantic_hash": ""
+  },
+  "test-output/laalpurja.png": {
+    "mtime": 1786343828.8329368,
+    "ast_hash": "0a05e10fa4fc7d55f26e2cb3721b3709",
     "semantic_hash": ""
   }
 }

@@ -1,29 +1,14 @@
-"""
-The document registry: which types exist, and how to build each one.
+"""The document registry: which types exist, and how to build each one.
 
-``DOCUMENTS`` still looks and reads like the dict it replaced::
+``DOCUMENTS`` reads like a plain dict::
 
     DOCUMENTS[document_type]["builder"](data)   -> Document
     DOCUMENTS[document_type]["schema"]          -> Path
     sorted(DOCUMENTS)                           -> ["citizenship", ...]
 
-but nothing is resolved until it is asked for, and nothing is hard-coded. The
-previous version was four top-level ``from ... import build_x`` statements, which
-had two costs:
-
-*Promotion was a manual edit.* The architect writes ``layout_2.py``; a human then
-had to repoint the import. Miss it and the repair loop rebuilds from the old
-layout forever — the agent's own fixes were invisible to it. Get it wrong and the
-import dangles: one bad line took down all four types at once, because a
-top-level import failure makes the whole module unimportable.
-
-*A new document type needed a code edit* before it could be built at all, even
-though its layout and schema were already sitting on disk.
-
-Both are now filesystem questions, answered in ``resolver.py``. ``ACTIVE`` names
-the live layout per type; discovery finds any directory with a layout and a
-schema. Resolution is per-entry and lazy, so a layout that fails to import breaks
-only its own type — the other three still build.
+Nothing is resolved until it is asked for and nothing is hard-coded: ``ACTIVE``
+names the live layout per type, and discovery finds any directory with both a
+layout and a schema. See ``resolver.py``, and DESIGN-NOTES.md for the rationale.
 """
 
 from __future__ import annotations
@@ -43,10 +28,8 @@ from document_builder.resolver import (
 class _DocumentEntry(Mapping):
     """One document type's ``{"builder": ..., "schema": ...}``.
 
-    ``schema`` is a path lookup; ``builder`` imports the active layout. Keeping
-    them separate matters: iterating the registry to read schemas must not
-    import every layout in the project, or one broken layout would again take
-    the whole registry with it.
+    ``schema`` and ``layout`` are path lookups; only ``builder`` imports the
+    active layout, so iterating the registry imports nothing.
     """
 
     _KEYS = ("builder", "schema", "layout")
@@ -78,10 +61,8 @@ class _DocumentEntry(Mapping):
 class _Registry(Mapping):
     """Document types discovered from the filesystem, resolved on access.
 
-    Not cached. A generation run that writes a new type, or a repair that
-    promotes a new layout, is visible immediately — including to the process
-    that performed it, which is what lets the repair loop iterate on its own
-    output instead of rebuilding the layout it started from.
+    Deliberately not cached: a newly written type or a freshly promoted layout
+    is visible immediately, including to the process that wrote it.
     """
 
     def __getitem__(self, document_type: str) -> _DocumentEntry:

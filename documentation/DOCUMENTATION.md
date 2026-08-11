@@ -510,6 +510,87 @@ being invented at render time.
 > correct key in `.env`, and the only symptom is a `401 Unauthorized` from
 > datalab.to. Check `env | grep DATALAB` before editing `.env`.
 
+### Translation (`translator.py`)
+
+Extraction returns values in the script they were printed in, usually
+Devanagari. The rendered document is meant to be readable English, so a
+translation stage sits between extraction and the builder:
+
+```text
+extract() → build_data() → translate_data() → builder(data)
+```
+
+Both pipelines run it by default — `information_extraction/pipeline.py`
+(used by the agentic controller) and `main.py` — and both accept
+`--no-translate` to skip it.
+
+`translate_data(data)` returns a `Translation` carrying the new data, a flat
+`path → original value` map, counts, and any error. Three rules shape the
+output:
+
+| Rule | Example |
+|---|---|
+| Proper nouns are **transliterated**, not translated | `उमा देवी चौलागाई` → `Uma Devi Chaulagai` |
+| Everything else is translated for meaning | `वंशज` → `By descent` |
+| Devanagari numerals become ASCII | `८` → `8` |
+| Bikram Sambat dates become Gregorian | `२०४९/०३/०९` → `1992-06-23` |
+
+Office names combine the first two: `जिल्ला प्रशासन कार्यालय, काठमाण्डौ` →
+`District Administration Office, Kathmandu`.
+
+**What is deliberately not sent to the model.** Values that are already Latin
+script — English text, an ID like `NM0000095`, a bare number — have nothing to
+translate. Bikram Sambat dates are converted locally by `nepali_datetime`,
+because date arithmetic is precisely the class of task an LLM gets subtly
+wrong; an unparseable or out-of-range date is returned unchanged rather than
+half-converted, since a partial conversion prints a year that looks Gregorian
+and is not. The extractor's provenance siblings (`<field>_meta`,
+`<field>_citations`) are skipped because they are never rendered.
+
+**Sentinels are control flow, not content.** `present` / `absent` /
+`unreadable signature` are OCR contract tokens that layouts branch on — a
+thumb-impression box is drawn only when the value is `present`. Translating one
+would silently remove an element from the page, so they are passed through
+untouched, matched both by key and by value.
+
+**Bilingual pairs are layout, not redundancy.** The SEE certificate prints
+`certificate_title_np` on one line and `certificate_title_en` on the next;
+several documents carry a `<field>_bs` date beside its `<field>_ad` twin.
+Translating the script-preserved half makes the document say the same thing
+twice, which is a page change dressed up as a wording change. `_PAIRED_SUFFIXES`
+maps each such suffix to the English counterparts that suppress it, and the
+suppression fires only when the sibling is actually present in the same dict —
+a lone `foo_np` is the only value on the page and is translated normally. This
+is deliberately keyed on structure rather than on a fixed list of field names,
+so a generated document type gets the behaviour without being registered.
+
+**Nesting.** The walker handles lists of dicts, which is what a laalpurja's
+`plots` table is: every row's fields are translated, and every row's metadata
+siblings are left alone.
+
+**Batching and cache.** All translatable values in a document go out in one
+request keyed by opaque ids, split into a *label* batch and a *prose* batch
+(whole sentences want different instructions). Batching is not only cheaper
+than a call per field but more accurate — the model sees `district` and
+`municipality` together and can tell a word is a place name. Repeated values (a
+district down a table) are sent once and fanned back out. Results are cached on
+disk in `information_extraction/.translation_cache.json`, keyed by
+`(model, kind, text)`, so the repair loop's later iterations re-translate
+nothing. The cache is gitignored; an unwritable cache makes a run slower, not
+failed.
+
+**Degradation.** A failed model call is reported on the result, not raised: a
+document rendered in Devanagari is more useful than no document. Local
+conversions still apply in that case. A reply that omits keys leaves those
+values at their originals rather than blanking them.
+
+> **This changes what the verifier should accept.** Rule 1 in
+> `verifier.py`'s `SYSTEM_PROMPT` and `verification-rules.md` used to declare
+> Devanagari values the intended format. Both now say the output is fully
+> English and that a script difference is never a discrepancy — otherwise the
+> vision model reports every translated value as a data-accuracy failure and
+> the repair loop chases them forever.
+
 ---
 
 ## Agentic controller
@@ -527,6 +608,7 @@ the Architect Agent writes layout code directly, gated by a validation step.
 | `verifier.py` | Vision-model source-vs-render comparison. |
 | `rendering.py` | HTML → PNG via headless Chrome. |
 | `models.py` | `VerificationReport`, `RepairPlan`, and patch types. |
+| *(`information_extraction/translator.py`)* | Nepali → English translation of extracted values, before the builder. |
 | `schema_patcher.py` | Applies schema patches to `*_patched.json` sidecars. |
 
 ### Pipeline flow (`run.py`)
@@ -536,7 +618,7 @@ check resources ─(missing)─→ generate_resources
        │                            │
        └──────────────┬─────────────┘
                       ▼
-        OCR → build → render PNG → verify
+        OCR → translate → build → render PNG → verify
                       ▼
              human checkpoint
         ┌─────────────┼──────────────┐
@@ -557,6 +639,7 @@ python -m agentic_controller.run path/to/document.png --document-type laalpurja
 | `--max-iterations` | `3` | Repair cycle cap |
 | `--output-dir` | `output/` | Artifact directory |
 | `--auto-approve` | off | Unattended: auto-fix while blocking issues remain, then accept |
+| `--no-translate` | off | Keep extracted values in their original script |
 | `--result-json` | — | Write the result and full history as JSON |
 
 At the checkpoint: `a`/`approve` finishes, `r`/`retry` runs an autonomous
@@ -882,7 +965,7 @@ python -m agentic_controller.architect generate <type> source.png --notes "..."
 python -m agentic_controller.rag_engine query "how do I center a heading"
 python -m agentic_controller.rag_engine stats
 
-# Tests — all 7 suites, 117 tests, no pytest needed
+# Tests — all 8 suites, 142 tests, no pytest needed
 python tests/run_all.py
 python tests/test_styles.py        # or one suite directly
 ```
@@ -896,6 +979,7 @@ python tests/test_styles.py        # or one suite directly
 | `test_main_cli.py` | `--blank` / `--data` never reach OCR; argument validation |
 | `test_command_sandbox.py` | Every route `execute_command` used to leave open: `python -c`, redirection, chaining, substitution, newlines; the originals guard; and `_write_allowed()` refusing an *existing* `layout.py` or base schema while permitting a brand-new type to create its own |
 | `test_registry_resolution.py` | `ACTIVE` selects the live layout and degrades to `layout.py` rather than raising; traversal in `ACTIVE` is rejected; discovery finds new types and skips incomplete ones; promotion round-trips and takes effect inside one process; iteration imports no layouts |
+| `test_translator.py` | Which values reach the model and which never do — sentinels, already-English text, metadata siblings, and the script-preserved half of a bilingual pair; BS dates convert locally and refuse to half-convert; nested `plots` rows are walked and their metadata preserved; duplicates are sent once; a failed or partial reply degrades to the original values; the cache spares the second run and is keyed on the model |
 
 There is no pytest dependency. Each suite is an ordinary script that asserts and
 prints; `run_all.py` is the `&&` chain, written once, and exits non-zero if any

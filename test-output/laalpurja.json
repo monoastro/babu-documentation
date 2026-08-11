@@ -1,23 +1,23 @@
 {
   "certificate_no": "NM0000095",
   "supplementary_id": "PF002728503",
-  "office_vdc": "साखु",
-  "office_district": "काठमाण्डौ",
-  "owner_name": "उमा देवी चौलागाई",
-  "owner_district": "काठमाण्डौ",
-  "owner_vdc": "नाङ्गलेभारे",
-  "owner_ward": "८",
-  "husband_name": "हेमकान्त चौलागाई",
-  "father_in_law": "देउरुषी चौलागाई",
-  "citizenship_no": "१०००५",
-  "issue_date": "२०४९/०३/०९",
-  "issue_office": "जिल्ला प्रशासन कार्यालय, काठमाण्डौ",
+  "office_vdc": "Sankhu",
+  "office_district": "Kathmandu",
+  "owner_name": "Uma Devi Chaulagai",
+  "owner_district": "Kathmandu",
+  "owner_vdc": "Nangalebhare",
+  "owner_ward": "8",
+  "husband_name": "Hemkant Chaulagai",
+  "father_in_law": "Deurushi Chaulagai",
+  "citizenship_no": "10005",
+  "issue_date": "1992-06-23",
+  "issue_office": "District Administration Office, Kathmandu",
   "doc_id": "",
-  "print_date": "२०८२/०४/१४",
-  "checked_by_date": "२०८२/०४/१४",
+  "print_date": "2025-07-30",
+  "checked_by_date": "2025-07-30",
   "plots": [
     {
-      "plot_no": "५५५",
+      "plot_no": "555",
       "plot_no_citations": [
         "/page/0/Table/25"
       ],
@@ -47,7 +47,7 @@
           "feedback": "Evidence number is ML00000088 in table block /page/0/Table/25.\nConclusion: ML00000088, which agrees with the extraction."
         }
       },
-      "evd_date": "२०८२/०४/१४",
+      "evd_date": "2025-07-30",
       "evd_date_citations": [
         "/page/0/Table/25"
       ],
@@ -62,7 +62,7 @@
           "feedback": "Evidence date is २०८२/०४/१४ in table block /page/0/Table/25.\nConclusion: २०८२/०४/१४, which agrees with the extraction."
         }
       },
-      "transaction_type": "मृत्युपछिको नामसारी",
+      "transaction_type": "Transfer after death",
       "transaction_type_citations": [
         "/page/0/Table/25"
       ],
@@ -77,7 +77,7 @@
           "feedback": "Transaction type is मृत्युपछिको नामसारी in table block /page/0/Table/25.\nConclusion: मृत्युपछिको नामसारी, which agrees with the extraction."
         }
       },
-      "vdc": "नाङ्गलेभारे",
+      "vdc": "Nangalebhare",
       "vdc_citations": [
         "/page/0/Table/25"
       ],
@@ -92,7 +92,7 @@
           "feedback": "VDC is नाङ्गलेभारे in table block /page/0/Table/25.\nConclusion: नाङ्गलेभारे, which agrees with the extraction."
         }
       },
-      "ward_top": "८",
+      "ward_top": "8",
       "ward_top_citations": [
         "/page/0/Table/25"
       ],
@@ -107,7 +107,7 @@
           "feedback": "Ward top is ८ in table block /page/0/Table/25.\nConclusion: ८, which agrees with the extraction."
         }
       },
-      "ward_bottom": "८घ",
+      "ward_bottom": "8Gha",
       "ward_bottom_citations": [
         "/page/0/Table/25"
       ],
@@ -122,7 +122,7 @@
           "feedback": "Ward bottom is ८घ in table block /page/0/Table/25.\nConclusion: ८घ, which agrees with the extraction."
         }
       },
-      "plot_section": "५५४",
+      "plot_section": "554",
       "plot_section_citations": [
         "/page/0/Table/25"
       ],
@@ -137,7 +137,7 @@
           "feedback": "Plot section is ५५४ in table block /page/0/Table/25.\nConclusion: ५५४, which agrees with the extraction."
         }
       },
-      "desc_top": "आबादी",
+      "desc_top": "Cultivated",
       "desc_top_citations": [
         "/page/0/Table/25"
       ],
@@ -152,7 +152,7 @@
           "feedback": "Description top is आबादी in table block /page/0/Table/25.\nConclusion: आबादी, which agrees with the extraction."
         }
       },
-      "desc_bottom": "रैकर निजी",
+      "desc_bottom": "Raikar Private",
       "desc_bottom_citations": [
         "/page/0/Table/25"
       ],
@@ -167,7 +167,7 @@
           "feedback": "Description bottom is रैकर निजी in table block /page/0/Table/25.\nConclusion: रैकर निजी, which agrees with the extraction."
         }
       },
-      "owner_share": "एकलौटी",
+      "owner_share": "Sole",
       "owner_share_citations": [
         "/page/0/Table/25"
       ],
@@ -182,7 +182,7 @@
           "feedback": "Owner share is एकलौटी in table block /page/0/Table/25.\nConclusion: एकलौटी, which agrees with the extraction."
         }
       },
-      "tenant": "हिरा लाल चौलागाई",
+      "tenant": "Hira Lal Chaulagai",
       "tenant_citations": [
         "/page/0/Table/25"
       ],
@@ -197,7 +197,7 @@
           "feedback": "Tenant is हिरा लाल चौलागाई in table block /page/0/Table/25.\nConclusion: हिरा लाल चौलागाई, which agrees with the extraction."
         }
       },
-      "kind_top": "भिट/पाखो/बारी",
+      "kind_top": "Homestead/Upland/Dry field",
       "kind_top_citations": [
         "/page/0/Table/25"
       ],
@@ -212,7 +212,7 @@
           "feedback": "Kind top is भिट/पाखो/बारी in table block /page/0/Table/25.\nConclusion: भिट/पाखो/बारी, which agrees with the extraction."
         }
       },
-      "area_local": "२-७-०-० (रोपनी)",
+      "area_local": "2-7-0-0 (Ropani)",
       "area_local_citations": [
         "/page/0/Table/25"
       ],
@@ -227,7 +227,7 @@
           "feedback": "Area local is २-७-०-० (रोपनी) in table block /page/0/Table/25.\nConclusion: २-७-०-० (रोपनी), which agrees with the extraction."
         }
       },
-      "area_sqm": "१२४०.०१",
+      "area_sqm": "1240.01",
       "area_sqm_citations": [
         "/page/0/Table/25"
       ],
@@ -296,7 +296,7 @@
       }
     },
     {
-      "plot_no": "६१२",
+      "plot_no": "612",
       "plot_no_citations": [
         "/page/0/Table/25"
       ],
@@ -326,7 +326,7 @@
           "feedback": "Evidence number is ML00000088 in table block /page/0/Table/25.\nConclusion: ML00000088, which agrees with the extraction."
         }
       },
-      "evd_date": "२०८२/०४/१४",
+      "evd_date": "2025-07-30",
       "evd_date_citations": [
         "/page/0/Table/25"
       ],
@@ -341,7 +341,7 @@
           "feedback": "Evidence date is २०८२/०४/१४ in table block /page/0/Table/25.\nConclusion: २०८२/०४/१४, which agrees with the extraction."
         }
       },
-      "transaction_type": "मृत्युपछिको नामसारी",
+      "transaction_type": "Transfer after death",
       "transaction_type_citations": [
         "/page/0/Table/25"
       ],
@@ -356,7 +356,7 @@
           "feedback": "Transaction type is मृत्युपछिको नामसारी in table block /page/0/Table/25.\nConclusion: मृत्युपछिको नामसारी, which agrees with the extraction."
         }
       },
-      "vdc": "नाङ्गलेभारे",
+      "vdc": "Nangalebhare",
       "vdc_citations": [
         "/page/0/Table/25"
       ],
@@ -371,7 +371,7 @@
           "feedback": "VDC is नाङ्गलेभारे in table block /page/0/Table/25.\nConclusion: नाङ्गलेभारे, which agrees with the extraction."
         }
       },
-      "ward_top": "८",
+      "ward_top": "8",
       "ward_top_citations": [
         "/page/0/Table/25"
       ],
@@ -386,7 +386,7 @@
           "feedback": "Ward top is ८ in table block /page/0/Table/25.\nConclusion: ८, which agrees with the extraction."
         }
       },
-      "ward_bottom": "८घ",
+      "ward_bottom": "8Gha",
       "ward_bottom_citations": [
         "/page/0/Table/25"
       ],
@@ -401,7 +401,7 @@
           "feedback": "Ward bottom is ८घ in table block /page/0/Table/25.\nConclusion: ८घ, which agrees with the extraction."
         }
       },
-      "plot_section": "६१९",
+      "plot_section": "619",
       "plot_section_citations": [
         "/page/0/Table/25"
       ],
@@ -416,7 +416,7 @@
           "feedback": "Plot section is ६१९ in table block /page/0/Table/25.\nConclusion: ६१९, which agrees with the extraction."
         }
       },
-      "desc_top": "आबादी",
+      "desc_top": "Cultivated",
       "desc_top_citations": [
         "/page/0/Table/25"
       ],
@@ -431,7 +431,7 @@
           "feedback": "Description top is आबादी in table block /page/0/Table/25.\nConclusion: आबादी, which agrees with the extraction."
         }
       },
-      "desc_bottom": "रैकर निजी",
+      "desc_bottom": "Raikar Private",
       "desc_bottom_citations": [
         "/page/0/Table/25"
       ],
@@ -446,7 +446,7 @@
           "feedback": "Description bottom is रैकर निजी in table block /page/0/Table/25.\nConclusion: रैकर निजी, which agrees with the extraction."
         }
       },
-      "owner_share": "एकलौटी",
+      "owner_share": "Sole",
       "owner_share_citations": [
         "/page/0/Table/25"
       ],
@@ -461,7 +461,7 @@
           "feedback": "Owner share is एकलौटी in table block /page/0/Table/25.\nConclusion: एकलौटी, which agrees with the extraction."
         }
       },
-      "tenant": "हिरा लाल चौलागाई",
+      "tenant": "Hira Lal Chaulagai",
       "tenant_citations": [
         "/page/0/Table/25"
       ],
@@ -476,7 +476,7 @@
           "feedback": "Tenant is हिरा लाल चौलागाई in table block /page/0/Table/25.\nConclusion: हिरा लाल चौलागाई, which agrees with the extraction."
         }
       },
-      "kind_top": "भिट/पाखो/बारी",
+      "kind_top": "Homestead/Upland/Dry field",
       "kind_top_citations": [
         "/page/0/Table/25"
       ],
@@ -491,7 +491,7 @@
           "feedback": "Kind top is भिट/पाखो/बारी in table block /page/0/Table/25.\nConclusion: भिट/पाखो/बारी, which agrees with the extraction."
         }
       },
-      "area_local": "३-१५-१-० (रोपनी)",
+      "area_local": "3-15-1-0 (Ropani)",
       "area_local_citations": [
         "/page/0/Table/25"
       ],
@@ -506,7 +506,7 @@
           "feedback": "Area local is ३-१५-१-० (रोपनी) in table block /page/0/Table/25.\nConclusion: ३-१५-१-० (रोपनी), which agrees with the extraction."
         }
       },
-      "area_sqm": "२०११.०२",
+      "area_sqm": "2011.02",
       "area_sqm_citations": [
         "/page/0/Table/25"
       ],
@@ -575,7 +575,7 @@
       }
     },
     {
-      "plot_no": "६५२",
+      "plot_no": "652",
       "plot_no_citations": [
         "/page/0/Table/25"
       ],
@@ -605,7 +605,7 @@
           "feedback": "Evidence number is ML00000088 in table block /page/0/Table/25.\nConclusion: ML00000088, which agrees with the extraction."
         }
       },
-      "evd_date": "२०८२/०४/१४",
+      "evd_date": "2025-07-30",
       "evd_date_citations": [
         "/page/0/Table/25"
       ],
@@ -620,7 +620,7 @@
           "feedback": "Evidence date is २०८२/०४/१४ in table block /page/0/Table/25.\nConclusion: २०८२/०४/१४, which agrees with the extraction."
         }
       },
-      "transaction_type": "मृत्युपछिको नामसारी",
+      "transaction_type": "Transfer after death",
       "transaction_type_citations": [
         "/page/0/Table/25"
       ],
@@ -635,7 +635,7 @@
           "feedback": "Transaction type is मृत्युपछिको नामसारी in table block /page/0/Table/25.\nConclusion: मृत्युपछिको नामसारी, which agrees with the extraction."
         }
       },
-      "vdc": "नाङ्गलेभारे",
+      "vdc": "Nangalebhare",
       "vdc_citations": [
         "/page/0/Table/25"
       ],
@@ -650,7 +650,7 @@
           "feedback": "VDC is नाङ्गलेभारे in table block /page/0/Table/25.\nConclusion: नाङ्गलेभारे, which agrees with the extraction."
         }
       },
-      "ward_top": "८",
+      "ward_top": "8",
       "ward_top_citations": [
         "/page/0/Table/25"
       ],
@@ -665,7 +665,7 @@
           "feedback": "Ward top is ८ in table block /page/0/Table/25.\nConclusion: ८, which agrees with the extraction."
         }
       },
-      "ward_bottom": "८घ",
+      "ward_bottom": "8Gha",
       "ward_bottom_citations": [
         "/page/0/Table/25"
       ],
@@ -680,7 +680,7 @@
           "feedback": "Ward bottom is ८घ in table block /page/0/Table/25.\nConclusion: ८घ, which agrees with the extraction."
         }
       },
-      "plot_section": "६५२",
+      "plot_section": "652",
       "plot_section_citations": [
         "/page/0/Table/25"
       ],
@@ -695,7 +695,7 @@
           "feedback": "Plot section is ६५२ in table block /page/0/Table/25.\nConclusion: ६५२, which agrees with the extraction."
         }
       },
-      "desc_top": "आबादी",
+      "desc_top": "Cultivated",
       "desc_top_citations": [
         "/page/0/Table/25"
       ],
@@ -710,7 +710,7 @@
           "feedback": "Description top is आबादी in table block /page/0/Table/25.\nConclusion: आबादी, which agrees with the extraction."
         }
       },
-      "desc_bottom": "रैकर निजी",
+      "desc_bottom": "Raikar Private",
       "desc_bottom_citations": [
         "/page/0/Table/25"
       ],
@@ -725,7 +725,7 @@
           "feedback": "Description bottom is रैकर निजी in table block /page/0/Table/25.\nConclusion: रैकर निजी, which agrees with the extraction."
         }
       },
-      "owner_share": "एकलौटी",
+      "owner_share": "Sole",
       "owner_share_citations": [
         "/page/0/Table/25"
       ],
@@ -740,7 +740,7 @@
           "feedback": "Owner share is एकलौटी in table block /page/0/Table/25.\nConclusion: एकलौटी, which agrees with the extraction."
         }
       },
-      "tenant": "हिरा लाल चौलागाई",
+      "tenant": "Hira Lal Chaulagai",
       "tenant_citations": [
         "/page/0/Table/25"
       ],
@@ -755,7 +755,7 @@
           "feedback": "Tenant is हिरा लाल चौलागाई in table block /page/0/Table/25.\nConclusion: हिरा लाल चौलागाई, which agrees with the extraction."
         }
       },
-      "kind_top": "भिट/पाखो/बारी",
+      "kind_top": "Homestead/Upland/Dry field",
       "kind_top_citations": [
         "/page/0/Table/25"
       ],
@@ -770,7 +770,7 @@
           "feedback": "Kind top is भिट/पाखो/बारी in table block /page/0/Table/25.\nConclusion: भिट/पाखो/बारी, which agrees with the extraction."
         }
       },
-      "area_local": "२-२-०-० (रोपनी)",
+      "area_local": "2-2-0-0 (Ropani)",
       "area_local_citations": [
         "/page/0/Table/25"
       ],
@@ -785,7 +785,7 @@
           "feedback": "Area local is २-२-०-० (रोपनी) in table block /page/0/Table/25.\nConclusion: २-२-०-० (रोपनी), which agrees with the extraction."
         }
       },
-      "area_sqm": "१०८१.०६",
+      "area_sqm": "1081.06",
       "area_sqm_citations": [
         "/page/0/Table/25"
       ],
@@ -853,5 +853,62 @@
         }
       }
     }
-  ]
+  ],
+  "_translation_original": {
+    "office_vdc": "साखु",
+    "office_district": "काठमाण्डौ",
+    "owner_name": "उमा देवी चौलागाई",
+    "owner_district": "काठमाण्डौ",
+    "owner_vdc": "नाङ्गलेभारे",
+    "owner_ward": "८",
+    "husband_name": "हेमकान्त चौलागाई",
+    "father_in_law": "देउरुषी चौलागाई",
+    "citizenship_no": "१०००५",
+    "issue_date": "२०४९/०३/०९",
+    "issue_office": "जिल्ला प्रशासन कार्यालय, काठमाण्डौ",
+    "print_date": "२०८२/०४/१४",
+    "checked_by_date": "२०८२/०४/१४",
+    "plots[0].plot_no": "५५५",
+    "plots[0].evd_date": "२०८२/०४/१४",
+    "plots[0].transaction_type": "मृत्युपछिको नामसारी",
+    "plots[0].vdc": "नाङ्गलेभारे",
+    "plots[0].ward_top": "८",
+    "plots[0].ward_bottom": "८घ",
+    "plots[0].plot_section": "५५४",
+    "plots[0].desc_top": "आबादी",
+    "plots[0].desc_bottom": "रैकर निजी",
+    "plots[0].owner_share": "एकलौटी",
+    "plots[0].tenant": "हिरा लाल चौलागाई",
+    "plots[0].kind_top": "भिट/पाखो/बारी",
+    "plots[0].area_local": "२-७-०-० (रोपनी)",
+    "plots[0].area_sqm": "१२४०.०१",
+    "plots[1].plot_no": "६१२",
+    "plots[1].evd_date": "२०८२/०४/१४",
+    "plots[1].transaction_type": "मृत्युपछिको नामसारी",
+    "plots[1].vdc": "नाङ्गलेभारे",
+    "plots[1].ward_top": "८",
+    "plots[1].ward_bottom": "८घ",
+    "plots[1].plot_section": "६१९",
+    "plots[1].desc_top": "आबादी",
+    "plots[1].desc_bottom": "रैकर निजी",
+    "plots[1].owner_share": "एकलौटी",
+    "plots[1].tenant": "हिरा लाल चौलागाई",
+    "plots[1].kind_top": "भिट/पाखो/बारी",
+    "plots[1].area_local": "३-१५-१-० (रोपनी)",
+    "plots[1].area_sqm": "२०११.०२",
+    "plots[2].plot_no": "६५२",
+    "plots[2].evd_date": "२०८२/०४/१४",
+    "plots[2].transaction_type": "मृत्युपछिको नामसारी",
+    "plots[2].vdc": "नाङ्गलेभारे",
+    "plots[2].ward_top": "८",
+    "plots[2].ward_bottom": "८घ",
+    "plots[2].plot_section": "६५२",
+    "plots[2].desc_top": "आबादी",
+    "plots[2].desc_bottom": "रैकर निजी",
+    "plots[2].owner_share": "एकलौटी",
+    "plots[2].tenant": "हिरा लाल चौलागाई",
+    "plots[2].kind_top": "भिट/पाखो/बारी",
+    "plots[2].area_local": "२-२-०-० (रोपनी)",
+    "plots[2].area_sqm": "१०८१.०६"
+  }
 }

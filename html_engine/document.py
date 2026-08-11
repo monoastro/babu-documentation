@@ -1,8 +1,4 @@
-"""
-Document — the root of a renderable page.
-
-A ``Document`` holds page geometry plus a flat list of top-level components,
-and hands both to ``html_engine.renderer.render``::
+"""Document — the root of a renderable page.
 
     doc = Document("My Certificate", page_width="1200px")
     doc.add(Heading("Title", level=1), LabelValue("Name:", "John Doe"))
@@ -24,27 +20,19 @@ class Document:
 
     Parameters:
         title: ``<title>`` text.
-        page_width: Width of the ``.page`` sheet. Fixed widths keep the render
-            reproducible across viewports.
+        page_width: Width of the ``.page`` sheet.
         page_height: Fixed height, or ``"auto"`` to grow with the content.
         min_height: Floor for an ``auto`` page.
         background: Page surface. Normalized to white by the monochrome rule.
         font_family: Base family. Include a Devanagari fallback for Nepali
             documents.
         border: Page border, which is also what the PNG renderer crops to.
-        clip: Whether a fixed-height page hides overflowing content. ``True``
-            (the default) matches print, where content past the page edge is
-            simply gone. ``False`` lets it spill visibly — set it while
-            debugging a page that seems to be losing its footer, because a
-            clipped overflow and a genuinely missing section look identical in
-            the rendered PNG, and the vision verifier reports both as lost
-            content. Ignored when *page_height* is ``"auto"``.
+        clip: Whether a fixed-height page hides overflowing content. Ignored
+            when *page_height* is ``"auto"``.
         page_style: Extra styles for the ``.page`` wrapper.
         body_style: Extra styles for ``<body>``.
-        extra_css: Raw CSS appended to the ``<style>`` block. Colour-normalized
-            like everything else.
-        lang: ``<html lang>``. Use ``"ne"`` for Nepali documents so screen
-            readers pick the right pronunciation.
+        extra_css: Raw CSS appended to the ``<style>`` block.
+        lang: ``<html lang>``. Use ``"ne"`` for Nepali documents.
         show_page_numbers: Emit an ``@page`` counter rule for print.
     """
 
@@ -84,8 +72,7 @@ class Document:
         """Append top-level components. Returns self for chaining.
 
         Accepts components, strings, numbers, or ``None`` — the same coercion
-        every container applies, so a page-level child cannot slip through
-        unchecked and fail later during rendering.
+        every container applies.
         """
         from html_engine.components.base import coerce_children
 
@@ -99,11 +86,9 @@ class Document:
         return render(self)
 
     def save(self, path: str | Path) -> Path:
-        """
-        Write the rendered HTML to *path*, creating parent directories.
+        """Write the rendered HTML to *path*, creating parent directories.
 
-        Returns the path written, so a caller can chain straight into
-        rendering a PNG from it.
+        Returns the path written.
         """
         target = Path(path)
         target.parent.mkdir(parents=True, exist_ok=True)

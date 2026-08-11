@@ -15,6 +15,9 @@ a critique of it.
     # Save the extracted JSON so later runs can skip OCR entirely
     python main.py test-data/demo.png --type letter --save-data output/letter.json
 
+    # Keep the extracted values in their original script
+    python main.py test-data/demo.png --type letter --no-translate
+
     # Build with empty values, to check layout and spacing alone
     python main.py --type laalpurja --blank --png
 """
@@ -29,6 +32,11 @@ from pathlib import Path
 from document_builder.registry import DOCUMENTS
 
 DEFAULT_OUTPUT_DIR = Path("test-output")
+
+# Key under which a saved JSON carries the pre-translation values. Underscored
+# so it cannot collide with a schema field, and popped on load so it never
+# reaches a builder.
+ORIGINAL_KEY = "_translation_original"
 
 
 def _blank_data(document_type: str) -> dict:
@@ -50,13 +58,23 @@ def resolve_data(
     data_path: Path | None = None,
     blank: bool = False,
     save_data: Path | None = None,
+    translate: bool = True,
 ) -> dict:
-    """Resolve the document's field values from whichever source was given."""
+    """Resolve the document's field values from whichever source was given.
+
+    The OCR branch translates the extracted values into English before they
+    reach a builder. ``--data`` is taken as-is: a saved JSON has already been
+    through translation, and re-translating English would only invite drift.
+    """
     if blank:
         return _blank_data(document_type)
 
     if data_path is not None:
-        return json.loads(data_path.read_text(encoding="utf-8"))
+        data = json.loads(data_path.read_text(encoding="utf-8"))
+        # The originals ride along in the saved file; they are provenance, not
+        # a field, so they never reach the builder.
+        data.pop(ORIGINAL_KEY, None)
+        return data
 
     # OCR path — the only branch that costs an API call.
     from information_extraction.extractor import build_data, extract
@@ -65,10 +83,23 @@ def resolve_data(
     extracted, schema = extract(image_path=str(image), schema_path=schema_path)
     data = build_data(extracted, schema)
 
+    original: dict[str, str] = {}
+    if translate:
+        from information_extraction.translator import translate_data
+
+        result = translate_data(data, verbose=True)
+        print(f"  translation: {result.describe()}")
+        data, original = result.data, result.original
+
     if save_data is not None:
         save_data.parent.mkdir(parents=True, exist_ok=True)
+        # Both halves in one file: the translated values a builder consumes, and
+        # the pre-translation originals, so nothing is lost to the OCR spend.
+        payload = dict(data)
+        if original:
+            payload[ORIGINAL_KEY] = original
         save_data.write_text(
-            json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+            json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
         )
         print(f"  data: {save_data}")
     return data
@@ -117,6 +148,13 @@ def main(argv: list[str] | None = None) -> int:
         help="Build with every field empty — layout check, no OCR.",
     )
     parser.add_argument(
+        "--no-translate",
+        dest="translate",
+        action="store_false",
+        help="Keep extracted values in their original script instead of "
+        "translating them into English.",
+    )
+    parser.add_argument(
         "--png",
         action="store_true",
         help="Also render a PNG next to the HTML (needs Chrome/Chromium).",
@@ -154,6 +192,7 @@ def main(argv: list[str] | None = None) -> int:
             data_path=args.data,
             blank=args.blank,
             save_data=args.save_data,
+            translate=args.translate,
         )
     except Exception as exc:
         print(f"Extraction failed: {exc}", file=sys.stderr)

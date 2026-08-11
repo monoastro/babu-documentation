@@ -1,0 +1,857 @@
+{
+  "certificate_no": "NM0000095",
+  "supplementary_id": "PF002728503",
+  "office_vdc": "साखु",
+  "office_district": "काठमाण्डौ",
+  "owner_name": "उमा देवी चौलागाई",
+  "owner_district": "काठमाण्डौ",
+  "owner_vdc": "नाङ्गलेभारे",
+  "owner_ward": "८",
+  "husband_name": "हेमकान्त चौलागाई",
+  "father_in_law": "देउरुषी चौलागाई",
+  "citizenship_no": "१०००५",
+  "issue_date": "२०४९/०३/०९",
+  "issue_office": "जिल्ला प्रशासन कार्यालय, काठमाण्डौ",
+  "doc_id": "",
+  "print_date": "२०८२/०४/१४",
+  "checked_by_date": "२०८२/०४/१४",
+  "plots": [
+    {
+      "plot_no": "५५५",
+      "plot_no_citations": [
+        "/page/0/Table/25"
+      ],
+      "plot_no_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Plot number is ५५५ in table block /page/0/Table/25.\nConclusion: ५५५, which agrees with the extraction."
+        }
+      },
+      "evd_no": "ML00000088",
+      "evd_no_citations": [
+        "/page/0/Table/25"
+      ],
+      "evd_no_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Evidence number is ML00000088 in table block /page/0/Table/25.\nConclusion: ML00000088, which agrees with the extraction."
+        }
+      },
+      "evd_date": "२०८२/०४/१४",
+      "evd_date_citations": [
+        "/page/0/Table/25"
+      ],
+      "evd_date_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Evidence date is २०८२/०४/१४ in table block /page/0/Table/25.\nConclusion: २०८२/०४/१४, which agrees with the extraction."
+        }
+      },
+      "transaction_type": "मृत्युपछिको नामसारी",
+      "transaction_type_citations": [
+        "/page/0/Table/25"
+      ],
+      "transaction_type_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Transaction type is मृत्युपछिको नामसारी in table block /page/0/Table/25.\nConclusion: मृत्युपछिको नामसारी, which agrees with the extraction."
+        }
+      },
+      "vdc": "नाङ्गलेभारे",
+      "vdc_citations": [
+        "/page/0/Table/25"
+      ],
+      "vdc_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "VDC is नाङ्गलेभारे in table block /page/0/Table/25.\nConclusion: नाङ्गलेभारे, which agrees with the extraction."
+        }
+      },
+      "ward_top": "८",
+      "ward_top_citations": [
+        "/page/0/Table/25"
+      ],
+      "ward_top_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Ward top is ८ in table block /page/0/Table/25.\nConclusion: ८, which agrees with the extraction."
+        }
+      },
+      "ward_bottom": "८घ",
+      "ward_bottom_citations": [
+        "/page/0/Table/25"
+      ],
+      "ward_bottom_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Ward bottom is ८घ in table block /page/0/Table/25.\nConclusion: ८घ, which agrees with the extraction."
+        }
+      },
+      "plot_section": "५५४",
+      "plot_section_citations": [
+        "/page/0/Table/25"
+      ],
+      "plot_section_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Plot section is ५५४ in table block /page/0/Table/25.\nConclusion: ५५४, which agrees with the extraction."
+        }
+      },
+      "desc_top": "आबादी",
+      "desc_top_citations": [
+        "/page/0/Table/25"
+      ],
+      "desc_top_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Description top is आबादी in table block /page/0/Table/25.\nConclusion: आबादी, which agrees with the extraction."
+        }
+      },
+      "desc_bottom": "रैकर निजी",
+      "desc_bottom_citations": [
+        "/page/0/Table/25"
+      ],
+      "desc_bottom_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Description bottom is रैकर निजी in table block /page/0/Table/25.\nConclusion: रैकर निजी, which agrees with the extraction."
+        }
+      },
+      "owner_share": "एकलौटी",
+      "owner_share_citations": [
+        "/page/0/Table/25"
+      ],
+      "owner_share_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Owner share is एकलौटी in table block /page/0/Table/25.\nConclusion: एकलौटी, which agrees with the extraction."
+        }
+      },
+      "tenant": "हिरा लाल चौलागाई",
+      "tenant_citations": [
+        "/page/0/Table/25"
+      ],
+      "tenant_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Tenant is हिरा लाल चौलागाई in table block /page/0/Table/25.\nConclusion: हिरा लाल चौलागाई, which agrees with the extraction."
+        }
+      },
+      "kind_top": "भिट/पाखो/बारी",
+      "kind_top_citations": [
+        "/page/0/Table/25"
+      ],
+      "kind_top_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Kind top is भिट/पाखो/बारी in table block /page/0/Table/25.\nConclusion: भिट/पाखो/बारी, which agrees with the extraction."
+        }
+      },
+      "area_local": "२-७-०-० (रोपनी)",
+      "area_local_citations": [
+        "/page/0/Table/25"
+      ],
+      "area_local_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Area local is २-७-०-० (रोपनी) in table block /page/0/Table/25.\nConclusion: २-७-०-० (रोपनी), which agrees with the extraction."
+        }
+      },
+      "area_sqm": "१२४०.०१",
+      "area_sqm_citations": [
+        "/page/0/Table/25"
+      ],
+      "area_sqm_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Area sqm is १२४०.०१ in table block /page/0/Table/25.\nConclusion: १२४०.०१, which agrees with the extraction."
+        }
+      },
+      "register_page": null,
+      "register_page_citations": [],
+      "register_page_meta": {
+        "extraction_status": "NOT_RESOLVABLE",
+        "reasoning": null,
+        "citations": [],
+        "verification": {
+          "status": "FAIL_UNRESOLVABLE",
+          "feedback": "Register page is not present in the table.\nConclusion: null, which agrees with the extraction."
+        }
+      },
+      "register_serial": null,
+      "register_serial_citations": [],
+      "register_serial_meta": {
+        "extraction_status": "NOT_RESOLVABLE",
+        "reasoning": null,
+        "citations": [],
+        "verification": {
+          "status": "FAIL_UNRESOLVABLE",
+          "feedback": "Register serial is not present in the table.\nConclusion: null, which agrees with the extraction."
+        }
+      },
+      "remark": "",
+      "remark_citations": [
+        "/page/0/Table/25"
+      ],
+      "remark_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Remark is empty in table block /page/0/Table/25.\nConclusion: , which agrees with the extraction."
+        }
+      },
+      "signature": "",
+      "signature_citations": [
+        "/page/0/Table/25"
+      ],
+      "signature_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Signature is blank in table block /page/0/Table/25.\nConclusion: , which agrees with the extraction."
+        }
+      }
+    },
+    {
+      "plot_no": "६१२",
+      "plot_no_citations": [
+        "/page/0/Table/25"
+      ],
+      "plot_no_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Plot number is ६१२ in table block /page/0/Table/25.\nConclusion: ६१२, which agrees with the extraction."
+        }
+      },
+      "evd_no": "ML00000088",
+      "evd_no_citations": [
+        "/page/0/Table/25"
+      ],
+      "evd_no_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Evidence number is ML00000088 in table block /page/0/Table/25.\nConclusion: ML00000088, which agrees with the extraction."
+        }
+      },
+      "evd_date": "२०८२/०४/१४",
+      "evd_date_citations": [
+        "/page/0/Table/25"
+      ],
+      "evd_date_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Evidence date is २०८२/०४/१४ in table block /page/0/Table/25.\nConclusion: २०८२/०४/१४, which agrees with the extraction."
+        }
+      },
+      "transaction_type": "मृत्युपछिको नामसारी",
+      "transaction_type_citations": [
+        "/page/0/Table/25"
+      ],
+      "transaction_type_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Transaction type is मृत्युपछिको नामसारी in table block /page/0/Table/25.\nConclusion: मृत्युपछिको नामसारी, which agrees with the extraction."
+        }
+      },
+      "vdc": "नाङ्गलेभारे",
+      "vdc_citations": [
+        "/page/0/Table/25"
+      ],
+      "vdc_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "VDC is नाङ्गलेभारे in table block /page/0/Table/25.\nConclusion: नाङ्गलेभारे, which agrees with the extraction."
+        }
+      },
+      "ward_top": "८",
+      "ward_top_citations": [
+        "/page/0/Table/25"
+      ],
+      "ward_top_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Ward top is ८ in table block /page/0/Table/25.\nConclusion: ८, which agrees with the extraction."
+        }
+      },
+      "ward_bottom": "८घ",
+      "ward_bottom_citations": [
+        "/page/0/Table/25"
+      ],
+      "ward_bottom_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Ward bottom is ८घ in table block /page/0/Table/25.\nConclusion: ८घ, which agrees with the extraction."
+        }
+      },
+      "plot_section": "६१९",
+      "plot_section_citations": [
+        "/page/0/Table/25"
+      ],
+      "plot_section_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Plot section is ६१९ in table block /page/0/Table/25.\nConclusion: ६१९, which agrees with the extraction."
+        }
+      },
+      "desc_top": "आबादी",
+      "desc_top_citations": [
+        "/page/0/Table/25"
+      ],
+      "desc_top_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Description top is आबादी in table block /page/0/Table/25.\nConclusion: आबादी, which agrees with the extraction."
+        }
+      },
+      "desc_bottom": "रैकर निजी",
+      "desc_bottom_citations": [
+        "/page/0/Table/25"
+      ],
+      "desc_bottom_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Description bottom is रैकर निजी in table block /page/0/Table/25.\nConclusion: रैकर निजी, which agrees with the extraction."
+        }
+      },
+      "owner_share": "एकलौटी",
+      "owner_share_citations": [
+        "/page/0/Table/25"
+      ],
+      "owner_share_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Owner share is एकलौटी in table block /page/0/Table/25.\nConclusion: एकलौटी, which agrees with the extraction."
+        }
+      },
+      "tenant": "हिरा लाल चौलागाई",
+      "tenant_citations": [
+        "/page/0/Table/25"
+      ],
+      "tenant_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Tenant is हिरा लाल चौलागाई in table block /page/0/Table/25.\nConclusion: हिरा लाल चौलागाई, which agrees with the extraction."
+        }
+      },
+      "kind_top": "भिट/पाखो/बारी",
+      "kind_top_citations": [
+        "/page/0/Table/25"
+      ],
+      "kind_top_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Kind top is भिट/पाखो/बारी in table block /page/0/Table/25.\nConclusion: भिट/पाखो/बारी, which agrees with the extraction."
+        }
+      },
+      "area_local": "३-१५-१-० (रोपनी)",
+      "area_local_citations": [
+        "/page/0/Table/25"
+      ],
+      "area_local_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Area local is ३-१५-१-० (रोपनी) in table block /page/0/Table/25.\nConclusion: ३-१५-१-० (रोपनी), which agrees with the extraction."
+        }
+      },
+      "area_sqm": "२०११.०२",
+      "area_sqm_citations": [
+        "/page/0/Table/25"
+      ],
+      "area_sqm_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Area sqm is २०११.०२ in table block /page/0/Table/25.\nConclusion: २०११.०२, which agrees with the extraction."
+        }
+      },
+      "register_page": null,
+      "register_page_citations": [],
+      "register_page_meta": {
+        "extraction_status": "NOT_RESOLVABLE",
+        "reasoning": null,
+        "citations": [],
+        "verification": {
+          "status": "FAIL_UNRESOLVABLE",
+          "feedback": "Register page is not present in the table.\nConclusion: null, which agrees with the extraction."
+        }
+      },
+      "register_serial": null,
+      "register_serial_citations": [],
+      "register_serial_meta": {
+        "extraction_status": "NOT_RESOLVABLE",
+        "reasoning": null,
+        "citations": [],
+        "verification": {
+          "status": "FAIL_UNRESOLVABLE",
+          "feedback": "Register serial is not present in the table.\nConclusion: null, which agrees with the extraction."
+        }
+      },
+      "remark": "",
+      "remark_citations": [
+        "/page/0/Table/25"
+      ],
+      "remark_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Remark is empty in table block /page/0/Table/25.\nConclusion: , which agrees with the extraction."
+        }
+      },
+      "signature": "",
+      "signature_citations": [
+        "/page/0/Table/25"
+      ],
+      "signature_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Signature is blank in table block /page/0/Table/25.\nConclusion: , which agrees with the extraction."
+        }
+      }
+    },
+    {
+      "plot_no": "६५२",
+      "plot_no_citations": [
+        "/page/0/Table/25"
+      ],
+      "plot_no_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Plot number is ६५२ in table block /page/0/Table/25.\nConclusion: ६५२, which agrees with the extraction."
+        }
+      },
+      "evd_no": "ML00000088",
+      "evd_no_citations": [
+        "/page/0/Table/25"
+      ],
+      "evd_no_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Evidence number is ML00000088 in table block /page/0/Table/25.\nConclusion: ML00000088, which agrees with the extraction."
+        }
+      },
+      "evd_date": "२०८२/०४/१४",
+      "evd_date_citations": [
+        "/page/0/Table/25"
+      ],
+      "evd_date_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Evidence date is २०८२/०४/१४ in table block /page/0/Table/25.\nConclusion: २०८२/०४/१४, which agrees with the extraction."
+        }
+      },
+      "transaction_type": "मृत्युपछिको नामसारी",
+      "transaction_type_citations": [
+        "/page/0/Table/25"
+      ],
+      "transaction_type_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Transaction type is मृत्युपछिको नामसारी in table block /page/0/Table/25.\nConclusion: मृत्युपछिको नामसारी, which agrees with the extraction."
+        }
+      },
+      "vdc": "नाङ्गलेभारे",
+      "vdc_citations": [
+        "/page/0/Table/25"
+      ],
+      "vdc_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "VDC is नाङ्गलेभारे in table block /page/0/Table/25.\nConclusion: नाङ्गलेभारे, which agrees with the extraction."
+        }
+      },
+      "ward_top": "८",
+      "ward_top_citations": [
+        "/page/0/Table/25"
+      ],
+      "ward_top_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Ward top is ८ in table block /page/0/Table/25.\nConclusion: ८, which agrees with the extraction."
+        }
+      },
+      "ward_bottom": "८घ",
+      "ward_bottom_citations": [
+        "/page/0/Table/25"
+      ],
+      "ward_bottom_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Ward bottom is ८घ in table block /page/0/Table/25.\nConclusion: ८घ, which agrees with the extraction."
+        }
+      },
+      "plot_section": "६५२",
+      "plot_section_citations": [
+        "/page/0/Table/25"
+      ],
+      "plot_section_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Plot section is ६५२ in table block /page/0/Table/25.\nConclusion: ६५२, which agrees with the extraction."
+        }
+      },
+      "desc_top": "आबादी",
+      "desc_top_citations": [
+        "/page/0/Table/25"
+      ],
+      "desc_top_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Description top is आबादी in table block /page/0/Table/25.\nConclusion: आबादी, which agrees with the extraction."
+        }
+      },
+      "desc_bottom": "रैकर निजी",
+      "desc_bottom_citations": [
+        "/page/0/Table/25"
+      ],
+      "desc_bottom_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Description bottom is रैकर निजी in table block /page/0/Table/25.\nConclusion: रैकर निजी, which agrees with the extraction."
+        }
+      },
+      "owner_share": "एकलौटी",
+      "owner_share_citations": [
+        "/page/0/Table/25"
+      ],
+      "owner_share_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Owner share is एकलौटी in table block /page/0/Table/25.\nConclusion: एकलौटी, which agrees with the extraction."
+        }
+      },
+      "tenant": "हिरा लाल चौलागाई",
+      "tenant_citations": [
+        "/page/0/Table/25"
+      ],
+      "tenant_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Tenant is हिरा लाल चौलागाई in table block /page/0/Table/25.\nConclusion: हिरा लाल चौलागाई, which agrees with the extraction."
+        }
+      },
+      "kind_top": "भिट/पाखो/बारी",
+      "kind_top_citations": [
+        "/page/0/Table/25"
+      ],
+      "kind_top_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Kind top is भिट/पाखो/बारी in table block /page/0/Table/25.\nConclusion: भिट/पाखो/बारी, which agrees with the extraction."
+        }
+      },
+      "area_local": "२-२-०-० (रोपनी)",
+      "area_local_citations": [
+        "/page/0/Table/25"
+      ],
+      "area_local_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Area local is २-२-०-० (रोपनी) in table block /page/0/Table/25.\nConclusion: २-२-०-० (रोपनी), which agrees with the extraction."
+        }
+      },
+      "area_sqm": "१०८१.०६",
+      "area_sqm_citations": [
+        "/page/0/Table/25"
+      ],
+      "area_sqm_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Area sqm is १०८१.०६ in table block /page/0/Table/25.\nConclusion: १०८१.०६, which agrees with the extraction."
+        }
+      },
+      "register_page": null,
+      "register_page_citations": [],
+      "register_page_meta": {
+        "extraction_status": "NOT_RESOLVABLE",
+        "reasoning": null,
+        "citations": [],
+        "verification": {
+          "status": "FAIL_UNRESOLVABLE",
+          "feedback": "Register page is not present in the table.\nConclusion: null, which agrees with the extraction."
+        }
+      },
+      "register_serial": null,
+      "register_serial_citations": [],
+      "register_serial_meta": {
+        "extraction_status": "NOT_RESOLVABLE",
+        "reasoning": null,
+        "citations": [],
+        "verification": {
+          "status": "FAIL_UNRESOLVABLE",
+          "feedback": "Register serial is not present in the table.\nConclusion: null, which agrees with the extraction."
+        }
+      },
+      "remark": "",
+      "remark_citations": [
+        "/page/0/Table/25"
+      ],
+      "remark_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Remark is empty in table block /page/0/Table/25.\nConclusion: , which agrees with the extraction."
+        }
+      },
+      "signature": "",
+      "signature_citations": [
+        "/page/0/Table/25"
+      ],
+      "signature_meta": {
+        "extraction_status": "EXTRACTED",
+        "reasoning": null,
+        "citations": [
+          "/page/0/Table/25"
+        ],
+        "verification": {
+          "status": "PASS",
+          "feedback": "Signature is blank in table block /page/0/Table/25.\nConclusion: , which agrees with the extraction."
+        }
+      }
+    }
+  ]
+}

@@ -9,6 +9,7 @@ rendered output against the source scan and repairs it under human supervision.
 source image
   → OCR extraction (Datalab)
   → structured JSON
+  → translation (LLM: Nepali → English)
   → layout builder
   → html_engine
   → HTML + PNG
@@ -30,13 +31,14 @@ source image
   in each layout directory names the live layout (see below). All rendered value
   fields carry `contenteditable="true"` and `data-field` attributes for direct
   browser editing.
-- `information_extraction/` — extraction helpers, JSON schemas, and the
-  digitization entry point powered by Datalab OCR.
+- `information_extraction/` — extraction helpers, JSON schemas, the LLM
+  translation stage (`translator.py`), and the digitization entry point powered
+  by Datalab OCR.
 - `agentic_controller/` — the autonomous pipeline: RAG index over the codebase,
   a vision verifier, and an Architect Agent that writes layout and schema fixes.
-- `tests/` — 117 tests across 7 suites covering the open `Style`, the monochrome
+- `tests/` — 142 tests across 8 suites covering the open `Style`, the monochrome
   guarantee, placeholder components, the layout validation gate, `main.py`, the
-  Architect Agent's command sandbox, and layout/schema resolution.
+  Architect Agent's command sandbox, layout/schema resolution, and translation.
 - `output/` — generated HTML, PNG, and verification reports.
 
 ## Setup
@@ -53,8 +55,9 @@ Fill in `.env`:
 | Variable | Required | Purpose |
 |---|---|---|
 | `DATALAB_API_KEY` | yes | OCR extraction |
-| `OPENAI_API_KEY` | yes | Vision verifier |
+| `OPENAI_API_KEY` | yes | Vision verifier and the translation stage |
 | `OPENAI_MODEL` | no | Verifier model (default `gpt-4.1-mini`) |
+| `TRANSLATOR_MODEL` | no | Translation model (defaults to `OPENAI_MODEL`) |
 | `ANTHROPIC_API_KEY` | no | Architect Agent — preferred backend when set |
 | `ARCHITECT_BACKEND` | no | Force `anthropic` or `openai` |
 | `ARCHITECT_MODEL` | no | Override the agent model |
@@ -84,10 +87,11 @@ python -m agentic_controller.run path/to/document.png --document-type laalpurja
 | `--max-iterations` | `3` | Maximum repair cycles before only *approve* is offered |
 | `--output-dir` | `output/` | Where HTML, PNG, and reports are written |
 | `--auto-approve` | off | Unattended: auto-fix while blocking issues remain, then accept |
+| `--no-translate` | off | Keep extracted values in their original script |
 | `--result-json` | — | Write the run result, including full history, as JSON |
 
-The run extracts, builds, renders, verifies, then pauses at a **single human
-checkpoint** per iteration:
+The run extracts, translates, builds, renders, verifies, then pauses at a
+**single human checkpoint** per iteration:
 
 | Input | Effect |
 |---|---|
@@ -138,6 +142,9 @@ python main.py test-data/demo.png --type letter --save-data output/letter.json
 # Re-render from data already extracted — no API call
 python main.py --type letter --data output/letter.json
 
+# Keep the extracted values in their original script
+python main.py test-data/demo.png --type letter --no-translate
+
 # Build with every field empty, to check layout and spacing alone
 python main.py --type laalpurja --blank --png
 ```
@@ -150,12 +157,49 @@ python main.py --type laalpurja --blank --png
 | `--data` | — | Build from this JSON instead of running OCR |
 | `--save-data` | — | Write the extracted JSON for later `--data` runs |
 | `--blank` | off | Every field empty — layout check, no OCR |
+| `--no-translate` | off | Keep extracted values in their original script |
 | `--png` | off | Also render a PNG (needs Chrome/Chromium) |
 | `--strict` | off | Turn unrecognized-CSS-property warnings into errors |
 
 Exactly one data source is required: an image, `--data`, or `--blank`. Both
 `--data` and `--blank` skip the extractor entirely, so neither costs an API
 call.
+
+## Output is in English
+
+Extraction returns values in the script they were printed in, usually
+Devanagari. `information_extraction/translator.py` translates them before they
+reach a layout, so the rendered document is readable English throughout:
+
+| | Source | Rendered |
+|---|---|---|
+| Phrases | `वंशज` | `By descent` |
+| Names, places | `उमा देवी चौलागाई` | `Uma Devi Chaulagai` |
+| Numerals | `८` | `8` |
+| BS dates | `२०४९/०३/०९` | `1992-06-23` |
+
+Three things are deliberately left alone. Values that are already English cost
+nothing and are skipped. Bikram Sambat dates are converted locally by
+`nepali_datetime`, never by the model — date arithmetic is exactly what an LLM
+gets subtly wrong. And `present` / `absent` are an OCR contract rather than
+content: a layout reads them to decide whether to draw a thumb-impression box
+at all, so rewording one would silently remove an element from the page.
+
+Bilingual field pairs get the same treatment. A `certificate_title_np` printed
+above its `certificate_title_en`, or a `date_of_birth_bs` beside its `_ad`
+twin, is deliberately scripted — translating the first line would make the
+document say "Certificate" twice. Only the presence of the sibling triggers
+this; a lone `foo_np` is the only value there is, and is translated normally.
+
+Everything translatable in a document goes out in one request. Batching is
+cheaper than a call per field and also more accurate — the model sees
+`district` and `municipality` together and can tell that a word is a place
+name. Results are cached on disk by `(text, model)`, so the repair loop's
+second and third iterations re-translate nothing.
+
+A failed translation is reported, not raised: a document rendered in Devanagari
+is more useful than no document. `--no-translate` skips the stage in both
+pipelines.
 
 ## Output is strictly black and white
 
@@ -168,7 +212,7 @@ frequently colourful; a colour difference is never a verification discrepancy.
 ## Tests
 
 ```bash
-python tests/run_all.py          # all 7 suites, 117 tests, no pytest needed
+python tests/run_all.py          # all 8 suites, 142 tests, no pytest needed
 python tests/test_styles.py      # or run one suite directly
 ```
 
@@ -181,6 +225,7 @@ python tests/test_styles.py      # or run one suite directly
 | `test_main_cli.py` | `--blank` / `--data` never reach OCR; argument validation |
 | `test_command_sandbox.py` | `execute_command` refuses `python -c`, redirection, chaining, substitution; originals are restored if a command touches them; an *existing* `layout.py` or base schema is never a write target, but a brand-new type may create its own |
 | `test_registry_resolution.py` | `ACTIVE` selects the live layout and degrades safely; traversal in `ACTIVE` is rejected; discovery finds new types; promotion takes effect mid-process |
+| `test_translator.py` | Sentinels, English values, and a bilingual pair's Nepali half never reach the model; BS dates convert locally; nested `plots` rows and extractor metadata survive; a failed call degrades to the original data; the cache spares the second run |
 
 ## Generate example documents
 

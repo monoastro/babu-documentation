@@ -1,13 +1,9 @@
-"""
-Monochrome enforcement for the HTML Document Engine.
+"""Monochrome enforcement for the HTML Document Engine.
 
 Project rule: a rendered document is purely black and white. Foreground ink
 (text, borders, rules, shadows) is ``#000000``; every surface is ``#ffffff``.
 
-The rule is enforced structurally rather than by convention, because a
-convention only holds for code a human reviewed — and the Architect Agent
-writes layouts unattended. Normalization happens on the way *out*, at every
-route CSS can reach the page:
+Normalization happens on the way *out*, at every route CSS can reach the page:
 
     1. ``Style.to_css()``           — the ordinary component path
     2. ``Component._build_attrs()`` — a raw ``style`` string in ``attrs``
@@ -17,13 +13,8 @@ route CSS can reach the page:
                                       style hardcoded into a ``to_html()``
                                       f-string
 
-There is deliberately no opt-out. A layout cannot emit colour.
-
-Why the target depends on the *property* and not on the colour's luminance:
-thresholding by luminance would map a dark fill to black and its light text
-to white — or the reverse — and either way the two can collide into an
-unreadable block. Pinning surfaces white and ink black guarantees contrast
-for any input.
+There is deliberately no opt-out. The target depends on the *property*, not on
+the colour's luminance — see DESIGN-NOTES.md.
 """
 
 from __future__ import annotations
@@ -34,8 +25,8 @@ BLACK = "#000000"
 WHITE = "#ffffff"
 
 # Keywords that are not colours, or that resolve to something already safe.
-# ``transparent`` in particular must survive: rewriting it to white would
-# paint opaque boxes over content that is meant to show through.
+# ``transparent`` must survive: rewriting it to white would paint opaque boxes
+# over content meant to show through.
 _KEEP = frozenset(
     {
         "transparent",
@@ -49,12 +40,7 @@ _KEEP = frozenset(
     }
 )
 
-# Every CSS named colour. A curated subset was tried first and leaked:
-# ``rebeccapurple`` is not an exotic choice for a model writing a layout, and
-# any name missing from the list passes through as real colour. The list is
-# closed and standardised, so completeness costs one constant and removes the
-# entire class of near-miss.
-#
+# Every CSS named colour; a curated subset leaks anything it omits.
 # Longest-first ordering matters: the alternation is scanned left to right, so
 # with "red" before "rebeccapurple" the regex would match "red" and leave
 # "beccapurple" behind as stray text.
