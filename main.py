@@ -6,20 +6,20 @@ Same builders, same engine, no vision verifier and no repair loop — use it whe
 you are iterating on a layout and want to see the render, not spend credits on
 a critique of it.
 
-    # OCR a scan, then build
-    python main.py test-data/demo.png --type letter
+# OCR a scan, then build
+python main.py test-data/demo.png --type letter
 
-    # Re-render from data already extracted, no OCR call
-    python main.py --type letter --data output/letter.json
+# Re-render from data already extracted, no OCR call
+python main.py --type letter --data output/letter.json
 
-    # Save the extracted JSON so later runs can skip OCR entirely
-    python main.py test-data/demo.png --type letter --save-data output/letter.json
+# Save the extracted JSON so later runs can skip OCR entirely
+python main.py test-data/demo.png --type letter --save-data output/letter.json
 
-    # Keep the extracted values in their original script
-    python main.py test-data/demo.png --type letter --no-translate
+# Keep the extracted values in their original script
+python main.py test-data/demo.png --type letter --no-translate
 
-    # Build with empty values, to check layout and spacing alone
-    python main.py --type laalpurja --blank --png
+# Build with empty values, to check layout and spacing alone
+python main.py --type laalpurja --blank --png
 """
 
 from __future__ import annotations

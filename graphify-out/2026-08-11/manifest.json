@@ -20,8 +20,8 @@
     "semantic_hash": "9333b14e8dccc9f83f07e1f33da7d6cc"
   },
   "document_builder/registry.py": {
-    "mtime": 1786357276.2469716,
-    "ast_hash": "79f540d1073058c16dfc2e9795385bae",
+    "mtime": 1786335267.6779695,
+    "ast_hash": "2666202615fe442769a388b4924b7389",
     "semantic_hash": ""
   },
   "html_engine/__init__.py": {
@@ -35,8 +35,8 @@
     "semantic_hash": "3d2ae43b38603000653dcfca33b0a0a3"
   },
   "html_engine/components/base.py": {
-    "mtime": 1786357370.2969713,
-    "ast_hash": "59a58635f0beab7242f8b8df360159f7",
+    "mtime": 1786273738.7459884,
+    "ast_hash": "b63a69f88ad1165d05bb2e749023063e",
     "semantic_hash": ""
   },
   "html_engine/components/field.py": {
@@ -75,8 +75,8 @@
     "semantic_hash": ""
   },
   "html_engine/document.py": {
-    "mtime": 1786357231.3949718,
-    "ast_hash": "c0fd2433332c97b99b11f4bf058c28b1",
+    "mtime": 1786273812.365988,
+    "ast_hash": "5a307562038c8d796fff8a0598198325",
     "semantic_hash": ""
   },
   "html_engine/renderer.py": {
@@ -85,8 +85,8 @@
     "semantic_hash": ""
   },
   "html_engine/styles.py": {
-    "mtime": 1786357885.3749692,
-    "ast_hash": "ff5b929c52437543b55ead1e28532a04",
+    "mtime": 1786266111.610974,
+    "ast_hash": "fe9f275d5e07e4144763997be135d1bf",
     "semantic_hash": ""
   },
   "information_extraction/extractor.py": {
@@ -225,8 +225,8 @@
     "semantic_hash": ""
   },
   "html_engine/monochrome.py": {
-    "mtime": 1786357933.9489691,
-    "ast_hash": "a7d78fdd447084b4a4a0486f3bd72189",
+    "mtime": 1786271403.559997,
+    "ast_hash": "1ea95896e3ce4c87d7bd4ee42a1789b0",
     "semantic_hash": ""
   },
   "tests/test_monochrome.py": {
@@ -315,7 +315,7 @@
     "semantic_hash": ""
   },
   "document_builder/citizenship_back/layout.py": {
-    "mtime": 1786356961.8139129,
+    "mtime": 1786354515.5204248,
     "ast_hash": "b80853028e33147b8e097344d6b7e0c7",
     "semantic_hash": ""
   },
@@ -590,8 +590,8 @@
     "semantic_hash": ""
   },
   "document_builder/resolver.py": {
-    "mtime": 1786357710.04897,
-    "ast_hash": "8c9428fee11cb4af5b16c71abbecb8cf",
+    "mtime": 1786335207.6099696,
+    "ast_hash": "93c44fee160d17a8a3911a55791d7165",
     "semantic_hash": ""
   },
   "test-output/citizenship_back.json": {
@@ -812,11 +812,6 @@
   "test-output/untranslated/laalpurja.png": {
     "mtime": 1786343828.8329368,
     "ast_hash": "0a05e10fa4fc7d55f26e2cb3721b3709",
-    "semantic_hash": ""
-  },
-  "work.txt": {
-    "mtime": 1786376213.685429,
-    "ast_hash": "f32ee650ca75be6e00531fea0ba81428",
     "semantic_hash": ""
   }
 }
