@@ -110,8 +110,8 @@
     "semantic_hash": ""
   },
   "information_extraction/translator.py": {
-    "mtime": 1786416774.9949803,
-    "ast_hash": "f01be52498e23d9fc986d89649e20263",
+    "mtime": 1786447249.5449493,
+    "ast_hash": "0c24c64bcdff12fa29bf25dfa305bc5d",
     "semantic_hash": ""
   },
   "main.py": {
@@ -310,13 +310,13 @@
     "semantic_hash": ""
   },
   "document_builder/citizenship_back/layout.py": {
-    "mtime": 1786443090.0223625,
-    "ast_hash": "eab1498188326dcff331b945b85edfbb",
+    "mtime": 1786447709.1670613,
+    "ast_hash": "606dbb13629256da67bd281f7101a93d",
     "semantic_hash": ""
   },
   "information_extraction/schemas/citizenship_back.json": {
-    "mtime": 1786429412.4663718,
-    "ast_hash": "9953cd60da0c5cce254c0ba602346f7b",
+    "mtime": 1786447053.06095,
+    "ast_hash": "52e82692f971e6b2b5f8771086a6263e",
     "semantic_hash": ""
   },
   "output/old/report-citizenship.json": {
@@ -895,13 +895,13 @@
     "semantic_hash": ""
   },
   "document_builder/citizenship_old/layout.py": {
-    "mtime": 1786437207.9399877,
-    "ast_hash": "ce2d007e21f75535a16b68fbbef9e9a5",
+    "mtime": 1786446700.6899514,
+    "ast_hash": "d4a27eaca6b161700270f934589ee0d3",
     "semantic_hash": ""
   },
   "document_builder/citizenship_old_back/layout.py": {
-    "mtime": 1786436824.525989,
-    "ast_hash": "5f134f9b27ae501cec2db0e3ae4c046d",
+    "mtime": 1786447205.8559496,
+    "ast_hash": "35c9268ba141e70e15d3212abaa4ac4f",
     "semantic_hash": ""
   },
   "information_extraction/conversion.py": {
@@ -915,8 +915,8 @@
     "semantic_hash": ""
   },
   "information_extraction/schemas/citizenship_old_back.json": {
-    "mtime": 1786436936.7109888,
-    "ast_hash": "89da35012bb5ac686a1b9cd69a5e8b58",
+    "mtime": 1786447241.0209494,
+    "ast_hash": "c5534d6195b4e68a02ad0f054e15f46d",
     "semantic_hash": ""
   },
   "output/citizenship_conversion.json": {
@@ -1064,11 +1064,6 @@
     "ast_hash": "23e17b9d1ecb17e5b063b2448a25da44",
     "semantic_hash": ""
   },
-  "translate/mina_laalpurja.png": {
-    "mtime": 1786443123.133965,
-    "ast_hash": "557d11eedf31a124d96fe548abc0f014",
-    "semantic_hash": ""
-  },
   "translate/old/citizenship_back.png": {
     "mtime": 1786426006.2739973,
     "ast_hash": "94bc92bee47ddc884d2154c35780d1c0",
@@ -1087,6 +1082,56 @@
   "translate/old/tax_clearance.png": {
     "mtime": 1786427545.9889915,
     "ast_hash": "5a43fef870351e513fe4f4b7a4349b56",
+    "semantic_hash": ""
+  },
+  "document_builder/citizenship_back/ganesh_citizenship_back.html": {
+    "mtime": 1786443421.5174582,
+    "ast_hash": "f00dcc0e0a6fd19580e57cfeabe7f24d",
+    "semantic_hash": ""
+  },
+  "document_builder/citizenship_old/citizenship_old.html": {
+    "mtime": 1786443399.2055387,
+    "ast_hash": "5b655bbf993ef291d57b6869804938f1",
+    "semantic_hash": ""
+  },
+  "document_builder/citizenship_old_back/citizenship_old_back.html": {
+    "mtime": 1786443393.256964,
+    "ast_hash": "65c60239c012d36015b03700a11eab2c",
+    "semantic_hash": ""
+  },
+  "translated/done/Land Ownership Registration Certificate.html": {
+    "mtime": 1786444959.791958,
+    "ast_hash": "c54f2df14df51f7001568cb8563c9b47",
+    "semantic_hash": ""
+  },
+  "translated/done/mina_laalpurja_2.html": {
+    "mtime": 1786445821.781378,
+    "ast_hash": "932e56afcbbcd75b8f838e01ef8a8b13",
+    "semantic_hash": ""
+  },
+  "translated/ganeshLaalpurja.html": {
+    "mtime": 1786447658.9299479,
+    "ast_hash": "c41b83e1f648903316bd2fab5948fd37",
+    "semantic_hash": ""
+  },
+  "translated/done/pdf/Mina Land Ownership 1 .pdf": {
+    "mtime": 1786444980.309958,
+    "ast_hash": "d01654f3183bca88aca9800a6d185ac2",
+    "semantic_hash": ""
+  },
+  "translated/done/pdf/Mina Land Ownership 2 .pdf": {
+    "mtime": 1786445784.654955,
+    "ast_hash": "93ca676cfdb007ed6f6a904344995ec2",
+    "semantic_hash": ""
+  },
+  "translate/ganesh_laalpurja.png": {
+    "mtime": 1786444159.023961,
+    "ast_hash": "32388e074cfe3476bd542089bc83d31d",
+    "semantic_hash": ""
+  },
+  "translate/mina_laalpurja_2.png": {
+    "mtime": 1786444508.43496,
+    "ast_hash": "28c102d431d23b8c5c646abf55c2a106",
     "semantic_hash": ""
   }
 }

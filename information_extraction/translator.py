@@ -100,10 +100,16 @@ _PAIRED_SUFFIXES = {
 }
 
 # Values that are Bikram Sambat dates. Converted locally, never by the model.
+#
+# Membership is by name, so only keys whose name says Bikram Sambat belong here.
+# A key that holds a date already in Gregorian — ``pan``'s ``registration_date``,
+# whose schema asks the extractor for ISO-8601 — must stay out: ``bs_to_ad``
+# cannot tell 2012-06-27 AD from 2012-06-27 BS by looking at it, so listing such
+# a key silently converts a correct date a second time (2012-06-27 → 1955-10-13).
 _BS_DATE_KEYS = {
     "issue_date", "issue_date_bs", "issuing_issue_date_bs",
     "copy_issue_date_bs", "print_date", "checked_by_date",
-    "evd_date", "registration_date", "date_bs", "issue_date_nepali",
+    "evd_date", "date_bs", "issue_date_nepali",
     "print_date_nepali",
 }
 

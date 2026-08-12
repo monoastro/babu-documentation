@@ -869,11 +869,6 @@
     "ast_hash": "a42b479fb1fc0e40bc4e4443d81d32c7",
     "semantic_hash": ""
   },
-  "output/report-tax_clearance-3a5e9bf5-1.json": {
-    "mtime": 1786428131.7124023,
-    "ast_hash": "33d25223925f8ef835fa8ac2327efe19",
-    "semantic_hash": ""
-  },
   "output/tax_clearance-3a5e9bf5-1.html": {
     "mtime": 1786428080.6411943,
     "ast_hash": "947cad86146c63f7d49ec5e3ad53746a",
@@ -919,11 +914,6 @@
     "ast_hash": "c5534d6195b4e68a02ad0f054e15f46d",
     "semantic_hash": ""
   },
-  "output/citizenship_conversion.json": {
-    "mtime": 1786434835.9999967,
-    "ast_hash": "d0c468ad3cdac53a7f3fd4eed68104c6",
-    "semantic_hash": ""
-  },
   "tests/fixtures/citizenship_conversion.json": {
     "mtime": 1786441658.8599706,
     "ast_hash": "d0c468ad3cdac53a7f3fd4eed68104c6",
@@ -962,11 +952,6 @@
   "translated/done/mina_citizenship.html": {
     "mtime": 1786443015.6829655,
     "ast_hash": "bd7a2a9fad8c31ec0657573d2d59afd4",
-    "semantic_hash": ""
-  },
-  "translated/ganeshKumar/tax_clearance.html": {
-    "mtime": 1786435906.6874514,
-    "ast_hash": "4d430ca9e6eb2544e696358a2e8faea4",
     "semantic_hash": ""
   },
   "translate/Mina Kc Ganesh kumar.pdf": {
@@ -1109,11 +1094,6 @@
     "ast_hash": "932e56afcbbcd75b8f838e01ef8a8b13",
     "semantic_hash": ""
   },
-  "translated/ganeshLaalpurja.html": {
-    "mtime": 1786447658.9299479,
-    "ast_hash": "c41b83e1f648903316bd2fab5948fd37",
-    "semantic_hash": ""
-  },
   "translated/done/pdf/Mina Land Ownership 1 .pdf": {
     "mtime": 1786444980.309958,
     "ast_hash": "d01654f3183bca88aca9800a6d185ac2",
@@ -1132,6 +1112,66 @@
   "translate/mina_laalpurja_2.png": {
     "mtime": 1786444508.43496,
     "ast_hash": "28c102d431d23b8c5c646abf55c2a106",
+    "semantic_hash": ""
+  },
+  "document_builder/pan/layout.py": {
+    "mtime": 1786448709.6554153,
+    "ast_hash": "cb220ac4b575827a7f007c03f2b65014",
+    "semantic_hash": ""
+  },
+  "information_extraction/schemas/pan.json": {
+    "mtime": 1786448695.64655,
+    "ast_hash": "7db5d769fc2682de42fa38941ac606b0",
+    "semantic_hash": ""
+  },
+  "output/report-pan-703dd87f-1.json": {
+    "mtime": 1786448588.6395156,
+    "ast_hash": "5c8e07fd9fdbfddadc743e7930303898",
+    "semantic_hash": ""
+  },
+  "output/pan-703dd87f-1.html": {
+    "mtime": 1786448527.7433066,
+    "ast_hash": "074281544b74a5553563dd4b66f8e047",
+    "semantic_hash": ""
+  },
+  "output/pan-703dd87f-2.html": {
+    "mtime": 1786448812.3886633,
+    "ast_hash": "5e8f08625041cdebfb45f7751387969b",
+    "semantic_hash": ""
+  },
+  "translated/done/ganeshLaalpurja.html": {
+    "mtime": 1786448178.2569458,
+    "ast_hash": "457c9b54189e8c88351ca6d62c4e6893",
+    "semantic_hash": ""
+  },
+  "translated/ocr.html": {
+    "mtime": 1786448368.2484026,
+    "ast_hash": "426ae0c62181e5ccabb9633023dae8a6",
+    "semantic_hash": ""
+  },
+  "translated/tax_clearance.html": {
+    "mtime": 1786435906.6874514,
+    "ast_hash": "4d430ca9e6eb2544e696358a2e8faea4",
+    "semantic_hash": ""
+  },
+  "translated/done/pdf/Ganesh Land Ownership Registration Certificate.pdf": {
+    "mtime": 1786448083.2249463,
+    "ast_hash": "ea51f5805a95ea61d75c78b8e8cb8cf3",
+    "semantic_hash": ""
+  },
+  "document_builder/pan/pan.png": {
+    "mtime": 1786448388.879945,
+    "ast_hash": "98af20edcd686f55b78308b08c9d9bb6",
+    "semantic_hash": ""
+  },
+  "output/pan-703dd87f-1.png": {
+    "mtime": 1786448528.6459446,
+    "ast_hash": "8bbdc49b31e7b8f81340deedb94388a6",
+    "semantic_hash": ""
+  },
+  "output/pan-703dd87f-2.png": {
+    "mtime": 1786448813.3409433,
+    "ast_hash": "c182efaf4ca5c0be63260e178e6339b9",
     "semantic_hash": ""
   }
 }

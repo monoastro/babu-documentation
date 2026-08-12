@@ -1,0 +1,99 @@
+{
+  "title": "TaxClearanceCertificateExtractionSchema",
+  "type": "object",
+  "description": "Schema for extracting all content required for the Nepali Tax Clearance Certificate in English. All legal references and dates must be accurately translated, and BS dates converted to correct Gregorian dates for the English output, noting source year and rule numbers exactly.",
+  "properties": {
+    "emblem_present": {"type": "boolean", "description": "True when the Nepal Coat of Arms is visible in the header."},
+    "office_government": {"type": "string", "description": "Government heading (English, e.g., 'Government of Nepal')."},
+    "office_ministry": {"type": "string", "description": "Ministry heading (English, e.g., 'Ministry of Finance')."},
+    "office_department": {"type": "string", "description": "Department heading (English, e.g., 'Inland Revenue Department')."},
+    "office_main": {"type": "string", "description": "Main office (English, e.g., 'Inland Revenue Office Lahan')."},
+    "office_suboffice": {"type": "string", "description": "Sub-office/controller heading (English, e.g., 'Treasury and Accounts Controller Office, Udayapur')."},
+    "rule_reference": {
+      "type": "string",
+      "description": "Statutory/legal reference line immediately under office headings, e.g. 'Related to Rule 16 of Income Tax Rules, 2059'. Must match the source rule number and year exactly; DO NOT change the number or year even if prior versions differ."
+    },
+    "letter_no": {"type": "string", "description": "Letter number exactly as on the source."},
+    "registration_no": {"type": "string", "description": "Registration/reference number as on the source."},
+    "tax_clearance_no": {"type": "string", "description": "Tax Clearance Number as on the source document."},
+    "issue_date_nepali": {"type": "string", "description": "Original issue/preparation date in Bikram Sambat exactly as printed (e.g., '२०८३.०४.११')."},
+    "issue_date_gregorian": {
+      "type": "string",
+      "description": "Issue/preparation date converted from the BS (Bikram Sambat) date on the source to the correct Gregorian date (format: YYYY-MM-DD). Do not repeat the BS date; provide only the accurate Gregorian equivalent."
+    },
+    "issue_date_sentence": {"type": "string", "description": "Complete issue/preparation line as a full English sentence; for English output MUST use the Gregorian date, not a BS date."},
+    "print_date_nepali": {"type": "string", "description": "Print date as in the source, in BS (e.g., '२०८३.०४.११')."},
+    "print_date_gregorian": {
+      "type": "string",
+      "description": "Print date converted from BS in the source to Gregorian (format: YYYY-MM-DD). Required for English render; must not show the BS date in place of Gregorian."
+    },
+    "print_date_sentence": {"type": "string", "description": "Complete print-date line in English; MUST use the Gregorian date for the English output, not a BS date."},
+    "qr_present": {"type": "boolean", "description": "True if a QR code is present in the header."},
+    "seal_present": {"type": "boolean", "description": "True if a round office seal/stamp is present."},
+    "subject": {"type": "string", "description": "Subject line translated to English (e.g., 'Tax Clearance Certificate')."},
+    "recipient_salutation": {"type": "string", "description": "Salutation as in the source letter (transliterated if needed)."},
+    "recipient_name": {"type": "string", "description": "Recipient's name as in the source (transliterated if needed)."},
+    "recipient_address": {"type": "string", "description": "Recipient address with all lines present."},
+    "recipient_pan": {"type": "string", "description": "Recipient PAN number (as printed)."},
+    "main_text": {"type": "string", "description": "Main certificate paragraph, translated to English, mentioning exact fiscal year, statement date, and other relevant numerics as found on the source."},
+    "statement_date_nepali": {"type": "string", "description": "Income statement submission date as printed (BS)."},
+    "statement_date_gregorian": {
+      "type": "string",
+      "description": "BS statement date from the source, correctly converted to Gregorian calendar (format: YYYY-MM-DD) for English output."
+    },
+    "income_items": {
+      "type": "array",
+      "description": "Rows of the financial table with dates/amounts as present on the source. If English, convert the BS date to Gregorian.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "submission_date": {
+            "type": "string",
+            "description": "Date for the row; in English renders, must be the Gregorian date corresponding to the source BS date."
+          },
+          "total_income": {"type": "string", "description": "Total income/turnover, as on the source."},
+          "taxable_income": {"type": "string", "description": "Taxable income as on the source."},
+          "tax_deposited": {"type": "string", "description": "Tax deposited as on the source."}
+        },
+        "required": ["submission_date", "total_income", "taxable_income", "tax_deposited"]
+      }
+    },
+    "signature_label": {"type": "string", "description": "Signature/official designation label as printed or translated."},
+    "certifying_officer_name": {"type": "string", "description": "Certifying officer's name or blank if not present."},
+    "certifying_officer_title": {"type": "string", "description": "Certifying officer's official title, as printed or translated."},
+    "remarks": {"type": "string", "description": "All footer instructional/legal notes, translated fully, with numbering if present."}
+  },
+  "required": [
+    "emblem_present",
+    "office_government",
+    "office_ministry",
+    "office_department",
+    "office_main",
+    "office_suboffice",
+    "rule_reference",
+    "letter_no",
+    "registration_no",
+    "tax_clearance_no",
+    "issue_date_nepali",
+    "issue_date_gregorian",
+    "issue_date_sentence",
+    "print_date_nepali",
+    "print_date_gregorian",
+    "print_date_sentence",
+    "qr_present",
+    "seal_present",
+    "subject",
+    "recipient_salutation",
+    "recipient_name",
+    "recipient_address",
+    "recipient_pan",
+    "main_text",
+    "statement_date_nepali",
+    "statement_date_gregorian",
+    "income_items",
+    "signature_label",
+    "certifying_officer_name",
+    "certifying_officer_title",
+    "remarks"
+  ]
+}

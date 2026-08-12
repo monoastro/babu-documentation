@@ -36,3 +36,5 @@ rotation of bounding boxes
 2. we shall implement the html editor later, for now use an existing editor
 
 3. patching loop doesn't need the verification report type shit, just the input document, output generated, layout and schema
+
+4. Date checking agent that scans the final html to convert any bs to ad
