@@ -76,6 +76,9 @@ def resolve_data(
 
     if data_path is not None:
         data = json.loads(data_path.read_text(encoding="utf-8"))
+        # OCR and hand-edited saved data can contain JSON nulls.  Layouts
+        # render required field values as strings, including by concatenation.
+        data = {key: value if value is not None else "" for key, value in data.items()}
         # The originals ride along in the saved file; they are provenance, not
         # a field, so they never reach the builder.
         data.pop(ORIGINAL_KEY, None)

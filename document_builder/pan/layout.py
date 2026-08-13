@@ -1,343 +1,303 @@
-
-"""
-  Digitally faithful layout for Nepal PAN Certificate (layout_1.py)
-  """
-
 from __future__ import annotations
 from typing import Any
 from html_engine import (
-        Document, Text, LabelValue, FlexRow, FlexCol, Div, Spacer, Style, PlaceholderBox, SignatureBlock, UnorderedList,
-        AbsoluteBox
-        )
+    Document,
+    Style,
+    Heading,
+    Text,
+    Image,
+    LabelValue,
+    FieldGroup,
+    MultiFieldRow,
+    AbsoluteBox,
+    FlexRow,
+    FlexCol,
+    Div,
+    Spacer,
+    RawHTML,
+)
 
-_EDITABLE_CSS = """
-[contenteditable]:hover { outline: 2px dashed #000000; cursor: text; }
-[contenteditable]:focus { outline: 2px solid #000000; background: #ffffff; }
-"""
+LABEL_STYLE = Style(font_weight="bold", font_size="16px", width="220px", flex_shrink="0")
+VALUE_STYLE = Style(font_size="16px", flex="1")
+ROW_STYLE = Style(margin_bottom="15px")
 
-PAGE_WIDTH = "794px"
-PAGE_HEIGHT = "1123px"
-
-FIELDS = (
-        'pan_no',
-        'inland_revenue_office',
-        'taxpayer_service_office',
-        'vat_no',
-        'excise_no',
-        'registration_date_bs',
-        'registration_date',
-        'business_name',
-        'taxpayer_type',
-        'address',
-        'business_nature',
-        'taxpayer_signature',
-        'tax_officer_signature',
-        'duties',
-        )
+def field_row(
+    label: str,
+    value: str,
+    label_style: Style = LABEL_STYLE,
+    value_style: Style = VALUE_STYLE,
+) -> LabelValue:
+    return LabelValue(
+        label,
+        value,
+        label_style=label_style,
+        value_style=value_style,
+    )
 
 def build_pan(data: dict[str, Any]) -> Document:
-    d = {key: "" for key in FIELDS}
-    d.update(data or {})
+    d = {
+        "pan_no": "",
+        "registration_date_day": "",
+        "registration_date_month": "",
+        "registration_date_year": "",
+        "tax_type": "",
+        "office_name": "",
+        "taxpayer_name": "",
+        "business_name": "",
+        "taxpayer_type": "",
+        "address": "",
+        "business_activities": "",
+        "taxpayer_signature": "",
+        "officer_name": "",
+        "officer_designation": "",
+    }
+    d.update(data)
 
     doc = Document(
-            'Pan',
-            page_width=PAGE_WIDTH,
-            page_height=PAGE_HEIGHT,
-            background="#ffffff",
-            font_family='"Times New Roman", serif',
-            border="2px solid #000000",
-            extra_css=_EDITABLE_CSS,
-            )
+        "Permanent Account Number (PAN) Certificate",
+        page_width="850px",
+        page_height="1150px",
+        background="#ffffff",
+        font_family='"Times New Roman", serif',
+        border="3px double #000000",
+    )
 
-    # Top Emblem/Logos
+    # Coat of Arms (Top Left)
     doc.add(
-            AbsoluteBox(
-                PlaceholderBox(
-                    'Government of Nepal logo', width='90px', height='90px', shape='rect', font_size='13px'),
-                left='50px', top='45px',
+        AbsoluteBox(
+            FlexCol(
+                Text("Coat of Arms", style=Style(font_size="11px", color="#888")),
+                style=Style(align_items="center", justify_content="center")
+            ),
+            style=Style(
+                width="110px",
+                height="110px",
+                border="1px solid #d3d3d3",
+                display="flex",
+                align_items="center",
+                justify_content="center",
+                text_align="center",
+            ),
+            left="50px",
+            top="40px",
+        )
+    )
+
+    # Header Texts (Centre)
+    doc.add(
+        AbsoluteBox(
+            FlexCol(
+                Heading("Government of Nepal", level=1, style=Style(margin="0 0 2px 0", font_size="20px", font_weight="bold", text_align="center")),
+                Heading("Ministry of Finance", level=2, style=Style(margin="0 0 2px 0", font_size="18px", font_weight="bold", text_align="center")),
+                Heading("Inland Revenue Department", level=3, style=Style(margin="0 0 5px 0", font_size="22px", font_weight="bold", text_align="center")),
+                style=Style(align_items="center", justify_content="center")
+            ),
+            left="180px",
+            right="180px",
+            top="45px",
+        )
+    )
+
+    # Photo Box (Top Right)
+    doc.add(
+        AbsoluteBox(
+            FlexCol(
+                Text("Photo", style=Style(font_size="11px", color="#888")),
+                style=Style(align_items="center", justify_content="center")
+            ),
+            style=Style(
+                width="110px",
+                height="130px",
+                border="1px solid #d3d3d3",
+                display="flex",
+                align_items="center",
+                justify_content="center",
+                text_align="center",
+            ),
+            right="50px",
+            top="40px",
+        )
+    )
+
+    # Document Title
+    doc.add(
+        AbsoluteBox(
+            FlexCol(
+                Heading("Permanent Account Number (PAN) Registration Certificate", level=1, style=Style(font_size="22px", font_weight="bold", text_align="center")),
+                style=Style(border_bottom="2px solid #000000", padding_bottom="5px", align_items="center")
+            ),
+            left="50px",
+            right="50px",
+            top="215px",
+        )
+    )
+
+    # PAN and Registration Date Section
+    pan_cleaned = str(d.get("pan_no") or "").replace("-", "").replace(" ", "")
+    # A standard PAN has 9 digits; ensure we render exactly 9 boxes
+    pan_padded = pan_cleaned.ljust(9)[:9]
+    pan_boxes = []
+    for digit in pan_padded:
+        pan_boxes.append(
+            Div(
+                Text(digit if digit != " " else "", style=Style(font_size="18px", font_weight="bold")),
+                style=Style(
+                    width="26px",
+                    height="30px",
+                    border="1px solid #000000",
+                    display="flex",
+                    align_items="center",
+                    justify_content="center",
+                    margin_right="2px",
                 )
             )
-    doc.add(
-            AbsoluteBox(
-                PlaceholderBox(
-                    'Round Office Seal', size='85px', shape='circle', font_size='12px'),
-                left='655px', top='45px',
-                )
-            )
+        )
 
-    # Ministry header
-    doc.add(
-            AbsoluteBox(
-                Text(
-                    'Government of Nepal\nMinistry of Finance\nInland Revenue Department',
-                    style=Style(font_size='17px', font_weight='bold', line_height='1.15', text_align='center'),
-                    ),
-                left='180px',
-                top='49px',
-                style=Style(width='380px'),
-                )
-            )
-
-    # Title
-    doc.add(
-            AbsoluteBox(
-                Text(
-                    'Permanent Account Number (PAN) Registration Certificate',
-                    style=Style(font_size='19px', font_weight='bold', line_height='1.15', text_align='center'),
-                    ),
-                left='90px',
-                top='140px',
-                style=Style(width='614px'),
-                )
-            )
-
-    # PAN Number Boxed Row
-    doc.add(
-            AbsoluteBox(
+    # Date table component on the right
+    date_table = Div(
+        # Headers Row
+        FlexRow(
+            FlexCol(
+                Text("Regd. Date", style=Style(font_size="12px", font_weight="bold", text_align="right")),
+                style=Style(margin_right="10px")
+            ),
+            FlexCol(
+                # Date values row
                 FlexRow(
-                    Text('PAN No.', style=Style(font_size='18px', font_weight='bold', margin_top='10px')),
-                    Spacer(width='20px'),
-                    Div(
-                        FlexRow(*[
-                            Div(Text(
-                                (d['pan_no'][i] if len(d['pan_no']) > i else ''),
-                                style=Style(font_size='24px', font_weight='bold', text_align='center'),
-                                ), style=Style(border='2px solid #000', border_radius='2px', width='34px', height='40px',
-                                               margin_right='4px', display='inline-flex', align_items='center', justify_content='center', background='#fff'))
-                                for i in range(9)
-                                ]),
-                        )
-                    ),
-                left='280px',
-                top='185px',
-                )
-            )
-
-    # Upper form section (split into 2 columns for better spacing)
-    doc.add(
-            AbsoluteBox(
+                    Div(Text(d["registration_date_day"], style=Style(font_size="12px", font_weight="bold")), style=Style(width="28px", height="22px", border="1px solid #000", display="flex", align_items="center", justify_content="center")),
+                    Div(Text(d["registration_date_month"], style=Style(font_size="12px", font_weight="bold")), style=Style(width="28px", height="22px", border="1px solid #000", display="flex", align_items="center", justify_content="center", margin_left="2px")),
+                    Div(Text(d["registration_date_year"], style=Style(font_size="12px", font_weight="bold")), style=Style(width="48px", height="22px", border="1px solid #000", display="flex", align_items="center", justify_content="center", margin_left="2px")),
+                ),
+                # Sub labels row
                 FlexRow(
-                    # Left fields
+                    Text("Day", style=Style(font_size="9px", width="28px", text_align="center")),
+                    Text("Month", style=Style(font_size="9px", width="28px", text_align="center", margin_left="2px")),
+                    Text("Year", style=Style(font_size="9px", width="48px", text_align="center", margin_left="2px")),
+                ),
+                gap="1px"
+            ),
+            style=Style(align_items="center")
+        )
+    )
+
+    doc.add(
+        AbsoluteBox(
+            FlexRow(
+                # Left side: PAN number label & boxes
+                FlexRow(
                     FlexCol(
-                        LabelValue(label='Inland Revenue Office', value=d['inland_revenue_office'],
-                                   field='inland_revenue_office', label_style=Style(font_size='13px', font_weight='bold', width='160px'),
-                                   value_style=Style(font_size='16px')),
-                        Spacer(height='7px'),
-                        LabelValue(label='Taxpayer Service Office', value=d['taxpayer_service_office'],
-                                   field='taxpayer_service_office', label_style=Style(font_size='13px', font_weight='bold', width='160px'),
-                                   value_style=Style(font_size='16px')),
-                        Spacer(height='7px'),
-                        LabelValue(label='VAT No.', value=d['vat_no'], field='vat_no',
-                                   label_style=Style(font_size='13px', font_weight='bold', width='160px'), value_style=Style(font_size='14.5px')),
-                        Spacer(height='7px'),
-                        LabelValue(label='Excise Duty No.', value=d['excise_no'], field='excise_no',
-                                   label_style=Style(font_size='13px', font_weight='bold', width='160px'), value_style=Style(font_size='14.5px')),
-                        style=Style(gap='0', flex='1'),
-                        ),
-                    Spacer(width='40px'),
-                    # Right fields (Dates)
+                        Text("Permanent Account Number:", style=Style(font_size="14px", font_weight="bold")),
+                    ),
+                    Div(style=Style(width="10px")),
+                    FlexRow(*pan_boxes),
+                    style=Style(align_items="center")
+                ),
+                # Right side: आयकर + दर्ता मिति
+                FlexRow(
                     FlexCol(
-                        LabelValue(label='Reg. Date (BS)', value=d['registration_date_bs'], field='registration_date_bs',
-                                   label_style=Style(font_size='12px', font_weight='bold', width='110px'), value_style=Style(font_size='15px')),
-                        Spacer(height='10px'),
-                        LabelValue(label='Reg. Date (AD)', value=d['registration_date'], field='registration_date',
-                                   label_style=Style(font_size='12px', font_weight='bold', width='110px'), value_style=Style(font_size='15px')),
-                        style=Style(gap='0', width='280px'),
-                        )
+                        Text(d["tax_type"] or "Income Tax", style=Style(font_size="13px", font_weight="bold")),
+                        style=Style(margin_right="15px", border="1px solid #000", padding="2px 6px")
                     ),
-                left='50px',
-                top='250px',
-                style=Style(width='694px'),
-                )
-            )
+                    date_table,
+                    style=Style(align_items="center")
+                ),
+                style=Style(width="100%", justify_content="space-between")
+            ),
+            left="50px",
+            right="50px",
+            top="295px",
+        )
+    )
 
-    # Business Info Center Block
-    doc.add(
-            AbsoluteBox(
-                Text(d['business_name'], field='business_name', style=Style(font_size='19px', font_weight='bold',
-                                                                            margin_bottom='4px')),
-                left='75px',
-                top='370px',
-                style=Style(width='650px'),
-                )
-            )
-    doc.add(
-            AbsoluteBox(
-                LabelValue(label='Type', value=d['taxpayer_type'], field='taxpayer_type',
-                           label_style=Style(font_size='15px', font_weight='bold', width='150px'), value_style=Style(font_size='15px')),
-                left='75px',
-                top='405px',
-                style=Style(width='500px'),
-                )
-            )
-    doc.add(
-            AbsoluteBox(
-                LabelValue(label='Address', value=d['address'], field='address', label_style=Style(font_size='14px',
-                                                                                                   width='150px'), value_style=Style(font_size='15px')),
-                left='75px',
-                top='435px',
-                style=Style(width='500px'),
-                )
-            )
-    doc.add(
-            AbsoluteBox(
-                LabelValue(label='Nature of Business', value=d['business_nature'], field='business_nature',
-                           label_style=Style(font_size='14px', width='150px'), value_style=Style(font_size='15px')),
-                left='75px',
-                top='465px',
-                style=Style(width='500px'),
-                )
-            )
+    # Details Block
+    details = FieldGroup(
+        field_row("Office:", d["office_name"]),
+        field_row("Taxpayer's Name:", d["taxpayer_name"]),
+        field_row("Business Name:", d["business_name"]),
+        field_row("Taxpayer Type:", d["taxpayer_type"]),
+        field_row("Address:", d["address"]),
+        field_row("Business Activities:", d["business_activities"]),
+        spacing="16px",
+        style=Style(font_size="16px"),
+    )
 
-    # Signature and Seal Blocks (spacing tightened relative to duties list)
     doc.add(
-            AbsoluteBox(
-                FlexRow(
-                    # Left: Taxpayer signature + stamp
-                    SignatureBlock(
-                        name=d['taxpayer_signature'],
-                        signature_label="(Signed)",
-                        stamp_label="School Stamp",
-                        name_field='taxpayer_signature',
+        AbsoluteBox(
+            details,
+            left="50px",
+            right="50px",
+            top="375px",
+            style=Style(width="750px")
+        )
+    )
+
+    # Signature/Seal Section
+    doc.add(
+        AbsoluteBox(
+            FlexRow(
+                # Taxpayer Signature (Left)
+                FlexCol(
+                    Text(d["taxpayer_signature"], style=Style(font_family="'Brush Script MT', cursive", font_size="28px", text_align="center", height="40px")),
+                    Div(style=Style(width="180px", border_top="1px dashed #000000", margin="5px 0")),
+                    Text("Taxpayer's Signature", style=Style(font_size="13px", font_weight="bold", text_align="center")),
+                    style=Style(align_items="center")
+                ),
+                # Officer Signature & Stamp (Right)
+                FlexCol(
+                    # Stamp representation
+                    AbsoluteBox(
                         Div(
-                            FlexRow(*[
-                                Div(Text(
-                                    (d['pan_no'][i] if len(d['pan_no']) > i else ''),
-                                    style=Style(font_size='24px', font_weight='bold', text_align='center'),
-                                    ), style=Style(border='2px solid #000', border_radius='2px', width='34px', height='40px',
-                                                   margin_right='4px', display='inline-flex', align_items='center', justify_content='center', background='#fff'))
-                                    for i in range(9)
-                                    ]),
+                            Text("Tax Officer", style=Style(color="rgba(0, 150, 255, 0.8)", font_weight="bold", font_size="13px")),
+                            style=Style(
+                                border="2px solid rgba(0, 150, 255, 0.8)",
+                                padding="2px 10px",
+                                border_radius="5px",
+                                transform="rotate(-5deg)",
+                                display="flex",
+                                flex_direction="column",
+                                align_items="center"
                             )
                         ),
-                    left='280px',
-                    top='185px',
-                    FlexRow(
-                        Text('PAN No.', style=Style(font_size='18px', font_weight='bold', margin_top='10px')),
-                        Spacer(width='20px'),
-                        Div(
-                            FlexRow(*[
-                                Div(Text(
-                                    (d['pan_no'][i] if len(d['pan_no']) > i else ''),
-                                    style=Style(font_size='24px', font_weight='bold', text_align='center'),
-                                    ), style=Style(border='2px solid #000', border_radius='2px', width='34px', height='40px', margin_right='4px', display='inline-flex', align_items='center', justify_content='center', background='#fff'))
-                                for i in range(9)
-                                ]),
-                            )
-                        ),
-                    left='280px',
-                    top='185px',
-                    )
-                )
-            )
-            # Upper form section (split into 2 columns for better spacing)
-            doc.add(
-                AbsoluteBox(
-                    FlexRow(
-                        # Left fields
-                        FlexCol(
-                            LabelValue(label='Inland Revenue Office', value=d['inland_revenue_office'], field='inland_revenue_office', label_style=Style(font_size='13px', font_weight='bold', width='160px'), value_style=Style(font_size='16px')),
-                            Spacer(height='7px'),
-                            LabelValue(label='Taxpayer Service Office', value=d['taxpayer_service_office'], field='taxpayer_service_office', label_style=Style(font_size='13px', font_weight='bold', width='160px'), value_style=Style(font_size='16px')),
-                            Spacer(height='7px'),
-                            LabelValue(label='VAT No.', value=d['vat_no'], field='vat_no', label_style=Style(font_size='13px', font_weight='bold', width='160px'), value_style=Style(font_size='14.5px')),
-                            Spacer(height='7px'),
-                            LabelValue(label='Excise Duty No.', value=d['excise_no'], field='excise_no', label_style=Style(font_size='13px', font_weight='bold', width='160px'), value_style=Style(font_size='14.5px')),
-                            style=Style(gap='0', flex='1'),
-                            ),
-                        Spacer(width='40px'),
-                        # Right fields (Dates)
-                        FlexCol(
-                            LabelValue(label='Reg. Date (BS)', value=d['registration_date_bs'], field='registration_date_bs', label_style=Style(font_size='12px', font_weight='bold', width='110px'), value_style=Style(font_size='15px')),
-                            Spacer(height='10px'),
-                            LabelValue(label='Reg. Date (AD)', value=d['registration_date'], field='registration_date', label_style=Style(font_size='12px', font_weight='bold', width='110px'), value_style=Style(font_size='15px')),
-                            style=Style(gap='0', width='280px'),
-                            )
-                        ),
-                    left='50px',
-                    top='250px',
-                    style=Style(width='694px'),
-                    )
-                )
-
-    # Business Info Center Block
-    doc.add(
-            AbsoluteBox(
-                Text(d['business_name'], field='business_name', style=Style(font_size='19px', font_weight='bold', margin_bottom='4px')),
-                left='75px',
-                top='370px',
-                style=Style(width='650px'),
-                )
-            )
-    doc.add(
-            AbsoluteBox(
-                LabelValue(label='Type', value=d['taxpayer_type'], field='taxpayer_type', label_style=Style(font_size='15px', font_weight='bold', width='150px'), value_style=Style(font_size='15px')),
-                left='75px',
-                top='405px',
-                style=Style(width='500px'),
-                )
-            )
-    doc.add(
-            AbsoluteBox(
-                LabelValue(label='Address', value=d['address'], field='address', label_style=Style(font_size='14px', width='150px'), value_style=Style(font_size='15px')),
-                left='75px',
-                top='435px',
-                style=Style(width='500px'),
-                )
-            )
-    doc.add(
-            AbsoluteBox(
-                LabelValue(label='Nature of Business', value=d['business_nature'], field='business_nature', label_style=Style(font_size='14px', width='150px'), value_style=Style(font_size='15px')),
-                left='75px',
-                top='465px',
-                style=Style(width='500px'),
-                )
-            )
-
-    # Signature and Seal Blocks (spacing tightened relative to duties list)
-    doc.add(
-            AbsoluteBox(
-                FlexRow(
-                    # Left: Taxpayer signature + stamp
-                    SignatureBlock(
-                        name=d['taxpayer_signature'],
-                        signature_label="(Signed)",
-                        stamp_label="School Stamp",
-                        name_field='taxpayer_signature',
-                        align='center',
-                        ),
-                    # Right: Tax Officer signature + seal
-                    SignatureBlock(
-                        name=d['tax_officer_signature'],
-                        title="Tax Officer",
-                        signature_label="(Signed)",
-                        stamp_label="Round Office Seal",
-                        name_field='tax_officer_signature',
-                        title_field=None,
-                        align='center',
-                        ),
-                    style=Style(justify_content='space-between', width='680px')
+                        right="10px",
+                        bottom="80px",
                     ),
-                left='45px',
-                top='560px',
-                )
-            )
+                    Text(d["officer_name"], style=Style(font_size="15px", font_weight="bold", text_align="center", height="40px", line_height="40px")),
+                    Div(style=Style(width="180px", border_top="1px dashed #000000", margin="5px 0")),
+                    Text(d["officer_designation"] or "Tax Officer", style=Style(font_size="13px", font_weight="bold", text_align="center")),
+                    style=Style(position="relative", align_items="center")
+                ),
+                style=Style(width="750px", justify_content="space-between")
+            ),
+            left="50px",
+            right="50px",
+            top="680px",
+        )
+    )
 
-    # Duties (moved up from the deep bottom gap)
+    # Bottom Instructions Box
+    instructions = FlexCol(
+        Text("Duties to be followed by the taxpayer:", style=Style(font_weight="bold", font_size="14px", margin_bottom="10px")),
+        Text("1. Invoice/bill must be mandatorily issued while conducting transactions.", style=Style(font_size="11px", color="#444", margin_bottom="6px")),
+        Text("2. Those registered in VAT must submit VAT returns and tax amount within 25 days of the end of each tax period (monthly, bi-monthly, or quadrimesterly).", style=Style(font_size="11px", color="#444", margin_bottom="6px")),
+        Text("3. Those dealing with excise-taxable transactions must submit monthly records and excise duty within 25 days of the end of each month, except as otherwise provided.", style=Style(font_size="11px", color="#444", margin_bottom="6px")),
+        Text("4. Income details of each fiscal year must be submitted within three months of the end of the fiscal year.", style=Style(font_size="11px", color="#444", margin_bottom="6px")),
+        Text("5. Failure to submit details and tax amount within the specified time will attract interest, fees, and penalties.", style=Style(font_size="11px", color="#444", margin_bottom="6px")),
+        Text("6. This certificate must be kept in a visible place at the place of transaction / main office.", style=Style(font_size="11px", color="#444", margin_bottom="6px")),
+        Text("7. In case of any confusion, please contact the office.", style=Style(font_size="11px", color="#444")),
+        style=Style(
+            border="1px solid #000000",
+            padding="15px",
+            background="#fafafa",
+        )
+    )
+
     doc.add(
-            AbsoluteBox(
-                Text('Duties to Be Followed by the Taxpayer:', style=Style(font_size='15px', font_weight='bold')),
-                left='54px',
-                top='730px',
-                )
-            )
-    doc.add(
-            AbsoluteBox(
-                UnorderedList(*(d['duties'] or []), style=Style(font_size='13.5px', margin_left='20px', margin_top='5px', max_width='670px')),
-                left='54px',
-                top='760px',
-                )
-            )
+        AbsoluteBox(
+            instructions,
+            left="50px",
+            right="50px",
+            bottom="50px",
+        )
+    )
 
     return doc
-

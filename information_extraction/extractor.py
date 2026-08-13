@@ -20,4 +20,4 @@ def extract(image_path, schema_path, mode="balanced"):
     return extracted, schema
 
 def build_data(extracted, schema):
-    return { key: extracted.get(key, "") for key in schema["required"] }
+    return {key: extracted.get(key, "") or "" for key in schema["required"]}

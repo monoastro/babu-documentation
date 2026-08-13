@@ -65,6 +65,22 @@ def test_data_path_skips_ocr():
     assert "Test subject" in _out("d.html").read_text(encoding="utf-8")
 
 
+def test_data_path_converts_null_values_to_empty_strings():
+    data_file = _out("letter-null.json")
+    data_file.write_text(
+        json.dumps({"subject": None, "signed_name": "Ram Bahadur"}), encoding="utf-8"
+    )
+
+    code = cli.main(
+        ["--type", "letter", "--data", str(data_file), "--output", str(_out("null.html"))]
+    )
+
+    assert code == 0
+    html = _out("null.html").read_text(encoding="utf-8")
+    assert "None" not in html
+    assert "Ram Bahadur" in html
+
+
 def test_blank_fills_every_required_schema_key():
     schema_path = Path(DOCUMENTS["letter"]["schema"])
     required = json.loads(schema_path.read_text(encoding="utf-8"))["required"]

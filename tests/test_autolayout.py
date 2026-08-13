@@ -382,6 +382,14 @@ def test_every_field_survives_extraction():
     assert build_data(extracted, schema) == extracted
 
 
+def test_extraction_null_required_fields_become_empty_strings():
+    schema = {"required": ["present", "missing"]}
+    assert build_data({"present": "value", "missing": None}, schema) == {
+        "present": "value",
+        "missing": "",
+    }
+
+
 def test_the_generated_page_is_monochrome():
     """The project rule holds for generated layouts too, not just written ones."""
     assert _WORKDIR is not None

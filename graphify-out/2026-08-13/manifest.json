@@ -430,8 +430,8 @@
     "semantic_hash": ""
   },
   "document_builder/pan/layout.py": {
-    "mtime": 1786599270.4459076,
-    "ast_hash": "1aa7c60e45dbcfbcc61a3b54e3c79522",
+    "mtime": 1786543025.6879904,
+    "ast_hash": "68c53aec0dd672a7d948655ef2a50d7a",
     "semantic_hash": ""
   },
   "information_extraction/schemas/pan.json": {
