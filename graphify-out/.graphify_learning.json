@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-09-06T03:49:39.105580+00:00",
+  "nodes": {
+    "agentic_controller_architect_plan_blocks": {
+      "code_fingerprint": "3a742bd4d6797badda251488228830cbe524cae27b3c92080d076b1d5cf594ee",
+      "label": "plan_blocks()",
+      "last": "2026-08-27T03:50:30.581300+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-27T03:50:30.581300+00:00",
+          "outcome": "useful",
+          "q": "Why does language_spec() connect translator.py to run.py, test_translator.py, architect.py?"
+        }
+      ],
+      "score": 0.793711452,
+      "source_file": "agentic_controller/architect.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "information_extraction_languages_language_spec": {
+      "code_fingerprint": "9a56ecd02fa96d49a2e60af960d63033b90c27734f7ad7c8ada7a39a50c54329",
+      "label": "language_spec()",
+      "last": "2026-08-27T03:50:30.581300+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-27T03:50:30.581300+00:00",
+          "outcome": "useful",
+          "q": "Why does language_spec() connect translator.py to run.py, test_translator.py, architect.py?"
+        }
+      ],
+      "score": 0.793711452,
+      "source_file": "information_extraction/languages.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "information_extraction_languages_languagespec": {
+      "code_fingerprint": "9a56ecd02fa96d49a2e60af960d63033b90c27734f7ad7c8ada7a39a50c54329",
+      "label": "LanguageSpec",
+      "last": "2026-08-27T03:50:30.581300+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-27T03:50:30.581300+00:00",
+          "outcome": "useful",
+          "q": "Why does language_spec() connect translator.py to run.py, test_translator.py, architect.py?"
+        }
+      ],
+      "score": 0.793711452,
+      "source_file": "information_extraction/languages.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "information_extraction_translator_translate_data": {
+      "code_fingerprint": "7cefd1e291dbde3522676b56eb0c114d20be4cf35781168bf90193906e5423eb",
+      "label": "translate_data()",
+      "last": "2026-08-27T03:50:30.581300+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-27T03:50:30.581300+00:00",
+          "outcome": "useful",
+          "q": "Why does language_spec() connect translator.py to run.py, test_translator.py, architect.py?"
+        }
+      ],
+      "score": 0.793711452,
+      "source_file": "information_extraction/translator.py",
+      "status": "tentative",
+      "uses": 1
+    }
+  },
+  "version": 1
+}

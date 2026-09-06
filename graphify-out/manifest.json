@@ -753,30 +753,5 @@
     "mtime": 1787802630.5816636,
     "ast_hash": "749b43226fd333092d3adab5cbfdf98b",
     "semantic_hash": ""
-  },
-  "one_shot/examples/manifest.example.json": {
-    "mtime": 1787813444.8249185,
-    "ast_hash": "55cfd5ae182e36925237de6fd8c0e859",
-    "semantic_hash": ""
-  },
-  "one_shot/examples/manifest.json": {
-    "mtime": 1787813444.6849184,
-    "ast_hash": "80c02748cfa9f93c50b6fa7ad8a37795",
-    "semantic_hash": ""
-  },
-  "one_shot/PROMPT.md": {
-    "mtime": 1787813444.4049184,
-    "ast_hash": "0aeff9ba82ba4531d0d8f1839918250c",
-    "semantic_hash": ""
-  },
-  "one_shot/README.md": {
-    "mtime": 1787813444.2529185,
-    "ast_hash": "de08f406ad1723ecdf744de86774502f",
-    "semantic_hash": ""
-  },
-  "one_shot/examples/README.md": {
-    "mtime": 1787813444.5449185,
-    "ast_hash": "bd9026d9ee17899c3446ab91e258d819",
-    "semantic_hash": ""
   }
 }
