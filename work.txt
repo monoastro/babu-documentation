@@ -6,3 +6,22 @@
 Keep Track of things
 
 https://agentrouter.org/register?aff=t9M5
+
+Script to create automated excel sheet for gold and property valuation
+
+Gold Val
+Pragya, Raj Bhandari
+
+Property Valuation
+Rayamajhi, Raj Bhandari
+
+for the document digitization project, currently giving this prompt with relevant sample html and the image to be digitized produces the document in one shot. I have a collection of translated and digitized html of legal documents what would be better building a langgraph that uses the translated documents to rag or finetuning a model on the translated documents or using the current system of datalab and html engine
+what would be better
+building a langgraph that uses the translated documents to rag 
+
+or finetuning a model on the translated documents
+
+
+I think the current workflow with the document_builder and html_engine has its place for repeated fixed layouts
+
+opencode -s ses_fbebbbb8bffeTpzOZ2cMjJJ43Q

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1352, initial-scale=1.0">
+<title>Police Kitabkhana Pension Book - Pages 2 & 3</title>
+<style>
+* { box-sizing: border-box; }
+html, body {
+    margin: 0; padding: 0;
+    width: 1352px; height: 897px;
+    background: #ffffff; color: #000000;
+    font-family: Arial, sans-serif;
+}
+.document {
+    position: relative;
+    width: 1352px; height: 897px;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #000000;
+}
+.page {
+    position: absolute;
+    top: 20px; width: 610px; height: 850px;
+    border: 2px solid #000000;
+    background: #ffffff; overflow: hidden;
+}
+.left-page { left: 32px; }
+.right-page { left: 710px; }
+.center-divider {
+    position: absolute; left: 676px; top: 0;
+    width: 2px; height: 897px; background: #000000;
+}
+.element { position: absolute; }
+.field {
+    display: inline-block; min-height: 20px;
+    border-bottom: 1px solid #000000;
+    padding: 0 4px; vertical-align: bottom;
+    color: #000000; background: #ffffff;
+}
+.box { border: 2px solid #000000; background: #ffffff; }
+.title { font-size: 23px; font-weight: 700; text-align: center; }
+.section-title { font-size: 19px; font-weight: 700; text-decoration: underline; }
+.detail-row {
+    position: absolute; display: flex; align-items: flex-end;
+    white-space: nowrap; width: 570px;
+}
+.detail-label { flex-shrink: 0; font-size: 16px; line-height: 1.1; }
+.page-number { position: absolute; bottom: 12px; font-size: 16px; font-weight: 700; }
+
+/* Left Page Styles */
+.left-title { left: 75px; top: 14px; width: 390px; }
+.left-title-line { position: absolute; left: 72px; top: 40px; width: 370px; border-bottom: 1px solid #000000; }
+.signature-label { position: absolute; left: 450px; top: 25px; font-size: 13px; font-weight: 700; }
+.signature-line { position: absolute; left: 350px; top: 45px; }
+.signature-line .field { width: 175px; }
+.photo-label { position: absolute; left: 32px; top: 75px; font-size: 17px; font-weight: 700; text-decoration: underline; }
+.photo-box { position: absolute; left: 20px; top: 108px; width: 190px; height: 245px; display: flex; align-items: center; justify-content: center; text-align: center; }
+.fingerprint-label { position: absolute; left: 440px; top: 75px; font-size: 17px; font-weight: 700; }
+.right-label { position: absolute; left: 330px; top: 96px; width: 105px; text-align: center; font-size: 13px; font-weight: 700; }
+.left-label { position: absolute; left: 445px; top: 96px; width: 105px; text-align: center; font-size: 13px; font-weight: 700; }
+.right-thumb { position: absolute; left: 325px; top: 116px; width: 105px; height: 145px; display: flex; align-items: center; justify-content: center; }
+.left-thumb { position: absolute; left: 440px; top: 116px; width: 105px; height: 145px; display: flex; align-items: center; justify-content: center; }
+.specimen-label { position: absolute; left: 220px; top: 280px; font-size: 14px; font-weight: 700; }
+.specimen-line { position: absolute; left: 220px; top: 304px; }
+.specimen-line .field { width: 215px; }
+.authority-officer { position: absolute; left: 285px; top: 365px; width: 300px; }
+.authority-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.authority-row { display: flex; align-items: flex-end; width: 300px; margin-bottom: 7px; }
+.authority-row .row-label { width: 80px; flex-shrink: 0; font-size: 15px; font-weight: 700; }
+.authority-row .field { width: 220px; }
+.kitabkhana { position: absolute; left: 430px; top: 490px; font-size: 15px; font-weight: 700; }
+.payment-statement { position: absolute; left: 20px; top: 515px; width: 555px; font-size: 14px; font-weight: 700; line-height: 1.3; }
+.payment-line { display: flex; align-items: flex-end; margin-top: 7px; white-space: nowrap; }
+.payment-label { flex-shrink: 0; margin-right: 4px; }
+.payment-bank { width: 160px; margin-right: 16px; }
+.payment-branch { width: 170px; }
+.payment-note { margin-top: 5px; font-size: 13px; }
+.payment-officer { position: absolute; left: 205px; top: 650px; width: 360px; }
+.payment-officer-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.payment-officer-row { display: flex; align-items: flex-end; width: 360px; margin-bottom: 6px; }
+.payment-officer-row .row-label { width: 65px; flex-shrink: 0; font-size: 15px; font-weight: 700; }
+.payment-officer-row .field { width: 245px; }
+.left-page-number { left: 302px; }
+
+/* Right Page Styles */
+.right-title { left: 70px; top: 13px; width: 465px; font-size: 22px; }
+.right-serial-label { position: absolute; left: 80px; top: 42px; width: 450px; text-align: center; font-size: 15px; font-weight: 700; }
+.right-serial { position: absolute; left: 180px; top: 63px; }
+.right-serial .field { width: 250px; }
+.section-a { left: 12px; top: 92px; }
+.name-row { top: 122px; left: 14px; }
+.name-row .name-field { width: 175px; margin-left: 5px; }
+.symbol-label { margin-left: 25px; }
+.symbol-field { width: 105px; margin-left: 5px; }
+.address-row-one { top: 151px; left: 14px; }
+.address-row-two { top: 178px; left: 14px; }
+.address-prefix { width: 185px; }
+.address-district-label { width: 55px; }
+.address-district { width: 105px; }
+.address-municipality { width: 150px; }
+.address-ward-label { width: 80px; padding-left: 10px; }
+.address-ward { width: 55px; padding-left: 10px; }
+.birth-row { top: 207px; left: 14px; }
+.post-row { top: 234px; left: 14px; }
+.class-row { top: 261px; left: 14px; }
+.office-row { top: 288px; left: 14px; }
+.death-row { top: 315px; left: 14px; }
+.standard-field { width: 230px; margin-left: 5px; }
+.service-row { position: absolute; top: 343px; left: 14px; display: flex; align-items: flex-end; width: 570px; }
+.service-label { width: 155px; flex-shrink: 0; font-size: 16px; }
+.service-unit { font-size: 15px; margin-left: 3px; margin-right: 4px; }
+.service-field { width: 48px; margin-right: 12px; }
+.salary-row { top: 372px; left: 14px; }
+.section-b { left: 12px; top: 404px; }
+.recipient-name-row { top: 434px; left: 14px; }
+.recipient-birth-row { top: 461px; left: 14px; }
+.recipient-address-row-one { top: 488px; left: 14px; }
+.recipient-address-row-two { top: 515px; left: 14px; }
+.relationship-row { top: 544px; left: 14px; }
+.section-c { left: 12px; top: 576px; }
+.period-row { position: absolute; top: 607px; left: 14px; display: flex; align-items: flex-end; width: 570px; }
+.period-label { width: 65px; flex-shrink: 0; font-size: 16px; }
+.period-field { width: 145px; }
+.to-label { width: 45px; padding-left: 18px; font-size: 16px; }
+.monthly-row { top: 638px; left: 14px; }
+.monthly-field { width: 235px; margin-left: 5px; }
+.section-d { left: 12px; top: 684px; }
+.right-page-number { left: 300px; }
+</style>
+</head>
+<body>
+<div class="document">
+    <div class="center-divider"></div>
+
+    <!-- LEFT PAGE (Page 2) -->
+    <section class="page left-page">
+        <div class="element left-title title">Pensioner's Book</div>
+        <div class="left-title-line"></div>
+        <div class="signature-label">Signature</div>
+        <div class="signature-line"><span class="field">Sd.</span></div>
+
+        <div class="photo-label">Photograph</div>
+        <div class="photo-box box">Photograph (Attached)</div>
+
+        <div class="fingerprint-label">Fingerprint</div>
+        <div class="right-label">Right</div>
+        <div class="left-label">Left</div>
+        <div class="right-thumb box">Impressed</div>
+        <div class="left-thumb box">Impressed</div>
+
+        <div class="specimen-label">Specimen Signature</div>
+        <div class="specimen-line"><span class="field">Sd. Raj Kumar Bhandari</span></div>
+
+        <div class="authority-officer">
+            <div class="authority-title">Authority Letter Issuing Officer</div>
+            <div class="authority-row"><span class="row-label">Signature</span><span class="field">Sd.</span></div>
+            <div class="authority-row"><span class="row-label">Name</span><span class="field">Hari Prasad Adhikari</span></div>
+            <div class="authority-row"><span class="row-label">Rank</span><span class="field">Section Officer</span></div>
+        </div>
+
+        <div class="kitabkhana">Police Records Office</div>
+
+        <div class="payment-statement">
+            <div>This authority letter entitles the holder to receive pension at the rate specified below.</div>
+            <div class="payment-line">
+                <span class="payment-label">Bank:</span>
+                <span class="field payment-bank">Rastriya Banijya Bank</span>
+            </div>
+            <div class="payment-line">
+                <span class="payment-label">Branch:</span>
+                <span class="field payment-branch">Urlabari (Morang)</span>
+            </div>
+            <div class="payment-note">The pension shall be paid only from the specified branch.</div>
+        </div>
+
+        <div class="payment-officer">
+            <div class="payment-officer-title">Payment Order Issuing Officer</div>
+            <div class="payment-officer-row"><span class="row-label">Name</span><span class="field">Sd.</span></div>
+            <div class="payment-officer-row"><span class="row-label">Rank</span><span class="field">-</span></div>
+            <div class="payment-officer-row"><span class="row-label">Office</span><span class="field">Pension Management Office</span></div>
+            <div class="payment-officer-row"><span class="row-label">Date</span><span class="field">2069-03-11</span></div>
+        </div>
+
+        <div class="page-number left-page-number">2</div>
+    </section>
+
+    <!-- RIGHT PAGE (Page 3) -->
+    <section class="page right-page">
+        <div class="element right-title title">Family Pension Authority Letter</div>
+        <div class="right-serial-label">Authority Letter Serial Number</div>
+        <div class="right-serial"><span class="field">1005241</span></div>
+
+        <div class="element section-a section-title">(a) Details of Deceased Employee</div>
+
+        <div class="detail-row name-row">
+            <span class="detail-label">1. Full Name:</span>
+            <span class="field name-field">Raj Kumar Bhandari</span>
+            <span class="detail-label symbol-label">Employee Symbol No.:</span>
+            <span class="field symbol-field">C-00067035</span>
+        </div>
+
+        <div class="detail-row address-row-one">
+            <span class="detail-label address-prefix">2. Permanent Address:</span>
+            <span class="detail-label address-district-label">District:</span>
+            <span class="field address-district">Sankhuwasabha</span>
+        </div>
+
+        <div class="detail-row address-row-two">
+            <span class="detail-label address-prefix">Municipality/VDC:</span>
+            <span class="field address-municipality">Chainpur</span>
+            <span class="detail-label address-ward-label">Ward No.:</span>
+            <span class="field address-ward">07</span>
+        </div>
+
+        <div class="detail-row birth-row">
+            <span class="detail-label">3. Birth Date:</span>
+            <span class="field standard-field">2036-10-24 BS</span>
+        </div>
+
+        <div class="detail-row post-row">
+            <span class="detail-label">4. Post:</span>
+            <span class="field standard-field">Assistant Sub-Inspector of Police</span>
+        </div>
+
+        <div class="detail-row class-row">
+            <span class="detail-label">5. Class:</span>
+            <span class="field standard-field">Non-Gazetted Second Class</span>
+        </div>
+
+        <div class="detail-row office-row">
+            <span class="detail-label">6. Office:</span>
+            <span class="field standard-field">Area Police Office, Chhintang, Dhankuta</span>
+        </div>
+
+        <div class="detail-row death-row">
+            <span class="detail-label">7. Death Date:</span>
+            <span class="field standard-field">2069-03-04 BS (Resignation)</span>
+        </div>
+
+        <div class="service-row">
+            <span class="service-label">8. Service Period:</span>
+            <span class="service-unit">Years:</span>
+            <span class="field service-field">21</span>
+            <span class="service-unit">Months:</span>
+            <span class="field service-field">9</span>
+            <span class="service-unit">Days:</span>
+            <span class="field service-field">10</span>
+        </div>
+
+        <div class="detail-row salary-row">
+            <span class="detail-label">9. Last Salary:</span>
+            <span class="field standard-field">NPR 14,190/-</span>
+        </div>
+
+        <div class="element section-b section-title">(b) Details of Family Pension Recipient</div>
+
+        <div class="detail-row recipient-name-row">
+            <span class="detail-label">1. Full Name:</span>
+            <span class="field standard-field">Debi Maya Bhandari</span>
+        </div>
+
+        <div class="detail-row recipient-birth-row">
+            <span class="detail-label">2. Birth Date:</span>
+            <span class="field standard-field">-</span>
+        </div>
+
+        <div class="detail-row recipient-address-row-one">
+            <span class="detail-label address-prefix">3. Permanent Address:</span>
+            <span class="detail-label address-district-label">District:</span>
+            <span class="field address-district">Sankhuwasabha</span>
+        </div>
+
+        <div class="detail-row recipient-address-row-two">
+            <span class="detail-label address-prefix">Municipality/VDC:</span>
+            <span class="field address-municipality">Chainpur</span>
+            <span class="detail-label address-ward-label">Ward No.:</span>
+            <span class="field address-ward">07</span>
+        </div>
+
+        <div class="detail-row relationship-row">
+            <span class="detail-label">4. Relationship:</span>
+            <span class="field standard-field">Wife</span>
+        </div>
+
+        <div class="element section-c section-title">(c) Pension Period and Amount</div>
+
+        <div class="period-row">
+            <span class="period-label">1. From:</span>
+            <span class="field period-field">2069-03-04</span>
+            <span class="to-label">To:</span>
+            <span class="field period-field">Lifelong</span>
+        </div>
+
+        <div class="detail-row monthly-row">
+            <span class="detail-label">2. Monthly Pension:</span>
+            <span class="field monthly-field">NPR 7,726/-</span>
+        </div>
+
+        <div class="element section-d section-title">(d) Other Required Information:</div>
+
+        <div class="page-number right-page-number">3</div>
+    </section>
+</div>
+</body>
+</html>

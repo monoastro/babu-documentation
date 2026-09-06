@@ -430,23 +430,13 @@
     "semantic_hash": ""
   },
   "document_builder/pan/layout.py": {
-    "mtime": 1786543025.6879904,
-    "ast_hash": "68c53aec0dd672a7d948655ef2a50d7a",
+    "mtime": 1785222113.0,
+    "ast_hash": "5fccb29b6400e442b7264eea5de3c001",
     "semantic_hash": ""
   },
   "information_extraction/schemas/pan.json": {
     "mtime": 1786448695.64655,
     "ast_hash": "7db5d769fc2682de42fa38941ac606b0",
-    "semantic_hash": ""
-  },
-  "document_builder/pan/pan.png": {
-    "mtime": 1786448388.879945,
-    "ast_hash": "98af20edcd686f55b78308b08c9d9bb6",
-    "semantic_hash": ""
-  },
-  "document_builder/pan/layout_fixed.py": {
-    "mtime": 1786543072.95899,
-    "ast_hash": "480302f9dc73caa6f7f7982904320ca0",
     "semantic_hash": ""
   },
   "information_extraction/schemas/tax_clearance_patched_bak.json": {
@@ -707,6 +697,11 @@
   "settings.png": {
     "mtime": 1786555055.9489446,
     "ast_hash": "779f5f1b2e6e7ca57e2a73c6dde12aa5",
+    "semantic_hash": ""
+  },
+  "document_builder/pan/test-generate-pan.py": {
+    "mtime": 1785141777.0,
+    "ast_hash": "55d41963fb249424fb2b8c7885e0169d",
     "semantic_hash": ""
   }
 }

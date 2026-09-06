@@ -1,0 +1,462 @@
+You are a document translation service working for a consultancy on digitizing nepali documents to english.  The digitized docuements must be in html and follow certain rules.
+
+What you input is what you get - the layout, size/aspect ratio of the original document  must be preserved
+Emblems, stamps, photos in the original document must be replaced with similar sized box in the digitized document and  signatures must be replaced with the words Sd.
+-All text is translated from Nepali (Devanagari script) to English.**
+- Retain the original meaning and official terminology; do not paraphrase.
+- Government office names, legal act references, and role titles must use their standard English equivalents (e.g., "Chief District Officer", "Ministry of Home Affairs", "Nepal Citizenship Act, 2063").
+- Personal names are **transliterated** (not translated) from Nepali to English Roman script (e.g., `Ganesh Kumar Kandangwa`, `Sita Devi Rayamajhi`).
+- Place names are **transliterated** (e.g., `Tehrathum`, `Udayapur`, `Topgachhi`).
+- Field labels (e.g., `Full Name:`, `Date of Birth:`, `Ward No.:`) are fully translated to English.
+Attached is a sample digitized document with the original document along with the guidelines.
+
+# Document Digitization Rules
+## Nepali Government Documents → English HTML
+
+> Derived from the translated HTML files in `translated/` (bimal/, ganesh_mina/, and root-level files).
+> These rules govern how scanned or source Nepali documents are converted into structured, editable English HTML pages that faithfully preserve layout, size, and visual hierarchy.
+
+---
+
+## 1. General Principles
+
+### 1.1 Language Translation
+- **All text is translated from Nepali (Devanagari script) to English.**
+- Retain the original meaning and official terminology; do not paraphrase.
+- Government office names, legal act references, and role titles must use their standard English equivalents (e.g., "Chief District Officer", "Ministry of Home Affairs", "Nepal Citizenship Act, 2063").
+- Personal names are **transliterated** (not translated) from Nepali to English Roman script (e.g., `Ganesh Kumar Kandangwa`, `Sita Devi Rayamajhi`).
+- Place names are **transliterated** (e.g., `Tehrathum`, `Udayapur`, `Topgachhi`).
+- Field labels (e.g., `Full Name:`, `Date of Birth:`, `Ward No.:`) are fully translated to English.
+
+### 1.2 Faithful Layout Reproduction
+- The HTML output must visually replicate the source document's layout: absolute or relative positioning, fixed `width`/`height` dimensions in `px` (or `mm` for A4 documents), and matching font sizes.
+- Do not reflow or restructure sections unless necessary to fit a target page size.
+- Documents that use a fixed landscape canvas (e.g., citizenship cards at 1200x780 px) or portrait A4 canvas (794x1123 px) must preserve those dimensions.
+
+### 1.3 Typography
+- Default font: `"Times New Roman", Times, serif` for all formal government documents.
+- Exception: documents that use Devanagari numerals or mixed-script content may also include `"Noto Sans Devanagari"` as the first font in the stack.
+- Font sizes must match the visual weight of the source: headings ~22–28 px, body text ~13–20 px, footnotes/notes ~11–13 px.
+
+### 1.4 Colour & Background
+- Background: `#ffffff` (white) throughout.
+- Text: `#000000` (black).
+- Borders: `#000000` or `2px solid #000000` for document borders; `1px solid #000000` for inner section borders.
+- No coloured backgrounds on field cells unless the source document uses them.
+- Watermark text (e.g., repeating "INLAND REVENUE DEPARTMENT") is reproduced using a CSS `::before` pseudo-element with `opacity: 0.075` and an appropriate pale colour (e.g., `#b9a000`).
+
+---
+
+## 2. Visual Placeholder Rules
+
+### 2.1 Photographs
+Every **photograph** area on the original document is replaced with a **bordered box of the same width x height** containing a short text description. No actual image is embedded.
+
+**Pattern:**
+```html
+<div style="
+  font-size: 14px;
+  text-align: center;
+  width: {W}px;
+  height: {H}px;
+  border: 2px solid #000000;
+  display: flex;
+  position: absolute;
+  top: {T}px; left: {L}px;
+  justify-content: center;
+  align-items: center;
+">
+  <span>Photograph Sd.</span>
+</div>
+```
+
+- Label text: `"Photograph Sd."` (citizenship, land certificate) or `"Photograph(Sd.)"` (PAN card).
+- Size must match the original photo area exactly (e.g., 260x260 px for a citizenship photo, 134x165 px for a PAN card photo, 110x155 px for a land certificate).
+- Positioning (`top`, `left`, `right`) must be preserved from the source layout.
+
+### 2.2 Government Emblems / Coat of Arms
+The **Coat of Arms of Nepal** (or government logo) is replaced with a **square or near-square bordered box** of matching dimensions containing a descriptive label.
+
+**Typical sizes observed:**
+
+| Document Type | Width x Height | Shape | Label |
+|---|---|---|---|
+| Citizenship Certificate | 120x120 px | Square | `"Coat of Arms of Nepal"` |
+| PAN Certificate (detailed) | 90x90 px | Square | `"Government of Nepal logo"` |
+| PAN Certificate (simple) | 115x115 px | Square | `"Government emblem"` |
+| Tax Clearance Certificate | 82x82 px | Circular (`border-radius: 50%`) | `"Coat of Arms of Nepal"` |
+| Land Ownership Certificate | 110x90 px | Rectangle | `"Coat of Arms of Nepal"` (two-line `<span>`) |
+
+**Circular emblem pattern (Tax Clearance):**
+```html
+<div style="
+  font-size: 13px;
+  text-align: center;
+  box-sizing: border-box;
+  width: 82px; height: 82px;
+  padding: 4px;
+  border: 2px solid #000000;
+  border-radius: 50%;
+  display: flex; overflow: hidden;
+  justify-content: center; align-items: center;
+">
+  <span>Coat of Arms of Nepal</span>
+</div>
+```
+
+### 2.3 Official Seals (Round / Office Stamps)
+**Round office seals** and **circular stamps** are replaced with a bordered box (square or circular) containing a text description.
+
+**Common patterns:**
+- **Citizenship (round seal, top right):** 120x120 px square box → `"Round Office Seal"`
+- **PAN Certificate (top-right circular seal):** 85x85 px circle (`border-radius: 50%`) → multi-line text `"Government / Office / Seal"`
+- **PAN Certificate (taxpayer/school stamp):** circular stamp in signature area → 95x50 px box or 110x110 px circle → label `"[Office Name] Stamp"` with a CSS double-ring created using `::before`
+- **Tax Clearance QR Code area:** 62x62 px square → `"QR Code"`
+
+**Double-ring stamp pattern:**
+```html
+<div class="shree-stars-stamp" style="
+  width: 110px; height: 110px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  position: relative;
+">
+  <!-- inner ring via ::before -->
+  <span>[Office Name]</span>
+</div>
+```
+
+### 2.4 Thumb Impressions / Fingerprints
+Thumb impression areas are replaced with a **dashed-border box** of matching size with a short label.
+
+```html
+<div style="
+  font-size: 13px;
+  text-align: center;
+  box-sizing: border-box;
+  width: 165px; height: 165px;
+  padding: 4px;
+  border: 2px dashed #000000;
+  display: flex; overflow: hidden;
+  justify-content: center; align-items: center;
+">
+  <span>Provided</span>
+</div>
+```
+
+- Dashed border (`border: 2px dashed`) distinguishes thumb impressions from solid-border photo boxes.
+- Label: `"Provided"` (if impression was present), or `"Right"` / `"Left"` inside dividers in table-style layouts (Land Ownership Certificate).
+
+### 2.5 Signature Boxes
+**Signature areas** (for officers, taxpayers, certificate holders) are replaced with a **bordered rectangle** containing a label.
+
+```html
+<div class="signature-box" style="
+  width: 220px; height: 75px;
+  border: 1px solid #000;
+  display: flex;
+  align-items: center; justify-content: center;
+  text-align: center;
+  font-size: 14px; font-weight: bold;
+">
+  [Role] Signature
+</div>
+```
+
+- When a signature is inline (short reference), use the abbreviation `"Sd."`.
+
+### 2.6 QR Codes
+QR code areas are replaced with a **square bordered box** labelled `"QR Code"`.
+
+```html
+<div style="
+  font-size: 13px;
+  text-align: center;
+  box-sizing: border-box;
+  width: 62px; height: 62px;
+  padding: 4px;
+  border: 2px solid #000000;
+  display: flex; overflow: hidden;
+  justify-content: center; align-items: center;
+">
+  <span>QR Code</span>
+</div>
+```
+
+---
+
+## 3. Editable Fields
+
+### 3.1 `contenteditable` Attribute
+All data fields that could vary per individual must be marked `contenteditable="true"` with a `data-field` attribute identifying the field name. This enables in-browser editing without code changes.
+
+```html
+<div contenteditable="true" data-field="full_name">Ganesh Kumar Kandangwa</div>
+```
+
+### 3.2 Field Naming Convention
+`data-field` values use `snake_case`. Repeated structures (e.g., multiple land plots) use dot-notation: `plots.0.plot_no`, `plots.1.vdc`, `income_items.0.total_income`.
+
+**Common field names observed across document types:**
+
+| Field | `data-field` value |
+|---|---|
+| Citizenship number | `citizenship_no` |
+| Full name | `full_name` |
+| Gender / Sex | `gender` / `sex` |
+| Date of birth year/month/day | `dob_year`, `dob_month`, `dob_day` |
+| Birth district | `birth_district` |
+| Birth municipality/VDC | `birth_rm_mn` |
+| Birth ward | `birth_ward` / `birth_ward_no` |
+| Permanent address district | `perm_district` |
+| Permanent address municipality | `perm_municipality` |
+| Permanent ward | `perm_ward` / `perm_ward_no` |
+| Father's name | `father_name` |
+| Father's citizenship no. | `father_citizenship_no` |
+| Father's address | `father_address` |
+| Father's citizenship type | `father_na_ki` |
+| Mother's name | `mother_name` |
+| Mother's citizenship no. | `mother_citizenship_no` |
+| Spouse's name | `spouse_name` |
+| Citizenship type | `citizenship_type` |
+| Issue date (BS) | `issue_date_bs` |
+| Taxpayer name | `taxpayer_name` |
+| Business name | `business_name` |
+| PAN number | `pan_no` |
+| Inland Revenue Office | `inland_revenue_office` |
+| Tax clearance number | `tax_clearance_no` |
+| Land owner name | `owner_name` |
+| Certificate number | `certificate_no` |
+
+### 3.3 Non-Editable Display Fields
+Static structural text (headers, department names, legal references, instructions) is **not** marked `contenteditable`. These are rendered as plain `<h1>`–`<h4>`, `<span>`, or `<div>` elements.
+
+### 3.4 Hover / Focus Styles
+All `contenteditable` fields must have interactive outline styles:
+```css
+[contenteditable]:hover { outline: 2px dashed #000000; cursor: text; }
+[contenteditable]:focus  { outline: 2px solid #000000; background: #ffffff; }
+```
+
+---
+
+## 4. Page Layout & Dimensions
+
+### 4.1 Citizenship Certificate (Landscape Card)
+- **Canvas:** `width: 1200px; height: 780px` (front) / `750px` (back)
+- **Page border:** `2px solid #000000`
+- **Font family:** `"Times New Roman"`
+- **Coat of Arms position:** `top: 40px; left: 100px` (120x120 px)
+- **Office seal position:** `top: 20px; right: 150px` (120x120 px)
+- **Citizenship number position:** `top: 185px; left: 55px` (font-size 22px, bold)
+- **Photo position:** `top: 300px; left: 55px` (260x260 px)
+- **Data fields area:** `top: 240px; left: 350px; width: 870px`
+- Header text (Government → Ministry → Office → Certificate title): centered, `font-size: 28px`
+
+When both front and back are on a single A4 page (ganesh.html pattern):
+- Use `.a4-sheet` (794x1123 px) with `@page { size: A4 portrait; margin: 0 }`
+- Scale each card using `transform: scale(0.63); transform-origin: top left`
+- Front positioned at `top: 15px`, back at `top: 515px`
+
+### 4.2 PAN Registration Certificate (A4 Portrait)
+- **Canvas:** `width: 794px; height: 1123px`
+- **Page border:** `1px solid #000000`
+- **Font family:** `"Times New Roman", Times, serif`
+- Government logo box: `left: 55px; top: 65px; width: 90px; height: 90px`
+- Top-right seal: `left: 655px; top: 70px; width: 85px; height: 85px; border-radius: 50%`
+- Header centered: `left: 180px; top: 48px; width: 380px`
+- Certificate title: `left: 90px; top: 140px; width: 614px`
+- PAN number boxes: individual `<div>` cells (`width: 23px; height: 40px; border: 2px solid #000; border-right: 0`); last cell has `border-right: 2px solid #000`
+- Registration date table: 3-column (Day, Month, Year); each cell 50x40 px; `border-collapse: collapse`
+- Duties/footer section: `top: ~895px`
+- Print media: `width: 210mm; height: 297mm`
+
+Simple PAN card pattern (rajendra_rai_pan.html):
+- Photo box positioned `top: 34px; right: 30px; width: 134px; height: 165px`
+- PAN number displayed as a flex row of individual bordered `<div>` cells (21x29 px each)
+
+### 4.3 Pension Book (Landscape Spread)
+- **Canvas:** `width: 1352px; height: 897px`
+- **Two-page spread:** left page at `left: 32px`, right page at `left: 710px`; each `width: 610px; height: 850px`
+- **Center divider:** `left: 676px; width: 2px; background: #000000`
+- Element positioning within each page uses `position: absolute` with `.element` class
+- Inline editable fields use `class="field"` with `border-bottom: 1px solid #000000` (underline style)
+- Font family includes `"Noto Sans Devanagari"` for mixed-script compatibility
+
+### 4.4 Tax Clearance Certificate (A4 Portrait)
+- **Canvas:** `width: 794px; height: 1123px`
+- **Emblem:** circular (`border-radius: 50%`), `width: 82px; height: 82px; top: 57px; left: 55px`
+- **Header block:** `width: 430px; top: 49px; left: 182px`
+- **QR Code:** `width: 62px; height: 62px; top: 286px; left: 613px`
+- **Subject line:** centered, `font-size: 17px; font-weight: bold`
+- **Income/Tax table:** `border: 2px solid #000000; border-collapse: collapse`
+- **Notes section:** `font-size: 12px`, multi-line with numbered items
+
+### 4.5 Land Ownership Registration Certificate (Flexible Height)
+- **Canvas:** `width: 1200px; height: auto` (content-driven)
+- **Padding:** `30px 40px` inside page div
+- **Header row:** flex row — emblem box (110x90 px) | centered headings (h1–h4) | certificate number top-right
+- **Owner info area:** three-column flex row — photo box (110x155 px) | thumb impression box (230x155 px) | details block (flex: 1)
+- **Land data table:** full-width, `border-collapse: collapse`, complex multi-level `<thead>` with `rowspan`/`colspan`
+- **Footer row:** flex row — "Printing done by", "Print Date", "Checked by"
+
+---
+
+## 5. Date Format Rules
+
+### 5.1 Bikram Sambat (BS) Dates
+Nepali calendar dates (BS / Vikram Sambat) are preserved as-is when they are the original document's date system. They are formatted as `YYYY-MM-DD` or `YYYY.MM.DD` in text, or split into separate Day / Month / Year cells in a table.
+
+### 5.2 Anno Domini (AD) Dates
+When the document also states a date in AD (Gregorian), it is translated/computed and shown alongside the BS date, labeled explicitly: `"Year: 1961"`, `"Month: JUL"`, `"Day: 02"` (citizenship back), or `"2026.07.26 AD"` (tax clearance).
+
+### 5.3 Date Label Convention
+- In table cells: separate `Day` | `Month` | `Year` column headers
+- In text fields: prefix labels — `"Year: YYYY"`, `"Month: MM"`, `"Day: DD"`
+- In narrative text: `"YYYY.MM.DD AD"` or `"YYYY-MM-DD"`
+
+---
+
+## 6. Document-Type-Specific Rules
+
+### 6.1 Citizenship Certificate
+**Front side fields:**
+- Citizenship No. (bold, top-left below coat of arms)
+- Full Name + Gender (same row, side-by-side)
+- Birth Place (District + Municipality/VDC) + Ward No.
+- Permanent Address (District + Municipality/VDC) + Ward No.
+- Date of Birth (Year / Month / Day, horizontal flex)
+- Father's Name + Father's Citizenship No.
+- Father's Address + Citizenship Type
+- Mother's Name + Mother's Citizenship No.
+- Mother's Address + Citizenship Type
+- Spouse's Name + Spouse's Citizenship No.
+- Spouse's Address + Citizenship Type
+
+**Back side fields:**
+- Citizenship Certificate No. + Sex (same row)
+- Full Name (UPPERCASE in data value)
+- Date of Birth in AD (Year / Month / Day, gap-spaced)
+- Birth Place (District + VDC + Ward No.)
+- Permanent Address (District + Municipality + Ward No.)
+- Statutory reference sentence (Nepal Citizenship Act, 2063)
+- Citizenship Type
+- Certificate Holder's Signature label
+- Right / Left Thumb Impression boxes (dashed border, 165x165 px each)
+- Officer providing copy section: Date, Name, Designation, Signature
+- Issuing officer section: Signature, Name, Designation, Issue Date
+- Remarks (find-and-return note)
+
+**"xxx" placeholder:** When a field value is unknown or not applicable (e.g., spouse name when unmarried), the value `"xxx"` is used verbatim from the source.
+
+### 6.2 PAN Registration Certificate
+
+**Two layout variants exist in the project:**
+
+**Variant A — Detailed (pan.html / ganesh_mina):**
+- A4 portrait, full stylesheet with named CSS classes
+- Watermark background repeating department name
+- Separate named sections: `.registration-section`, `.business-details`, `.education-field`, `.signature-section`, `.duties-section`
+- Two signature boxes side-by-side (taxpayer left, tax officer right)
+- School / taxpayer stamp as a CSS double-ring circle
+
+**Variant B — Compact (rajendra_rai_pan.html / bimal):**
+- A4 portrait, single-line dense HTML
+- Photo box top-right (134x165 px)
+- PAN digits as individual bordered cells in a flex row
+- Registration date as three bordered cells (Day / Month / Year)
+- Single-page with duties list at bottom (~`top: 950px`)
+
+**Common rules for both:**
+- PAN number displayed as individual character cells (one digit per cell)
+- Registration date split into Day / Month / Year cells for: Income Tax, VAT, Excise
+- Taxpayer duties listed as bullet points in small font at the bottom
+
+### 6.3 Pension / Service Book (Police Kitabkhana)
+- Two-page landscape spread (left + right page within one canvas)
+- Editable fields use underline style (`border-bottom: 1px solid #000000`) rather than bordered boxes
+- Fields positioned absolutely within each page panel
+- Font includes Devanagari fallback
+
+### 6.4 Tax Clearance Certificate
+- Letterhead: Coat of Arms (circular) + Government/Ministry/Department/Office hierarchy + rule reference
+- Top-right: issue date sentence + print date sentence + QR code placeholder
+- Letter number, Reg. No., Tax Clearance No. on left side
+- Subject line centered and bold
+- Recipient block: Name, Address, PAN No.
+- Main narrative paragraph: fully translated, mentions fiscal year, employer, remuneration income
+- Income table: two-column (Remuneration Income NPR | Income Tax Deposited NPR)
+- Notes: numbered, reference to IRD website, revised assessment disclaimer
+- No office seal or signature line (certificate explicitly states it is electronically issued)
+
+### 6.5 Land Ownership Registration Certificate (Lalpurja)
+- Full-width table with complex header spanning Evidence Symbol (Prior Plot No. + Description of transaction), District/VDC, Ward/Map Sheet, Plot No./Section, Description, Owner Share, Tenant, Kind/Class, Area, Register Page, Remark, Signature of certifier
+- Each land plot occupies 2 table rows (`rowspan="2"` on shared cells)
+- `(Signed/Certified)` is used as the signature placeholder in table cells
+- Footer: Total Area in Sq.m., Printing done by, Print Date, Checked by
+
+---
+
+## 7. Header Structure Convention
+
+For all formal government documents, the header follows this hierarchy (centered):
+
+```
+[Government Emblem / Coat of Arms]   [Title Lines]   [Office Seal]
+                  Government of Nepal
+                  Ministry of [X]
+                  Department of [X]  (if applicable)
+                  [Issuing Office Name]
+                  [Certificate/Document Title]
+```
+
+- Headings use `<h1>` through `<h4>` tags (or `<span>` elements with matching font-weight/size) — each level decreasing in authority.
+- All heading margin is set to `0` to allow tight line-height control.
+- Emblem is positioned absolutely to the left; office seal to the right; title block is centered in between.
+
+---
+
+## 8. Print & Media Rules
+
+All documents include:
+```css
+@media print {
+  body { background: #ffffff !important; margin: 0 !important; }
+  .page {
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: 2px solid #000000 !important;
+    page-break-after: always;
+  }
+  .no-print { display: none !important; }
+}
+```
+
+A4 documents additionally set:
+```css
+@page { size: A4 portrait; margin: 0; }
+```
+and in the print media block:
+```css
+.page { width: 210mm; height: 297mm; }
+```
+
+---
+
+## 9. Summary Table: Visual Element Replacement
+
+| Source Element | Replacement | Border Style | Size (typical) | Label Text |
+|---|---|---|---|---|
+| Photograph | Bordered box | `2px solid #000` | 260x260 px (citizenship), 134x165 px (PAN) | `"Photograph Sd."` |
+| Coat of Arms (square) | Bordered box | `2px solid #000` | 90–120 px square | `"Coat of Arms of Nepal"` / `"Government of Nepal logo"` |
+| Coat of Arms (circular) | Bordered circle | `2px solid #000; border-radius: 50%` | 82 px diameter | `"Coat of Arms of Nepal"` |
+| Round Office Seal | Bordered box or circle | `2px solid #000` | 85–120 px | `"Round Office Seal"` / `"Government Office Seal"` |
+| School/Office Stamp | Double-ring circle (CSS `::before`) | `2px solid #000; border-radius: 50%` | 110 px | `"[Office Name]"` |
+| Thumb Impression | Dashed bordered box | `2px dashed #000` | 165x165 px (citizenship), table-divided (land cert) | `"Provided"` / `"Right"` + `"Left"` |
+| Signature (area) | Bordered box | `1px solid #000` | 220x75 px | `"[Role] Signature"` |
+| Signature (inline) | Text | — | — | `"Sd."` |
+| QR Code | Bordered box | `2px solid #000` | 62x62 px | `"QR Code"` |
+| Actual images (`<img>`) | None — not used | — | — | — |
+
+
+Read it for now, then I'll provide you with the sample html and actual document to digitize., you don't need to necessary use the exact format, if small changes exist, you can add them, just follow the rules

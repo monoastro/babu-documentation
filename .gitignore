@@ -9,3 +9,6 @@ information_extraction/.translation_cache.json
 translate/
 translated/
 output/
+useful.css
+prompt.txt
+work.txt

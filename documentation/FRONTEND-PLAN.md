@@ -795,7 +795,7 @@ already done and its frontend half rides on Stage 8.
   calls.
 - **One HTML emitter.** Everything renders through `html_engine`, so the
   monochrome guarantee and the print rules cannot be bypassed by a new path.
-- **Run `graphify update .` after changing code**, per `CLAUDE.md`.
+- **Run `graphify update .` after changing code**, per `AGENTS.md`.
 - **The document is a legal artifact.** When fidelity to the source and editor
   convenience conflict, fidelity wins.
 

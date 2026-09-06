@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "title": "PensionRightsFrontCoverSchema",
+  "description": "Fields for the front cover of a Pension Rights Certificate.",
+  "properties": {
+    "main_title": {
+      "type": "string",
+      "description": "The main title text at the top of the front cover (e.g. 'Pension Rights Certificate')."
+    },
+    "authority_line_1": {
+      "type": "string",
+      "description": "Upper authority line at the bottom of the front cover (e.g. department or ministry; extract exactly as printed, transliterate in output)."
+    },
+    "authority_line_2": {
+      "type": "string",
+      "description": "Lower authority line at the bottom of the front cover (e.g. Police Record Office, Police Kitabkhana, or similar; extract exactly as printed)."
+    }
+  },
+  "required": [
+    "main_title",
+    "authority_line_1",
+    "authority_line_2"
+  ]
+}

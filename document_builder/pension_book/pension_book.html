@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)file:///home/moon/pragya/babu-documentation/translated/pension_book.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=1352, initial-scale=1.0">
+
+<title>Police Kitabkhana Pension Book</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 1352px;
+    height: 897px;
+    background: #ffffff;
+    color: #000000;
+    font-family:
+        "Noto Sans Devanagari",
+}
+
+.document {
+    position: relative;
+    width: 1352px;
+    height: 897px;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #000000;
+}
+
+/* =========================================================
+   COMMON
+   ========================================================= */
+
+.page {
+    position: absolute;
+    top: 20px;
+    width: 610px;
+    height: 850px;
+    border: 2px solid #000000;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.left-page {
+    left: 32px;
+}
+
+.right-page {
+    left: 710px;
+}
+
+.center-divider {
+    position: absolute;
+    left: 676px;
+    top: 0;
+    width: 2px;
+    height: 897px;
+    background: #000000;
+}
+
+.element {
+    position: absolute;
+}
+
+.field {
+    display: inline-block;
+    min-height: 20px;
+    border-bottom: 1px solid #000000;
+    padding: 0 4px;
+    vertical-align: bottom;
+    color: #000000;
+    background: #ffffff;
+    outline: none;
+    overflow-wrap: anywhere;
+}
+
+.field:hover {
+    outline: 1px dashed #000000;
+    cursor: text;
+}
+
+.field:focus {
+    outline: 2px solid #000000;
+    background: #ffffff;
+}
+
+.box {
+    border: 2px solid #000000;
+    background: #ffffff;
+}
+
+.title {
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 1.05;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.05;
+    text-decoration: underline;
+}
+
+.label {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.normal {
+    font-size: 16px;
+    line-height: 1.2;
+}
+
+.detail-row {
+    position: absolute;
+    display: flex;
+    align-items: flex-end;
+    white-space: nowrap;
+    width: 570px;
+}
+
+.detail-label {
+    flex-shrink: 0;
+    font-size: 16px;
+    line-height: 1.1;
+}
+
+.page-number {
+    position: absolute;
+    bottom: 12px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   LEFT PAGE
+   ========================================================= */
+
+/*
+    Original:
+    Pensioner's Book
+    photograph on left
+    fingerprints on upper right
+    specimen signature below
+    issuing officer below that
+    pension payment information at bottom
+*/
+
+.left-title {
+    left: 75px;
+    top: 14px;
+    width: 390px;
+}
+
+.left-title-line {
+    position: absolute;
+    left: 72px;
+    top: 40px;
+    width: 370px;
+    border-bottom: 1px solid #000000;
+}
+
+.signature-label {
+    position: absolute;
+    left: 450px;
+    top: 25px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.signature-line {
+    position: absolute;
+    left: 350px;
+    top: 45px;
+}
+
+.signature-line .field {
+    width: 175px;
+}
+
+/* Photograph */
+
+.photo-label {
+    position: absolute;
+    left: 32px;
+    top: 75px;
+    font-size: 17px;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.photo-box {
+    position: absolute;
+    left: 20px;
+    top: 108px;
+    width: 190px;
+    height: 245px;
+}
+
+/* Fingerprint */
+
+.fingerprint-label {
+    position: absolute;
+    left: 440px;
+    top: 75px;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.right-label {
+    position: absolute;
+    left: 330px;
+    top: 96px;
+    width: 105px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.left-label {
+    position: absolute;
+    left: 445px;
+    top: 96px;
+    width: 105px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.right-thumb {
+    position: absolute;
+    left: 325px;
+    top: 116px;
+    width: 105px;
+    height: 145px;
+}
+
+.left-thumb {
+    position: absolute;
+    left: 440px;
+    top: 116px;
+    width: 105px;
+    height: 145px;
+}
+
+/* Specimen signature */
+
+.specimen-label {
+    position: absolute;
+    left: 220px;
+    top: 280px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.specimen-line {
+    position: absolute;
+    left: 220px;
+    top: 304px;
+}
+
+.specimen-line .field {
+    width: 215px;
+}
+
+/* Authority officer */
+
+.authority-officer {
+    position: absolute;
+    left: 285px;
+    top: 365px;
+    width: 300px;
+}
+
+.authority-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.authority-row {
+    display: flex;
+    align-items: flex-end;
+    width: 300px;
+    margin-bottom: 7px;
+}
+
+.authority-row .row-label {
+    width: 80px;
+    flex-shrink: 0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.authority-row .field {
+    width: 220px;
+}
+
+/* Police Kitabkhana */
+
+.kitabkhana {
+    position: absolute;
+    left: 430px;
+    top: 490px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* Pension statement */
+
+.payment-statement {
+    position: absolute;
+    left: 20px;
+    top: 515px;
+    width: 555px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.payment-line {
+    display: flex;
+    align-items: flex-end;
+    margin-top: 7px;
+    white-space: nowrap;
+}
+
+.payment-label {
+    flex-shrink: 0;
+    margin-right: 4px;
+}
+
+.payment-bank {
+    width: 115px;
+    margin-right: 16px;
+}
+
+.payment-amount {
+    width: 155px;
+}
+
+.payment-branch {
+    width: 170px;
+}
+
+.payment-note {
+    margin-top: 5px;
+    font-size: 13px;
+}
+
+/* Payment-order officer */
+
+.payment-officer {
+    position: absolute;
+    left: 205px;
+    top: 650px;
+    width: 360px;
+}
+
+.payment-officer-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.payment-officer-row {
+    display: flex;
+    align-items: flex-end;
+    width: 360px;
+    margin-bottom: 6px;
+}
+
+.payment-officer-row .row-label {
+    width: 65px;
+    flex-shrink: 0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.payment-officer-row .field {
+    width: 245px;
+}
+
+.left-page-number {
+    left: 302px;
+}
+
+/* =========================================================
+   RIGHT PAGE
+   ========================================================= */
+
+.right-title {
+    left: 70px;
+    top: 13px;
+    width: 465px;
+    font-size: 22px;
+}
+
+.right-serial-label {
+    position: absolute;
+    left: 80px;
+    top: 42px;
+    width: 450px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.right-serial {
+    position: absolute;
+    left: 180px;
+    top: 63px;
+}
+
+.right-serial .field {
+    width: 250px;
+}
+
+/* -------------------------
+   Section A
+   ------------------------- */
+
+.section-a {
+    left: 12px;
+    top: 92px;
+}
+
+.name-row {
+    top: 122px;
+    left: 14px;
+}
+
+.name-row .name-field {
+    width: 175px;
+    margin-left: 5px;
+}
+
+.symbol-label {
+    margin-left: 25px;
+}
+
+.symbol-field {
+    width: 105px;
+    margin-left: 5px;
+}
+
+.address-row-one {
+    top: 151px;
+    left: 14px;
+}
+
+.address-row-two {
+    top: 178px;
+    left: 14px;
+}
+
+.address-prefix {
+    width: 185px;
+}
+
+.address-district-label {
+    width: 55px;
+}
+
+.address-district {
+    width: 105px;
+}
+
+.address-municipality {
+    width: 150px;
+}
+
+.address-ward-label {
+    width: 80px;
+    padding-left: 10px;
+}
+
+.address-ward {
+    width: 55px;
+	padding-left: 10px;
+}
+
+.birth-row {
+    top: 207px;
+    left: 14px;
+}
+
+.post-row {
+    top: 234px;
+    left: 14px;
+}
+
+.class-row {
+    top: 261px;
+    left: 14px;
+}
+
+.office-row {
+    top: 288px;
+    left: 14px;
+}
+
+.death-row {
+    top: 315px;
+    left: 14px;
+}
+
+.standard-field {
+    width: 230px;
+    margin-left: 5px;
+}
+
+/* Service period */
+
+.service-row {
+    position: absolute;
+    top: 343px;
+    left: 14px;
+    display: flex;
+    align-items: flex-end;
+    width: 570px;
+}
+
+.service-label {
+    width: 155px;
+    flex-shrink: 0;
+    font-size: 16px;
+}
+
+.service-unit {
+    font-size: 15px;
+    margin-left: 3px;
+    margin-right: 4px;
+}
+
+.service-field {
+    width: 48px;
+    margin-right: 12px;
+}
+
+.salary-row {
+    top: 372px;
+    left: 14px;
+}
+
+/* -------------------------
+   Section B
+   ------------------------- */
+
+.section-b {
+    left: 12px;
+    top: 404px;
+}
+
+.recipient-name-row {
+    top: 434px;
+    left: 14px;
+}
+
+.recipient-birth-row {
+    top: 461px;
+    left: 14px;
+}
+
+.recipient-address-row-one {
+    top: 488px;
+    left: 14px;
+}
+
+.recipient-address-row-two {
+    top: 515px;
+    left: 14px;
+}
+
+.relationship-row {
+    top: 544px;
+    left: 14px;
+}
+
+/* -------------------------
+   Section C
+   ------------------------- */
+
+.section-c {
+    left: 12px;
+    top: 576px;
+}
+
+.period-row {
+    position: absolute;
+    top: 607px;
+    left: 14px;
+    display: flex;
+    align-items: flex-end;
+    width: 570px;
+}
+
+.period-label {
+    width: 65px;
+    flex-shrink: 0;
+    font-size: 16px;
+}
+
+.period-field {
+    width: 145px;
+}
+
+.to-label {
+    width: 45px;
+    padding-left: 18px;
+    font-size: 16px;
+}
+
+.monthly-row {
+    top: 638px;
+    left: 14px;
+}
+
+.monthly-field {
+    width: 235px;
+    margin-left: 5px;
+}
+
+/* -------------------------
+   Section D
+   ------------------------- */
+
+.section-d {
+    left: 12px;
+    top: 684px;
+}
+
+.other-field {
+    position: absolute;
+    left: 160px;
+    top: 687px;
+    width: 405px;
+}
+
+.right-page-number {
+    left: 300px;
+}
+
+/* =========================================================
+   VERY LIGHT MONOCHROME WATERMARK
+   ========================================================= */
+
+.page-watermark {
+    position: absolute;
+    font-size: 11px;
+    color: #000000;
+    opacity: 0.08;
+    font-weight: 700;
+    pointer-events: none;
+}
+
+.watermark-left {
+    left: 7px;
+    top: 5px;
+}
+
+.watermark-right {
+    left: 687px;
+    top: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="document">
+
+    <div class="center-divider"></div>
+
+    <!-- =====================================================
+         LEFT PAGE
+         ===================================================== -->
+
+    <section class="page left-page">
+
+        <!-- Title -->
+
+        <div class="element left-title title">
+            Pensioner's Book
+        </div>
+
+        <div class="left-title-line"></div>
+
+        <div class="signature-label">
+            Signature
+        </div>
+
+        <div class="signature-line">
+            <span class="field" data-field="pensioner_signature" contenteditable="true" spellcheck="false"></span>
+        </div>
+
+
+        <!-- Photograph -->
+
+        <div class="photo-label">
+            Photograph
+        </div>
+
+        <div class="photo-box box" data-field="photo_description"></div>
+
+
+        <!-- Fingerprints -->
+
+        <div class="fingerprint-label">
+            Fingerprint
+        </div>
+
+        <div class="right-label">
+            Right
+        </div>
+
+        <div class="left-label">
+            Left
+        </div>
+
+        <div class="right-thumb box" data-field="right_thumbprint"></div>
+
+        <div class="left-thumb box" data-field="left_thumbprint"></div>
+
+
+        <!-- Specimen Signature -->
+
+        <div class="specimen-label">
+            Specimen Signature
+        </div>
+
+        <div class="specimen-line">
+            <span class="field" data-field="specimen_signature" contenteditable="true" spellcheck="false"></span>
+        </div>
+
+
+        <!-- Authority Letter Issuing Officer -->
+
+        <div class="authority-officer">
+
+            <div class="authority-title">
+                Authority Letter Issuing Officer
+            </div>
+
+            <div class="authority-row">
+                <span class="row-label">
+                    Signature
+                </span>
+
+                <span class="field" data-field="issuing_officer_signature" contenteditable="true" spellcheck="false"></span>
+            </div>
+
+            <div class="authority-row">
+                <span class="row-label">
+                    Name
+                </span>
+
+                <span class="field" data-field="issuing_officer_name" contenteditable="true" spellcheck="false"></span>
+            </div>
+
+            <div class="authority-row">
+                <span class="row-label">
+                    Rank
+                </span>
+
+                <span class="field" data-field="issuing_officer_rank" contenteditable="true" spellcheck="false"></span>
+            </div>
+
+        </div>
+
+
+        <!-- Police Kitabkhana -->
+
+        <div class="kitabkhana">
+            Police Records Office
+        </div>
+
+
+        <!-- Pension Payment Statement -->
+
+        <div class="payment-statement">
+
+            <div>
+                This authority letter entitles the holder to receive
+                pension at the rate specified below.
+            </div>
+
+            <div class="payment-line">
+
+                <span class="payment-label">
+                    Bank:
+                </span>
+
+                <span class="field payment-bank" data-field="pension_payment_bank" contenteditable="true" spellcheck="false"><br></span>
+
+                
+
+                
+
+            </div>
+
+            <div class="payment-line">
+
+                <span class="payment-label">
+                    Branch:
+                </span>
+
+                <span class="field payment-branch" data-field="pension_payment_branch" contenteditable="true" spellcheck="false"></span>
+
+            </div>
+
+            <div class="payment-note">
+                The pension shall be paid only from the specified branch.
+            </div>
+
+        </div>
+
+
+        <!-- Payment Order Issuing Officer -->
+
+        <div class="payment-officer">
+
+            <div class="payment-officer-title">
+                Payment Order Issuing Officer
+            </div>
+
+            <div class="payment-officer-row">
+
+                <span class="row-label">
+                    Name
+                </span>
+
+                <span class="field" data-field="payment_order_officer_name" contenteditable="true" spellcheck="false"></span>
+
+            </div>
+
+            <div class="payment-officer-row">
+
+                <span class="row-label">
+                    Rank
+                </span>
+
+                <span class="field" data-field="payment_order_officer_rank" contenteditable="true" spellcheck="false"></span>
+
+            </div>
+
+            <div class="payment-officer-row">
+
+                <span class="row-label">
+                    Office
+                </span>
+
+                <span class="field" data-field="payment_order_office" contenteditable="true" spellcheck="false"></span>
+
+            </div>
+
+            <div class="payment-officer-row">
+
+                <span class="row-label">
+                    Date
+                </span>
+
+                <span class="field" data-field="payment_order_date_bs" contenteditable="true" spellcheck="false"></span>
+
+            </div>
+
+        </div>
+
+        <div class="page-number left-page-number">
+            2
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RIGHT PAGE
+         ===================================================== -->
+
+    <section class="page right-page">
+
+        <!-- Title -->
+
+        <div class="element right-title title">
+            Family Pension Authority Letter
+        </div>
+
+        <div class="right-serial-label">
+            Authority Letter Serial Number
+        </div>
+
+        <div class="right-serial">
+
+            
+
+        </div>
+
+
+        <!-- =================================================
+             (a) Details of Deceased Employee
+             ================================================= -->
+
+        <div class="element section-a section-title">
+            (a) Details of Deceased Employee
+        </div>
+
+
+        <!-- Name + Symbol -->
+
+        <div class="detail-row name-row">
+
+            <span class="detail-label">
+                1. Full Name:
+            </span>
+
+            <span class="field name-field" data-field="deceased_employee_name" contenteditable="true" spellcheck="false"></span>
+
+            <span class="detail-label symbol-label">
+                Employee Symbol No.:
+            </span>
+
+            <span class="field symbol-field" data-field="deceased_employee_symbol_no" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- Address -->
+
+        <div class="detail-row address-row-one">
+
+            <span class="detail-label address-prefix">
+                2. Permanent Address:
+            </span>
+
+            <span class="detail-label address-district-label">
+                District:
+            </span>
+
+            <span class="field address-district" data-field="deceased_employee_permanent_address_district" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <div class="detail-row address-row-two">
+
+            <span class="detail-label address-prefix">
+                Municipality/VDC:
+            </span>
+
+            <span class="field address-municipality" data-field="deceased_employee_permanent_address_municipality" contenteditable="true" spellcheck="false"></span>
+
+            <span class="detail-label address-ward-label">
+                Ward No.:
+            </span>
+
+            <span class="field address-ward" data-field="deceased_employee_permanent_address_ward" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- Birth -->
+
+        <div class="detail-row birth-row">
+
+            <span class="detail-label">
+                3. Birth Date:
+            </span>
+
+            <span class="field standard-field" data-field="deceased_employee_birth_date_bs" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- Post -->
+
+        <div class="detail-row post-row">
+
+            <span class="detail-label">
+                4. Post:
+            </span>
+
+            <span class="field standard-field" data-field="deceased_employee_post" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- Class -->
+
+        <div class="detail-row class-row">
+
+            <span class="detail-label">
+                5. Class:
+            </span>
+
+            <span class="field standard-field" data-field="deceased_employee_class" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- Office -->
+
+        <div class="detail-row office-row">
+
+            <span class="detail-label">
+                6. Office:
+            </span>
+
+            <span class="field standard-field" data-field="deceased_employee_office" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- Death Date -->
+
+        <div class="detail-row death-row">
+
+            <span class="detail-label">
+                7. Death Date:
+            </span>
+
+            <span class="field standard-field" data-field="deceased_employee_death_date_bs" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- Service Period -->
+
+        <div class="service-row">
+
+            <span class="service-label">
+                8. Service Period:
+            </span>
+
+            <span class="service-unit">
+                Years:
+            </span>
+
+            <span class="field service-field" data-field="service_period_years" contenteditable="true" spellcheck="false"></span>
+
+            <span class="service-unit">
+                Months:
+            </span>
+
+            <span class="field service-field" data-field="service_period_months" contenteditable="true" spellcheck="false"></span>
+
+            <span class="service-unit">
+                Days:
+            </span>
+
+            <span class="field service-field" data-field="service_period_days" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- Last Salary -->
+
+        <div class="detail-row salary-row">
+
+            <span class="detail-label">
+                9. Last Salary:
+            </span>
+
+            <span class="field standard-field" data-field="deceased_employee_last_salary" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- =================================================
+             (b) Family Pension Recipient
+             ================================================= -->
+
+        <div class="element section-b section-title">
+            (b) Details of Family Pension Recipient
+        </div>
+
+
+        <!-- Name -->
+
+        <div class="detail-row recipient-name-row">
+
+            <span class="detail-label">
+                1. Full Name:
+            </span>
+
+            <span class="field standard-field" data-field="family_pension_recipient_name" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- Birth Date -->
+
+        <div class="detail-row recipient-birth-row">
+
+            <span class="detail-label">
+                2. Birth Date:
+            </span>
+
+            <span class="field standard-field" data-field="family_pension_recipient_birth_date_bs" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- Recipient Address -->
+
+        <div class="detail-row recipient-address-row-one">
+
+            <span class="detail-label address-prefix">
+                3. Permanent Address:
+            </span>
+
+            <span class="detail-label address-district-label">
+                District:
+            </span>
+
+            <span class="field address-district" data-field="family_pension_recipient_permanent_address_district" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <div class="detail-row recipient-address-row-two">
+
+            <span class="detail-label address-prefix">
+                Municipality/VDC:
+            </span>
+
+            <span class="field address-municipality" data-field="family_pension_recipient_permanent_address_municipality" contenteditable="true" spellcheck="false"></span>
+
+            <span class="detail-label address-ward-label">
+                Ward No.:
+            </span>
+
+            <span class="field address-ward" data-field="family_pension_recipient_permanent_address_ward" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- Relationship -->
+
+        <div class="detail-row relationship-row">
+
+            <span class="detail-label">
+                4. Relationship:
+            </span>
+
+            <span class="field standard-field" data-field="family_pension_recipient_relationship" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- =================================================
+             (c) Pension Period and Amount
+             ================================================= -->
+
+        <div class="element section-c section-title">
+            (c) Pension Period and Amount
+        </div>
+
+
+        <div class="period-row">
+
+            <span class="period-label">
+                1. From:
+            </span>
+
+            <span class="field period-field" data-field="family_pension_start_date_bs" contenteditable="true" spellcheck="false"></span>
+
+            <span class="to-label">
+                To:
+            </span>
+
+            <span class="field period-field" data-field="family_pension_end_date_bs" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <div class="detail-row monthly-row">
+
+            <span class="detail-label">
+                2. Monthly Pension:
+            </span>
+
+            <span class="field monthly-field" data-field="family_pension_monthly_amount" contenteditable="true" spellcheck="false"></span>
+
+        </div>
+
+
+        <!-- =================================================
+             (d) Other Required Information
+             ================================================= -->
+
+        <div class="element section-d section-title">
+            (d) Other Required Information:        </div>
+
+        
+
+
+        <div class="page-number right-page-number">
+            3
+        </div>
+
+    </section>
+
+
+    <!-- Very faint monochrome background labels -->
+
+    <div class="page-watermark watermark-left">
+        Police Kitabkhana
+    </div>
+
+    <div class="page-watermark watermark-right">
+        Police Kitabkhana
+    </div>
+
+</div>
+
+
+
+
+</body></html>

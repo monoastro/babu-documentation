@@ -1,76 +1,64 @@
 {
   "type": "object",
-  "title": "Pan",
-  "description": "Fields extracted from a Pan document.",
+  "title": "Nepal PAN Registration Certificate",
+  "description": "Fields from the compact PAN certificate format shown in rajendra_rai_pan.png.",
   "properties": {
     "pan_no": {
       "type": "string",
-      "description": "Permanent Account Number as displayed, usually as a series of boxes near the center top, with one digit/character per box. Extract as ASCII only."
+      "description": "Permanent Account Number from the ten individual cells. Preserve displayed order; use ASCII digits when clear."
     },
     "inland_revenue_office": {
       "type": "string",
-      "description": "Name of the Inland Revenue Office (आन्तरिक राजस्व कार्यालय शाखा) as shown left of the prominent box, e.g. 'Lahan' or 'Kathmandu'."
+      "description": "Inland Revenue Office name in the first office row."
     },
     "taxpayer_service_office": {
       "type": "string",
-      "description": "Name of the Taxpayer Service Office (करदाता सेवा कार्यालय) as shown next to Inland Revenue Office, typically on the left."
+      "description": "Taxpayer Service Office name in the second office row."
     },
-    "vat_no": {
+    "income_tax_registration_date_bs": {
       "type": "string",
-      "description": "VAT number (if any) written in small table, extracted exactly as printed."
+      "description": "Income-tax registration date in the right-hand day/month/year cells. Extract as YYYY/MM/DD BS when present."
     },
-    "excise_no": {
+    "vat_registration_date_bs": {
       "type": "string",
-      "description": "Excise Duty number (if any) from the small table under official form headings. Extract as printed."
+      "description": "VAT registration date in the second right-hand day/month/year row. Extract as YYYY/MM/DD BS; empty when blank."
     },
-    "registration_date_bs": {
+    "excise_registration_date_bs": {
       "type": "string",
-      "description": "Registration (issue) date in Bikram Sambat (Bs) as printed in the right-side panel (format: YYYY/MM/DD or YYYY-MM-DD, Devanagari ok)."
+      "description": "Excise registration date in the third right-hand day/month/year row. Extract as YYYY/MM/DD BS; empty when blank."
     },
-    "registration_date": {
+    "taxpayer_name": {
       "type": "string",
-      "description": "ISO-8601 Gregorian date corresponding to registration_date_bs. Always convert YYYY/MM/DD BS to ISO yyyy-mm-dd AD using standard Nepal date conversion. Leave empty if BS date is missing or ambiguous."
+      "description": "Individual taxpayer name from the row labelled taxpayer name."
     },
     "business_name": {
       "type": "string",
-      "description": "Name of the business registered, centered in the upper details area."
+      "description": "Registered business or firm name from the row labelled business name."
     },
     "taxpayer_type": {
       "type": "string",
-      "description": "Legal form or type of taxpayer, e.g. 'Private Limited', printed next to business name."
+      "description": "Taxpayer category or legal type from the taxpayer type row."
     },
     "address": {
       "type": "string",
-      "description": "Business address (e.g. ward, municipality, district), as shown center/left part of the page."
+      "description": "Full taxpayer address, preserving line breaks when shown."
     },
-    "business_nature": {
+    "business_activities": {
       "type": "string",
-      "description": "Primary business activities or sector, as shown in the block under address."
-    },
-    "taxpayer_signature": {
-      "type": "string",
-      "description": "Name of the taxpayer or their representative. Extract as printed below the left-side stamp/seal and signature row."
-    },
-    "tax_officer_signature": {
-      "type": "string",
-      "description": "Name/signature of tax office official (right signature area at bottom)."
-    },
-    "duties": {
-      "type": "array",
-      "items": {"type": "string"},
-      "description": "List of duties to be followed by the taxpayer, each bullet or line as a separate item from the bottom boxed panel."
+      "description": "Business activities from the long bordered row immediately above signatures."
     }
   },
   "required": [
     "pan_no",
     "inland_revenue_office",
     "taxpayer_service_office",
-    "registration_date_bs",
-    "registration_date",
+    "income_tax_registration_date_bs",
+    "vat_registration_date_bs",
+    "excise_registration_date_bs",
+    "taxpayer_name",
     "business_name",
     "taxpayer_type",
     "address",
-    "business_nature",
-    "duties"
+    "business_activities"
   ]
 }

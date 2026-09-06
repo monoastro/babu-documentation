@@ -1,0 +1,224 @@
+{
+  "type": "object",
+  "title": "Police Kitabkhana Pension Book",
+  "description": "Fields from the two-page Police Kitabkhana pension book spread shown in translate/pension_book.png.",
+  "properties": {
+    "identity_book_no": {
+      "type": "string",
+      "description": "Book, identity, or registration number printed on the left page if visible."
+    },
+    "left_office_or_holder_name": {
+      "type": "string",
+      "description": "Name or office value written near the left-page verification heading."
+    },
+    "right_office_or_holder_name": {
+      "type": "string",
+      "description": "Name or office value written near the left-page record-keeper heading."
+    },
+    "photo_description": {
+      "type": "string",
+      "description": "Description of the attached photograph when textual extraction is possible; otherwise leave empty."
+    },
+    "record_keeper_signature": {
+      "type": "string",
+      "description": "Textual reading of the record keeper signature area, if legible."
+    },
+    "right_thumbprint": {
+      "type": "string",
+      "description": "Textual note for the right thumbprint box; normally empty unless annotated."
+    },
+    "left_thumbprint": {
+      "type": "string",
+      "description": "Textual note for the left thumbprint box; normally empty unless annotated."
+    },
+    "issuing_officer_signature": {
+      "type": "string",
+      "description": "Signature text or mark for the officer issuing the authority letter."
+    },
+    "issuing_officer_name": {
+      "type": "string",
+      "description": "Name of the authority-letter issuing officer."
+    },
+    "issuing_officer_rank": {
+      "type": "string",
+      "description": "Rank or designation of the authority-letter issuing officer."
+    },
+    "issuing_office": {
+      "type": "string",
+      "description": "Issuing office shown on the left page, usually Police Kitabkhana."
+    },
+    "pension_payment_order_no": {
+      "type": "string",
+      "description": "Pension payment order number or P.P.O. number."
+    },
+    "pension_payment_branch": {
+      "type": "string",
+      "description": "Bank or branch from which pension payment is authorized."
+    },
+    "payment_order_text": {
+      "type": "string",
+      "description": "Free-text pension payment order sentence or remarks on the left page."
+    },
+    "payment_order_officer_name": {
+      "type": "string",
+      "description": "Name of the payment-order issuing officer."
+    },
+    "payment_order_officer_rank": {
+      "type": "string",
+      "description": "Rank or designation of the payment-order issuing officer."
+    },
+    "payment_order_office": {
+      "type": "string",
+      "description": "Office of the payment-order issuing officer."
+    },
+    "payment_order_date_bs": {
+      "type": "string",
+      "description": "Date of the payment order in Bikram Sambat format."
+    },
+    "authority_serial_no": {
+      "type": "string",
+      "description": "Serial number of the family pension authority letter on the right page."
+    },
+    "deceased_employee_name": {
+      "type": "string",
+      "description": "Name of the deceased employee from section (a), row 1."
+    },
+    "deceased_employee_symbol_no": {
+      "type": "string",
+      "description": "Service, symbol, or employee number of the deceased employee."
+    },
+    "deceased_employee_permanent_address_district": {
+      "type": "string",
+      "description": "District in the deceased employee's permanent address."
+    },
+    "deceased_employee_permanent_address_municipality": {
+      "type": "string",
+      "description": "Municipality or VDC in the deceased employee's permanent address."
+    },
+    "deceased_employee_permanent_address_ward": {
+      "type": "string",
+      "description": "Ward number in the deceased employee's permanent address."
+    },
+    "deceased_employee_birth_date_bs": {
+      "type": "string",
+      "description": "Birth date of the deceased employee in Bikram Sambat format."
+    },
+    "deceased_employee_post": {
+      "type": "string",
+      "description": "Post or job title of the deceased employee."
+    },
+    "deceased_employee_class": {
+      "type": "string",
+      "description": "Class, category, or grade of the deceased employee."
+    },
+    "deceased_employee_office": {
+      "type": "string",
+      "description": "Office where the deceased employee served."
+    },
+    "deceased_employee_death_date_bs": {
+      "type": "string",
+      "description": "Death date of the deceased employee in Bikram Sambat format."
+    },
+    "service_period_years": {
+      "type": "string",
+      "description": "Years component of the deceased employee's service period."
+    },
+    "service_period_months": {
+      "type": "string",
+      "description": "Months component of the deceased employee's service period."
+    },
+    "service_period_days": {
+      "type": "string",
+      "description": "Days component of the deceased employee's service period."
+    },
+    "deceased_employee_last_salary": {
+      "type": "string",
+      "description": "Final salary or last drawn pay of the deceased employee."
+    },
+    "family_pension_recipient_name": {
+      "type": "string",
+      "description": "Name of the person receiving family pension from section (b)."
+    },
+    "family_pension_recipient_birth_date_bs": {
+      "type": "string",
+      "description": "Birth date of the family pension recipient in Bikram Sambat format."
+    },
+    "family_pension_recipient_permanent_address_district": {
+      "type": "string",
+      "description": "District in the recipient's permanent address."
+    },
+    "family_pension_recipient_permanent_address_municipality": {
+      "type": "string",
+      "description": "Municipality or VDC in the recipient's permanent address."
+    },
+    "family_pension_recipient_permanent_address_ward": {
+      "type": "string",
+      "description": "Ward number in the recipient's permanent address."
+    },
+    "family_pension_recipient_relationship": {
+      "type": "string",
+      "description": "Relationship or kinship between the recipient and deceased employee."
+    },
+    "family_pension_start_date_bs": {
+      "type": "string",
+      "description": "Start date for the family pension period in Bikram Sambat format."
+    },
+    "family_pension_end_date_bs": {
+      "type": "string",
+      "description": "End date for the family pension period in Bikram Sambat format."
+    },
+    "family_pension_monthly_amount": {
+      "type": "string",
+      "description": "Monthly family pension amount."
+    },
+    "other_required_information": {
+      "type": "string",
+      "description": "Any other required information from section (d)."
+    }
+  },
+  "required": [
+    "identity_book_no",
+    "left_office_or_holder_name",
+    "right_office_or_holder_name",
+    "photo_description",
+    "record_keeper_signature",
+    "right_thumbprint",
+    "left_thumbprint",
+    "issuing_officer_signature",
+    "issuing_officer_name",
+    "issuing_officer_rank",
+    "issuing_office",
+    "pension_payment_order_no",
+    "pension_payment_branch",
+    "payment_order_text",
+    "payment_order_officer_name",
+    "payment_order_officer_rank",
+    "payment_order_office",
+    "payment_order_date_bs",
+    "authority_serial_no",
+    "deceased_employee_name",
+    "deceased_employee_symbol_no",
+    "deceased_employee_permanent_address_district",
+    "deceased_employee_permanent_address_municipality",
+    "deceased_employee_permanent_address_ward",
+    "deceased_employee_birth_date_bs",
+    "deceased_employee_post",
+    "deceased_employee_class",
+    "deceased_employee_office",
+    "deceased_employee_death_date_bs",
+    "service_period_years",
+    "service_period_months",
+    "service_period_days",
+    "deceased_employee_last_salary",
+    "family_pension_recipient_name",
+    "family_pension_recipient_birth_date_bs",
+    "family_pension_recipient_permanent_address_district",
+    "family_pension_recipient_permanent_address_municipality",
+    "family_pension_recipient_permanent_address_ward",
+    "family_pension_recipient_relationship",
+    "family_pension_start_date_bs",
+    "family_pension_end_date_bs",
+    "family_pension_monthly_amount",
+    "other_required_information"
+  ]
+}

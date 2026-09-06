@@ -140,8 +140,8 @@
     "semantic_hash": "534b05ab044bbfbeb9904fd297e16520"
   },
   "documentation/log.txt": {
-    "mtime": 1786519790.3029907,
-    "ast_hash": "9e26d11f25872ea8bb73d2d4e3528f48",
+    "mtime": 1786619512.3992782,
+    "ast_hash": "d0ca9fe79c340953464d1d616ac18222",
     "semantic_hash": ""
   },
   "documentation/tasks.txt": {
@@ -152,11 +152,6 @@
   "requirements.txt": {
     "mtime": 1786353042.7079878,
     "ast_hash": "10d292ca8d6d9a020514bbf32d4c398b",
-    "semantic_hash": ""
-  },
-  "CLAUDE.md": {
-    "mtime": 1786443048.9309654,
-    "ast_hash": "2f09e0ed0201f50006a989aba5c48603",
     "semantic_hash": ""
   },
   "agentic_controller/__init__.py": {
@@ -265,7 +260,7 @@
     "semantic_hash": ""
   },
   "document_builder/citizenship_back/layout.py": {
-    "mtime": 1786447709.1670613,
+    "mtime": 1787801571.2846918,
     "ast_hash": "606dbb13629256da67bd281f7101a93d",
     "semantic_hash": ""
   },
@@ -349,11 +344,6 @@
     "ast_hash": "576db36902740dd8613204a8dd1ab76c",
     "semantic_hash": ""
   },
-  "work.txt": {
-    "mtime": 1786542937.7402694,
-    "ast_hash": "6a44e0819d274441d2685bb6f8c079a0",
-    "semantic_hash": ""
-  },
   "information_extraction/languages.py": {
     "mtime": 1786416589.7409809,
     "ast_hash": "f0dc6d9d6fc29f907f4e8d6cf23e9e1b",
@@ -365,8 +355,8 @@
     "semantic_hash": ""
   },
   "documentation/FRONTEND-PLAN.md": {
-    "mtime": 1786442896.926966,
-    "ast_hash": "e390bddf1fd0157fb5cf63a1c2af7736",
+    "mtime": 1787803255.9699574,
+    "ast_hash": "904ee43489bf094e7e679870b9e61a04",
     "semantic_hash": ""
   },
   "documentation/prd-update.txt": {
@@ -430,23 +420,13 @@
     "semantic_hash": ""
   },
   "document_builder/pan/layout.py": {
-    "mtime": 1786599270.4459076,
-    "ast_hash": "1aa7c60e45dbcfbcc61a3b54e3c79522",
+    "mtime": 1786613946.9839873,
+    "ast_hash": "d3045d9cf653492e308790ca10b3be73",
     "semantic_hash": ""
   },
   "information_extraction/schemas/pan.json": {
-    "mtime": 1786448695.64655,
-    "ast_hash": "7db5d769fc2682de42fa38941ac606b0",
-    "semantic_hash": ""
-  },
-  "document_builder/pan/pan.png": {
-    "mtime": 1786448388.879945,
-    "ast_hash": "98af20edcd686f55b78308b08c9d9bb6",
-    "semantic_hash": ""
-  },
-  "document_builder/pan/layout_fixed.py": {
-    "mtime": 1786543072.95899,
-    "ast_hash": "480302f9dc73caa6f7f7982904320ca0",
+    "mtime": 1786613874.2669876,
+    "ast_hash": "948820a8a6d640a2e1078ef4573ab2fe",
     "semantic_hash": ""
   },
   "information_extraction/schemas/tax_clearance_patched_bak.json": {
@@ -699,14 +679,104 @@
     "ast_hash": "0a05e10fa4fc7d55f26e2cb3721b3709",
     "semantic_hash": ""
   },
-  "context.md": {
-    "mtime": 1786578090.8503914,
-    "ast_hash": "c0af62783c3424d331f67d6bd5aaa244",
-    "semantic_hash": ""
-  },
   "settings.png": {
     "mtime": 1786555055.9489446,
     "ast_hash": "779f5f1b2e6e7ca57e2a73c6dde12aa5",
+    "semantic_hash": ""
+  },
+  "document_builder/pan/test-generate-pan.py": {
+    "mtime": 1786613991.865987,
+    "ast_hash": "9d60fb85a4aa5758cefd6af2d58584a8",
+    "semantic_hash": ""
+  },
+  "document_builder/pan/rajendra_rai_pan.png": {
+    "mtime": 1786613214.4096205,
+    "ast_hash": "c4083caa6f5b8655a2eb45899f888349",
+    "semantic_hash": ""
+  },
+  ".opencode/opencode.json": {
+    "mtime": 1787801071.2579658,
+    "ast_hash": "e5f74d14a81702b55bdf53b33ec991d7",
+    "semantic_hash": ""
+  },
+  ".opencode/plugins/graphify.js": {
+    "mtime": 1787526434.712352,
+    "ast_hash": "3ea725724bc8ebe483c9f13d6aa1124f",
+    "semantic_hash": ""
+  },
+  "document_builder/pension_book/layout.py": {
+    "mtime": 1786615167.5619826,
+    "ast_hash": "fecb2c5c4619a37569cd6b014e435a22",
+    "semantic_hash": ""
+  },
+  "document_builder/pension_front/layout.py": {
+    "mtime": 1786785507.999496,
+    "ast_hash": "8f19f8340f1f0a92e9380414786c2509",
+    "semantic_hash": ""
+  },
+  "information_extraction/schemas/pension_book.json": {
+    "mtime": 1786615167.6589825,
+    "ast_hash": "3727bf1349b5f4cd3fc84d5d21966bb7",
+    "semantic_hash": ""
+  },
+  "information_extraction/schemas/pension_front.json": {
+    "mtime": 1786785507.9986496,
+    "ast_hash": "7c632238d0b12a175f06bfe5592451bd",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1787802664.5989597,
+    "ast_hash": "eaf7a70fbc927e05a44e4c6795df4b8d",
+    "semantic_hash": ""
+  },
+  "document_builder/laalpurja/old.html": {
+    "mtime": 1786688016.9820104,
+    "ast_hash": "ea5b1abcb23c63e8977008c1b3584c90",
+    "semantic_hash": ""
+  },
+  "document_builder/pension_book/3.html": {
+    "mtime": 1786858929.591521,
+    "ast_hash": "2aa49f4833984c8385248642318cd444",
+    "semantic_hash": ""
+  },
+  "document_builder/pension_book/pension_book.html": {
+    "mtime": 1786618455.3353097,
+    "ast_hash": "806b234a898346d4dd080ce98e37d304",
+    "semantic_hash": ""
+  },
+  "documentation/document_digitization.md": {
+    "mtime": 1786621112.0409598,
+    "ast_hash": "5a298311695a27beaae41e20bd2474fb",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20260827_035030_why_does_language_spec___connect_translator_py_to.md": {
+    "mtime": 1787802630.5816636,
+    "ast_hash": "749b43226fd333092d3adab5cbfdf98b",
+    "semantic_hash": ""
+  },
+  "one_shot/examples/manifest.example.json": {
+    "mtime": 1787813444.8249185,
+    "ast_hash": "55cfd5ae182e36925237de6fd8c0e859",
+    "semantic_hash": ""
+  },
+  "one_shot/examples/manifest.json": {
+    "mtime": 1787813444.6849184,
+    "ast_hash": "80c02748cfa9f93c50b6fa7ad8a37795",
+    "semantic_hash": ""
+  },
+  "one_shot/PROMPT.md": {
+    "mtime": 1787813444.4049184,
+    "ast_hash": "0aeff9ba82ba4531d0d8f1839918250c",
+    "semantic_hash": ""
+  },
+  "one_shot/README.md": {
+    "mtime": 1787813444.2529185,
+    "ast_hash": "de08f406ad1723ecdf744de86774502f",
+    "semantic_hash": ""
+  },
+  "one_shot/examples/README.md": {
+    "mtime": 1787813444.5449185,
+    "ast_hash": "bd9026d9ee17899c3446ab91e258d819",
     "semantic_hash": ""
   }
 }
