@@ -12,3 +12,5 @@ output/
 useful.css
 prompt.txt
 work.txt
+one_shot/drafts/
+.playwright-cli/

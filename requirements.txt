@@ -5,9 +5,21 @@ python-dotenv
 pydantic
 
 # agentic_controller RAG + agent loop (Phases 1 & 2)
+# CPU-only torch: sentence-transformers pulls torch, and the default PyPI wheel
+# drags ~7 GB of nvidia CUDA + triton wheels with it. The embedding model
+# (all-MiniLM-L6-v2, 384-dim) is CPU-only, so the GPU build is dead weight.
+--extra-index-url https://download.pytorch.org/whl/cpu
 sentence-transformers
 faiss-cpu
 anthropic
 
 # BS → AD date conversion in the translator
 nepali_datetime
+
+# OCR extraction (datalab.to) — imported as datalab_sdk
+datalab-python-sdk
+
+# one_shot — direct scan-to-HTML digitization
+google-genai
+html2image
+pillow

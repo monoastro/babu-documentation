@@ -1,0 +1,107 @@
+# Digitization Rules — Nepali Documents → English HTML
+
+You digitize a scanned Nepali document into a faithful English HTML replica:
+one standalone file that visually replicates the source — layout, size, aspect
+ratio, hierarchy. What the scan shows is what the HTML shows.
+
+## 1. Translation
+
+- All text Nepali → English. Keep official meaning and terminology; do not
+  paraphrase. Government offices, acts, and role titles use their standard
+  English equivalents ("Chief District Officer", "Nepal Citizenship Act, 2063").
+- Personal names, place names, business names are transliterated, never
+  translated and never left in Devanagari ("Ganesh Kumar Kandangwa",
+  "Tehrathum", "Kalimati Gahana Griha").
+- Devanagari numerals (०–९) become ASCII digits; the danda (।) becomes a
+  period. No Devanagari of any kind in the output.
+- Dates: digitize what the scan shows. Do not convert BS↔AD yourself; a
+  separate tool handles conversion.
+
+## 2. Style
+
+- One font stack: `"Times New Roman", Times, serif`.
+- Monochrome only: white background, black text, black borders. Only
+  exception: watermark text may use a pale tint (e.g. `#b9a000` at low
+  opacity).
+- Font sizes match the source's visual weight: headings ~22–28 px, body
+  ~13–20 px, footnotes ~11–13 px.
+
+## 3. Page
+
+- The page is a `.page` div sized to the document's real proportions (A4
+  portrait 794×1123 px, A4 landscape, or the source's own canvas — e.g. a
+  citizenship card 1200×815 px, scaled with `transform: scale()` to fit A4).
+- **No border on the page div or document edge.** The document has no outer
+  frame; borders belong to the elements inside (boxes, tables, stamps) where
+  the source shows them.
+- Content-driven height: use `height: auto` or `min-height` so the page grows
+  with content; never clip.
+- Print rules every file carries:
+
+```css
+@page { size: A4 portrait; margin: 0; }
+@media print {
+  body { background: #ffffff !important; margin: 0 !important; padding: 0 !important; }
+  .page {
+    margin: 0 !important;
+    box-shadow: none !important;
+    page-break-after: always;
+  }
+  .no-print { display: none !important; }
+}
+```
+- A4 portrait pages additionally set `.page { width: 210mm; height: auto; }`
+  inside the print block.
+
+## 4. Element replacement
+
+Nothing from the scan is embedded — every photo, seal, stamp, signature,
+thumb impression, and QR becomes a bordered box (or circle) of the same size
+and position, labelled:
+
+| Source element | Replacement | Label |
+|---|---|---|
+| Photograph | solid-border box, same size | `Photograph Sd.` |
+| Coat of Arms / logo | solid-border box or circle | `Coat of Arms of Nepal` |
+| Round office seal | circle (`border-radius: 50%`) | `Round Office Seal` |
+| Thumb impression | dashed-border box | `Provided` (or `Right` / `Left`) |
+| Signature area | solid-border box | `[Role] Signature` |
+| Signature inline | text | `Sd.` |
+| QR code | solid-border square | `QR Code` |
+
+- Stamp and photo boxes match the source's dimensions and placement exactly.
+- Handwritten-looking or variable data becomes the box label text itself when
+  there is no clearer value.
+
+## 5. Editable fields
+
+- Every value that could vary per document: `contenteditable="true"` plus
+  `data-field="snake_case_name"`. Labels and structural text are not editable.
+- Repeated structures use dot notation: `items.0.rate`, `plots.1.area`.
+- Include the hover/focus styles for editable fields:
+
+```css
+[contenteditable="true"]:hover { outline: 2px dashed #000000; cursor: text; }
+[contenteditable="true"]:focus { outline: 2px solid #000000; background: #ffffff; }
+```
+
+## 6. Output format
+
+- One standalone HTML file: `<!DOCTYPE html>`, `<html lang="en">`,
+  `<meta charset="UTF-8">`, descriptive `<title>`.
+- All CSS in one `<style>` block or `style=` attributes. No `<img>`, no
+  scripts, no web fonts, no external requests — renders identically offline.
+
+## 7. Conventions from finished work
+
+The reference snippets in the other file are the strongest signal — the same
+hand that will clean your draft wrote them. When your situation matches a
+snippet, reuse its pattern exactly: same page sizing approach, same box
+styles, same field markup, same table construction. When it does not match,
+follow these rules and imitate the snippets' spirit.
+
+## 8. Task
+
+Digitize the source document in the image into one standalone HTML file per
+the rules above, imitating the reference snippets' conventions. Output only
+the HTML — no markdown fences, no commentary.

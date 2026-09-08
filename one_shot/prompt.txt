@@ -459,4 +459,4 @@ and in the print media block:
 | Actual images (`<img>`) | None — not used | — | — | — |
 
 
-Read it for now, then I'll provide you with the sample html and actual document to digitize., you don't need to necessary use the exact format, if small changes exist, you can add them, just follow the rules
+Read it for now, then I'll provide you with the  actual document to digitize. 
