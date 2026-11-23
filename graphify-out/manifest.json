@@ -835,8 +835,8 @@
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/EditorPage.tsx": {
-    "mtime": 1788666908.11582,
-    "ast_hash": "fe0b6f349f60e60633f89442cef4fafa",
+    "mtime": 1795428060.3159988,
+    "ast_hash": "6b83cd2e8728acd3eaa6d7623fc86326",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/BackgroundLayer.tsx": {
@@ -845,13 +845,13 @@
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/CanvasElement.tsx": {
-    "mtime": 1788666908.1160054,
-    "ast_hash": "47977b8a897f6c716644dfa6c79e0d9f",
+    "mtime": 1795428060.316999,
+    "ast_hash": "f099034f202676a4dd19e8bfb3e304c5",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/CanvasWorkspace.tsx": {
-    "mtime": 1788666908.1160054,
-    "ast_hash": "10f4e3f74f9672f5c7636cc9efe4e276",
+    "mtime": 1795428060.316999,
+    "ast_hash": "10d1d504d0a729805a6c1dda9892b68c",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/ImportedContentFrame.tsx": {
@@ -865,8 +865,8 @@
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/SelectionOverlay.tsx": {
-    "mtime": 1788666908.1160054,
-    "ast_hash": "4dfc26babbd0091514b206b8404d9e77",
+    "mtime": 1795428060.316999,
+    "ast_hash": "4e946cfaa37872e37f6add21639a3078",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/SnapGuides.tsx": {
@@ -875,8 +875,8 @@
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/TableCellResizeFuntions.ts": {
-    "mtime": 1788666908.1160054,
-    "ast_hash": "54518753b466d777676ee0ee818b7022",
+    "mtime": 1795428060.316999,
+    "ast_hash": "aea0da79d26498bff42b47dbaf09e2be",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/ZoomControls.tsx": {
@@ -890,8 +890,8 @@
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/elements/TableElementView.tsx": {
-    "mtime": 1788666908.1164873,
-    "ast_hash": "b4de19509141bc323c6fda4b6f38ae4d",
+    "mtime": 1795428060.316999,
+    "ast_hash": "8197e2c5bb4047d04f51e62a5310b303",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/elements/elementStyles.ts": {
@@ -900,8 +900,8 @@
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/exportHtml.ts": {
-    "mtime": 1788666908.1164873,
-    "ast_hash": "6773ecea1f8a3d2f0d70c7b53b009c7b",
+    "mtime": 1795428060.317999,
+    "ast_hash": "a038cbdd8cd4d3f08456b1b3ecc3ccdd",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/import/measureHtml.ts": {
@@ -910,13 +910,13 @@
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/import/prepareHtml.ts": {
-    "mtime": 1788741059.8479018,
-    "ast_hash": "fd778957bbc14926d9a6d23a201db873",
+    "mtime": 1795428060.317999,
+    "ast_hash": "e7c9e06033224aed7eedf34263302fa3",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/importHtml.ts": {
-    "mtime": 1788666908.116692,
-    "ast_hash": "61a63dfb12a2220adad5e469f9693055",
+    "mtime": 1795428060.317999,
+    "ast_hash": "0904af918e0af71133074fa6ce75f499",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/interaction/geometry.ts": {
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/interaction/useCanvasInteraction.ts": {
-    "mtime": 1788666908.1168754,
-    "ast_hash": "925aae0884c189770d4d40de34214371",
+    "mtime": 1795428060.317999,
+    "ast_hash": "afdd156b6630621eca0ad6ad02a66d83",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/canvas/interaction/useCanvasZoom.ts": {
@@ -1055,8 +1055,8 @@
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/features/editor/store/documentElementFactory.ts": {
-    "mtime": 1788666908.1178575,
-    "ast_hash": "05d51d9ac0d946968997406812669f93",
+    "mtime": 1795428060.317999,
+    "ast_hash": "be9b019a385f98a011912ceafb427718",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/features/editor/store/documentHistory.ts": {
@@ -1070,8 +1070,8 @@
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/features/editor/store/documentStore.ts": {
-    "mtime": 1788666908.1178575,
-    "ast_hash": "7e988fbf9b70a117ab9a28bbbc35a83d",
+    "mtime": 1795428060.317999,
+    "ast_hash": "4589f917716083fb4275096b7b6c418e",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/features/editor/store/documentTextStyle.ts": {
@@ -1090,8 +1090,8 @@
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/component/editor/features/editor/types.ts": {
-    "mtime": 1788666908.1178575,
-    "ast_hash": "8178fe8194bb4d420573d27e529ee8b2",
+    "mtime": 1795428060.3189988,
+    "ast_hash": "bf919fc2731cab6eb628c796aebf0f8d",
     "semantic_hash": ""
   },
   "html_visual_editor/Frontend/src/main.tsx": {
@@ -1909,9 +1909,19 @@
     "ast_hash": "4ef405b85d1e434ea3b5e8aeb992c5c4",
     "semantic_hash": ""
   },
-  "1. ganesh_mina__Ganesh Tax Clearance Certificate.png.r1787215193.png": {
-    "mtime": 1788724206.847966,
-    "ast_hash": "db0ae278a25cf3eef209a07b867b5eb0",
+  "html_visual_editor/Frontend/src/component/editor/canvas/TableActionMenuFunction.ts": {
+    "mtime": 1795428060.316999,
+    "ast_hash": "ba1f55af177900bf929e7af899db8fa6",
+    "semantic_hash": ""
+  },
+  "html_visual_editor/Frontend/src/component/editor/features/editor/components/TableActionMenu.tsx": {
+    "mtime": 1795428060.317999,
+    "ast_hash": "6f4e426624446866abfeae9becdb78b0",
+    "semantic_hash": ""
+  },
+  "html_visual_editor/Frontend/src/component/editor/features/editor/store/tableActionMenuStorage.ts": {
+    "mtime": 1795428060.3189988,
+    "ast_hash": "2059deb60177b512ae5b7576d8424f15",
     "semantic_hash": ""
   }
 }
